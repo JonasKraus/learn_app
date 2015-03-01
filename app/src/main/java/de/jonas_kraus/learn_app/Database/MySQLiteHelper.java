@@ -39,17 +39,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_QUESTION_ID
             + " integer primary key autoincrement, "
             + COLUMN_QUESTION_TYPE
-            + " enum not null, "
+            + " text not null, "
             + COLUMN_QUESTION_QUESTION
             + " text not null, "
             + COLUMN_QUESTION_KNOWN
-            + " boolean DEFAULT 0, "
+            + " integer DEFAULT 0, "
             + COLUMN_QUESTION_RATING
-            + " integer DEFAULT 0"
+            + " integer DEFAULT 0, "
             + COLUMN_QUESTION_HINT
-            + " text"
+            + " text, "
             + COLUMN_QUESTION_CATEGORY_ID
-            + " integer not null"
+            + " integer not null "
             + ");";
 
     // Database creation sql statement
@@ -58,11 +58,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_ANSWER_ID
             + " integer primary key autoincrement, "
             + COLUMN_ANSWER_QUESTION_ID
-            + " integer, foreign key("+ COLUMN_ANSWER_QUESTION_ID +") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+"), "
+            + " integer, "
             + COLUMN_ANSWER_IS_CORRECT
-            + " boolean not null, "
+            + " integer not null, "
             + COLUMN_ANSWER_ANSWER
-            + " text not null"
+            + " text not null, FOREIGN  KEY("+ COLUMN_ANSWER_QUESTION_ID +") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+") "
             + ");";
 
     // Database creation sql statement
@@ -71,9 +71,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_CATEGORY_ID
             + " integer primary key autoincrement, "
             + COLUMN_CATEGORY_NAME
-            + " text not null unique"
+            + " text not null UNIQUE, "
             + COLUMN_CATEGORY_PARENT
-            + " integer DEFAULT -1, "
+            + " integer DEFAULT "+-1+" "
             + ");";
 
     public MySQLiteHelper(Context context) {

@@ -1,5 +1,6 @@
 package de.jonas_kraus.learn_app.activity;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -63,6 +64,14 @@ public class Home extends ActionBarActivity {
         setTodoButtonListener();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        buttonTodo.setOnClickListener(null);
+        buttonCatalogue.setOnClickListener(null);
+        dbManager.close();
+    }
+
     private void setTodoButtonListener() {
         buttonTodo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +85,8 @@ public class Home extends ActionBarActivity {
         buttonCatalogue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                Intent myIntent = new Intent(Home.this, CatalogueHome.class);
+                startActivity(myIntent);
             }
         });
     }
