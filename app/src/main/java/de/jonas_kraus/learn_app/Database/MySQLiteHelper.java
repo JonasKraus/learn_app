@@ -17,6 +17,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_QUESTION_KNOWN = "known";
     public static final String COLUMN_QUESTION_RATING = "rating";
     public static final String COLUMN_QUESTION_HINT = "hint";
+    public static final String COLUMN_QUESTION_CATEGORY_ID = "category_id";
 
     public static final String TABLE_ANSWERS = "answers";
     public static final String COLUMN_ANSWER_ID = "_id";
@@ -47,6 +48,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + " integer DEFAULT 0"
             + COLUMN_QUESTION_HINT
             + " text"
+            + COLUMN_QUESTION_CATEGORY_ID
+            + " integer not null"
             + ");";
 
     // Database creation sql statement
