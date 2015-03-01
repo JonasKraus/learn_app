@@ -12,14 +12,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 
     public static final String TABLE_QUESTIONS = "questions";
     public static final String COLUMN_QUESTION_ID = "_id";
-    public static final String COLUMN_TYPE = "type";
-    public static final String COLUMN_QUESTION = "question";
+    public static final String COLUMN_QUESTION_TYPE = "type";
+    public static final String COLUMN_QUESTION_QUESTION = "question";
+    public static final String COLUMN_QUESTION_KNOWN = "known";
+    public static final String COLUMN_QUESTION_RATING = "rating";
+    public static final String COLUMN_QUESTION_HINT = "hint";
 
     public static final String TABLE_ANSWERS = "answers";
     public static final String COLUMN_ANSWER_ID = "_id";
-    public static final String COLUMN_QUESTION_REFERENCE_ID = "question_id";
-    public static final String COLUMN_IS_CORRECT = "is_correct";
-    public static final String COLUMN_ANSWER = "answer";
+    public static final String COLUMN_ANSWER_QUESTION_ID = "question_id";
+    public static final String COLUMN_ANSWER_IS_CORRECT = "is_correct";
+    public static final String COLUMN_ANSWER_ANSWER = "answer";
 
     private static final String DATABASE_NAME = "learning_cards_db.db";
     private static final int DATABASE_VERSION = 1;
@@ -29,10 +32,16 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + TABLE_QUESTIONS + "("
             + COLUMN_QUESTION_ID
             + " integer primary key autoincrement, "
-            + COLUMN_TYPE
+            + COLUMN_QUESTION_TYPE
             + " enum not null, "
-            +COLUMN_QUESTION
-            + " text not null"
+            + COLUMN_QUESTION_QUESTION
+            + " text not null, "
+            + COLUMN_QUESTION_KNOWN
+            + " boolean DEFAULT 0, "
+            + COLUMN_QUESTION_RATING
+            + " integer DEFAULT 0"
+            + COLUMN_QUESTION_HINT
+            + " text"
             + ");";
 
     // Database creation sql statement
@@ -40,11 +49,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + TABLE_ANSWERS + "("
             + COLUMN_ANSWER_ID
             + " integer primary key autoincrement, "
-            + COLUMN_QUESTION_REFERENCE_ID
-            + " integer, foreign key("+ COLUMN_QUESTION_REFERENCE_ID+") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+"), "
-            + COLUMN_IS_CORRECT
+            + COLUMN_ANSWER_QUESTION_ID
+            + " integer, foreign key("+ COLUMN_ANSWER_QUESTION_ID +") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+"), "
+            + COLUMN_ANSWER_IS_CORRECT
             + " boolean not null, "
-            +COLUMN_ANSWER
+            + COLUMN_ANSWER_ANSWER
             + " text not null"
             + ");";
 
