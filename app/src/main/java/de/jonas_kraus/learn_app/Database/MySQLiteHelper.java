@@ -24,6 +24,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_ANSWER_IS_CORRECT = "is_correct";
     public static final String COLUMN_ANSWER_ANSWER = "answer";
 
+    public static final String TABLE_CATEGORIES = "categorys";
+    public static final String COLUMN_CATEGORY_ID = "_id";
+    public static final String COLUMN_CATEGORY_NAME = "name";
+    public static final String COLUMN_CATEGORY_PARENT = "parent_id";
+
     private static final String DATABASE_NAME = "learning_cards_db.db";
     private static final int DATABASE_VERSION = 1;
 
@@ -57,6 +62,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + " text not null"
             + ");";
 
+    // Database creation sql statement
+    private static final String CATEGORY_CREATE = "create table "
+            + TABLE_CATEGORIES + "("
+            + COLUMN_CATEGORY_ID
+            + " integer primary key autoincrement, "
+            + COLUMN_CATEGORY_NAME
+            + " text not null"
+            + COLUMN_CATEGORY_PARENT
+            + " integer DEFAULT -1, "
+            + ");";
+
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -65,7 +81,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(QUESTIONS_CREATE);
         db.execSQL(ANSWERS_CREATE);
-        Log.d("created tables", "tabels");
+        db.execSQL(CATEGORY_CREATE);
+        Log.d("created", "tabels");
     }
 
     @Override
@@ -75,6 +92,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUESTIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANSWERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);
         onCreate(db);
     }
 }
