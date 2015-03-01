@@ -71,7 +71,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_CATEGORY_ID
             + " integer primary key autoincrement, "
             + COLUMN_CATEGORY_NAME
-            + " text not null"
+            + " text not null unique"
             + COLUMN_CATEGORY_PARENT
             + " integer DEFAULT -1, "
             + ");";
