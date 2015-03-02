@@ -24,6 +24,8 @@
         android:id="@android:id/list"
         android:layout_below="@+id/buttonNewCategory"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:longClickable="true"
+        android:clickable="true" />
 
 </RelativeLayout>

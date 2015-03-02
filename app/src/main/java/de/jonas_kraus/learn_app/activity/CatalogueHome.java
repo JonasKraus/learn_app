@@ -3,17 +3,18 @@ package de.jonas_kraus.learn_app.activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -45,6 +46,23 @@ public class CatalogueHome extends ListActivity {
     protected void onResume() {
         super.onResume();
         openDb();
+        addClickListenersToListView();
+    }
+
+    private void addClickListenersToListView() {
+        listViewCatalogue.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), "On item click", Toast.LENGTH_SHORT).show();
+            }
+        });
+        listViewCatalogue.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), "On long click", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
     }
 
     public void onClick(View view) {
@@ -92,6 +110,8 @@ public class CatalogueHome extends ListActivity {
         super.onPause();
         db.close();
         buttonAddCategory.setOnClickListener(null);
+        listViewCatalogue.setOnItemClickListener(null);
+        listViewCatalogue.setOnItemLongClickListener(null);
     }
 
     @Override
