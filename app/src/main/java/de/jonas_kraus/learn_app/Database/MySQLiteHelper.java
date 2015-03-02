@@ -70,10 +70,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + TABLE_CATEGORIES + "("
             + COLUMN_CATEGORY_ID
             + " integer primary key autoincrement, "
-            + COLUMN_CATEGORY_NAME
-            + " text not null UNIQUE, "
             + COLUMN_CATEGORY_PARENT
             + " integer DEFAULT "+-1+" "
+            + COLUMN_CATEGORY_NAME
+            + " text not null UNIQUE, "
             + ");";
 
     public MySQLiteHelper(Context context) {

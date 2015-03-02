@@ -4,4 +4,5 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_catalogue_home">CatalogueHome</string>
+    <string name="prompt_add_category">Enter Category Name:</string>
 </resources>
