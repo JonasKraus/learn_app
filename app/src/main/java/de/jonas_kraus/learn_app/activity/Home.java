@@ -85,7 +85,7 @@ public class Home extends ActionBarActivity {
         buttonCatalogue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(Home.this, CatalogueHome.class);
+                Intent myIntent = new Intent(Home.this, CatalogueActivity.class);
                 startActivity(myIntent);
             }
         });
