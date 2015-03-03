@@ -77,21 +77,31 @@ public class CatalogueHome extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Toast.makeText(getApplicationContext(), "On item click", Toast.LENGTH_SHORT).show();
 
-                Catalogue curCat = (Catalogue) getListAdapter().getItem(position);
-                Log.d("View Item",curCat+"");
-                currentCategoryParent = curCat.getCategory().getId();
+                Catalogue curCatalogue = (Catalogue) getListAdapter().getItem(position);
+                //Log.d("View Item",curCat+"");
+                Category curCategory;
+                Card curCard;
 
-                List<Category> categories = db.getCategoriesByLevel(currentCategoryParent);
-                List<Card> cards = db.getCardsByLevel(currentCategoryParent);
-                List<Catalogue> catalogue = new ArrayList<Catalogue>();
-                for (Category cat : categories) {
-                    catalogue.add(new Catalogue(cat));
+                if ( curCatalogue.getCategory() != null ) {
+                    curCategory = curCatalogue.getCategory();
+                    currentCategoryParent = curCategory.getId();
+
+                    List<Category> categories = db.getCategoriesByLevel(currentCategoryParent);
+                    List<Card> cards = db.getCardsByLevel(currentCategoryParent);
+                    List<Catalogue> catalogue = new ArrayList<Catalogue>();
+                    for (Category cat : categories) {
+                        catalogue.add(new Catalogue(cat));
+                    }
+                    for (Card card : cards) {
+                        catalogue.add(new Catalogue(card));
+                    }
+                    ArrayAdapter<Catalogue> adapter = new ArrayAdapter<Catalogue>(context, android.R.layout.simple_list_item_1, catalogue);
+                    setListAdapter(adapter);
+
+                } else if (curCatalogue.getCard() != null ) {
+                    curCard = curCatalogue.getCard();
+                    Toast.makeText(context,"This is a card: "+curCard.getQuestion(), Toast.LENGTH_SHORT).show();
                 }
-                for (Card card : cards) {
-                    catalogue.add(new Catalogue(card));
-                }
-                ArrayAdapter<Catalogue> adapter = new ArrayAdapter<Catalogue>(context, android.R.layout.simple_list_item_1, catalogue);
-                setListAdapter(adapter);
 
             }
         });
@@ -128,6 +138,7 @@ public class CatalogueHome extends ListActivity {
                         Catalogue curCat = (Catalogue) getListAdapter().getItem(position);
                         Log.d("View Item",curCat+"");
                         currentCategoryParent = curCat.getCategory().getId();
+
                         Card card = db.createCard(new Card(cardType, inputQuestion.getText().toString(), answers, false, 0, inputHint.getText().toString(),currentCategoryParent));
                         //adapter.add(new Catalogue(card));
                     }
