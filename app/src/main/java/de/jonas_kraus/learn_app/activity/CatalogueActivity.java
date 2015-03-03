@@ -5,6 +5,8 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +33,7 @@ import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.Data.Category;
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
+import de.jonas_kraus.learn_app.Util.CustomList;
 
 public class CatalogueActivity extends ListActivity {
     private DbManager db;
@@ -42,29 +45,21 @@ public class CatalogueActivity extends ListActivity {
     private int currentCategoryParent = -1;
     private Category curCategory;
     private Context context;
+    private Bitmap categoryIcon, cardIcon;
+    ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalogue);
-
+        context = this;
+        cardIcon = BitmapFactory.decodeResource(getResources(), R.drawable.cardicon);
+        categoryIcon = BitmapFactory.decodeResource(getResources(), R.drawable.categoryicon);
         openDb();
-        List<Category> categories = db.getCategoriesByLevel(currentCategoryParent);
-        List<Card> cards = db.getCardsByLevel(currentCategoryParent);
-        List<de.jonas_kraus.learn_app.Data.Catalogue> catalogue = new ArrayList<de.jonas_kraus.learn_app.Data.Catalogue>();
-        for (Category cat : categories) {
-            catalogue.add(new de.jonas_kraus.learn_app.Data.Catalogue(cat));
-        }
-        for (Card card : cards) {
-            catalogue.add(new de.jonas_kraus.learn_app.Data.Catalogue(card));
-        }
-        ArrayAdapter<de.jonas_kraus.learn_app.Data.Catalogue> adapter = new ArrayAdapter<de.jonas_kraus.learn_app.Data.Catalogue>(this, android.R.layout.simple_list_item_1, catalogue);
-        setListAdapter(adapter);
-        listViewCatalogue = getListView();
+        setListViewWithCatalogueByLevel(currentCategoryParent);
+        //listViewCatalogue = getListView();
         buttonAddCategory = (Button) findViewById(R.id.buttonCategoryNew);
         buttonCategoryBack = (Button) findViewById(R.id.buttonCategoryBack);
-
-        context = this;
     }
 
     @Override
@@ -82,7 +77,7 @@ public class CatalogueActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Toast.makeText(getApplicationContext(), "On item click", Toast.LENGTH_SHORT).show();
-
+                Log.d("Adapter", getListAdapter()+"");
                 Catalogue curCatalogue = (Catalogue) getListAdapter().getItem(position);
                 //Log.d("View Item",curCat+"");
                 //Category curCategory;
@@ -91,7 +86,7 @@ public class CatalogueActivity extends ListActivity {
                 if ( curCatalogue.getCategory() != null ) {
                     curCategory = curCatalogue.getCategory();
                     currentCategoryParent = curCategory.getId();
-                    setCatalogueByLevel(currentCategoryParent);
+                    setListViewWithCatalogueByLevel(currentCategoryParent);
 
                     buttonCategoryBack.setText("back to "+curCategory.getName());
 
@@ -154,7 +149,7 @@ public class CatalogueActivity extends ListActivity {
                 }
 
                 Card card = db.createCard(new Card(cardType, inputQuestion.getText().toString(), answers, false, 0, inputHint.getText().toString(), currentCategoryParent));
-                adapter.add(new Catalogue(card));
+                adapter.add(new Catalogue(card, categoryIcon));
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -166,24 +161,29 @@ public class CatalogueActivity extends ListActivity {
         alertDialog.show();
     }
 
-    private void setCatalogueByLevel(int level) {
+    private void setListViewWithCatalogueByLevel(int level) {
         List<Category> categories = db.getCategoriesByLevel(level);
         List<Card> cards = db.getCardsByLevel(level);
-        List<de.jonas_kraus.learn_app.Data.Catalogue> catalogue = new ArrayList<de.jonas_kraus.learn_app.Data.Catalogue>();
+        List<Catalogue> catalogue = new ArrayList<Catalogue>();
+
         for (Category cat : categories) {
-            catalogue.add(new de.jonas_kraus.learn_app.Data.Catalogue(cat));
+            catalogue.add(new Catalogue(cat, categoryIcon));
         }
         for (Card card : cards) {
-            catalogue.add(new de.jonas_kraus.learn_app.Data.Catalogue(card));
+            catalogue.add(new Catalogue(card,cardIcon));
         }
-        ArrayAdapter<de.jonas_kraus.learn_app.Data.Catalogue> adapter = new ArrayAdapter<de.jonas_kraus.learn_app.Data.Catalogue>(context, android.R.layout.simple_list_item_1, catalogue);
-        setListAdapter(adapter);
-        if (categories.size() > 0) {
+
+        if (categories != null && categories.size() > 0) {
             curCategory = db.getParentCategory(categories.get(0).getParentId());
-        } else if (cards.size() > 0) {
+        } else if (cards != null && cards.size() > 0) {
             curCategory = db.getParentCategory(cards.get(0).getCategoryId());
         }
         currentCategoryParent = level;
+
+        CustomList adapter = new CustomList(CatalogueActivity.this, catalogue);
+        setListAdapter(adapter);
+        listViewCatalogue=getListView();
+        listViewCatalogue.setAdapter(adapter);
     }
 
     public void onClick(View view) {
@@ -196,7 +196,7 @@ public class CatalogueActivity extends ListActivity {
                 break;
             case R.id.buttonCategoryBack:
                 if (curCategory != null) {
-                    setCatalogueByLevel(curCategory.getParentId());
+                    setListViewWithCatalogueByLevel(curCategory.getParentId());
                     if (curCategory == null) {
                         buttonCategoryBack.setText("back");
                     } else {
@@ -227,8 +227,8 @@ public class CatalogueActivity extends ListActivity {
         alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Category category = db.createCategory(new Category(currentCategoryParent,input.getText().toString()));
-                //adapter.add(new de.jonas_kraus.learn_app.Data.Catalogue(category));
-                setCatalogueByLevel(currentCategoryParent); // has to be reset to be correctly sorted
+                //adapter.add(new Catalogue(category));
+                setListViewWithCatalogueByLevel(currentCategoryParent); // has to be reset to be correctly sorted
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {

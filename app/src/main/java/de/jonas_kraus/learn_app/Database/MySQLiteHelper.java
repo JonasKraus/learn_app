@@ -73,7 +73,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_CATEGORY_PARENT
             + " integer DEFAULT "+-1+" "
             + COLUMN_CATEGORY_NAME
-            + " text not null UNIQUE, "
+            + " text not null, " /* @TODO Check if the category has the same name and parent id, then UNIQUE?! */
             + ");";
 
     public MySQLiteHelper(Context context) {
