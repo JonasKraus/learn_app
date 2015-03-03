@@ -38,6 +38,7 @@ public class CatalogueActivity extends ListActivity {
     private TextView textViewPrompt;
     private View promptView;
     private Button buttonAddCategory;
+    private Button buttonCategoryBack;
     private int currentCategoryParent = -1;
     private Category curCategory;
     private Context context;
@@ -61,6 +62,7 @@ public class CatalogueActivity extends ListActivity {
         setListAdapter(adapter);
         listViewCatalogue = getListView();
         buttonAddCategory = (Button) findViewById(R.id.buttonCategoryNew);
+        buttonCategoryBack = (Button) findViewById(R.id.buttonCategoryBack);
 
         context = this;
     }
@@ -71,6 +73,8 @@ public class CatalogueActivity extends ListActivity {
         openDb();
         addClickListenersToListView();
         context = this;
+        buttonAddCategory = (Button) findViewById(R.id.buttonCategoryNew);
+        buttonCategoryBack = (Button) findViewById(R.id.buttonCategoryBack);
     }
 
     private void addClickListenersToListView() {
@@ -87,8 +91,9 @@ public class CatalogueActivity extends ListActivity {
                 if ( curCatalogue.getCategory() != null ) {
                     curCategory = curCatalogue.getCategory();
                     currentCategoryParent = curCategory.getId();
-
                     setCatalogueByLevel(currentCategoryParent);
+
+                    buttonCategoryBack.setText("back to "+curCategory.getName());
 
                 } else if (curCatalogue.getCard() != null ) {
                     curCard = curCatalogue.getCard();
@@ -191,9 +196,12 @@ public class CatalogueActivity extends ListActivity {
                 break;
             case R.id.buttonCategoryBack:
                 if (curCategory != null) {
-                    Log.d("CurParentId before ",currentCategoryParent+"");
                     setCatalogueByLevel(curCategory.getParentId());
-                    Log.d("CurParentId after ",currentCategoryParent+"");
+                    if (curCategory == null) {
+                        buttonCategoryBack.setText("back");
+                    } else {
+                        buttonCategoryBack.setText("back to "+curCategory.getName());
+                    }
                 } else {
                     Intent myIntent = new Intent(CatalogueActivity.this, Home.class);
                     startActivity(myIntent);
