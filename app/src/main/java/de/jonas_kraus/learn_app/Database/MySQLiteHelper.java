@@ -62,7 +62,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_ANSWER_IS_CORRECT
             + " integer not null, "
             + COLUMN_ANSWER_ANSWER
-            + " text not null, FOREIGN  KEY("+ COLUMN_ANSWER_QUESTION_ID +") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+") "
+            + " text not null, FOREIGN  KEY("+ COLUMN_ANSWER_QUESTION_ID +") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+" ON DELETE CASCADE) "
             + ");";
 
     // Database creation sql statement

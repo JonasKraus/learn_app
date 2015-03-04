@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +40,6 @@ import de.jonas_kraus.learn_app.Util.CustomList;
 public class CatalogueActivity extends ListActivity {
     private DbManager db;
     private ListView listViewCatalogue;
-    private TextView textViewPrompt;
     private View promptView;
     private Button buttonAddCategory;
     private Button buttonCategoryBack;
@@ -46,7 +47,8 @@ public class CatalogueActivity extends ListActivity {
     private Category curCategory;
     private Context context;
     private Bitmap categoryIcon, cardIcon;
-    ListView list;
+    private final int CHAR_THRESHOLD = 30; // Maximum Chars that should be displayed in a Dialog's Title
+    private Drawable categoryIconScaled, cardIconScaled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class CatalogueActivity extends ListActivity {
         context = this;
         cardIcon = BitmapFactory.decodeResource(getResources(), R.drawable.cardicon);
         categoryIcon = BitmapFactory.decodeResource(getResources(), R.drawable.categoryicon);
+        categoryIconScaled = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(categoryIcon, 50, 50, true));
+        cardIconScaled = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(cardIcon, 50, 50, true));
         openDb();
         setListViewWithCatalogueByLevel(currentCategoryParent);
         //listViewCatalogue = getListView();
@@ -83,17 +87,16 @@ public class CatalogueActivity extends ListActivity {
                 //Category curCategory;
                 Card curCard;
 
-                if ( curCatalogue.getCategory() != null ) {
+                if ( curCatalogue.getCategory() != null ) { // Jump to subcategory
                     curCategory = curCatalogue.getCategory();
                     currentCategoryParent = curCategory.getId();
                     setListViewWithCatalogueByLevel(currentCategoryParent);
 
-                    buttonCategoryBack.setText("back to "+curCategory.getName());
+                    buttonCategoryBack.setText("../"+curCategory.getName());
 
-                } else if (curCatalogue.getCard() != null ) {
+                } else if (curCatalogue.getCard() != null ) { /* @TODO Preview of Card */
                     curCard = curCatalogue.getCard();
                     Toast.makeText(context,"This is a card: "+curCard.getQuestion(), Toast.LENGTH_SHORT).show();
-                    /* @TODO */
                 }
 
             }
@@ -103,25 +106,61 @@ public class CatalogueActivity extends ListActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
                 Catalogue curCatalogue = (Catalogue) getListAdapter().getItem(position);
-                //Category curCategory;
-                Card curCard;
 
                 if ( curCatalogue.getCategory() != null ) {
                     curCategory = curCatalogue.getCategory();
-                    currentCategoryParent = curCategory.getId();
-                    makeCard();
-                }  else if (curCatalogue.getCard() != null ) {
-                    curCard = curCatalogue.getCard();
-                    Toast.makeText(context,"(long Click)This is a card: "+curCard.getQuestion(), Toast.LENGTH_SHORT).show();
-                    /* TODO */
-                }
 
+                    LayoutInflater layoutInflater = LayoutInflater.from(context);
+                    promptView = layoutInflater.inflate(R.layout.prompt_add_category, null);
+
+                    EditText name = (EditText)promptView.findViewById(R.id.promptAddCatalogueInput);
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    alertDialogBuilder.setView(promptView);
+
+                    alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            EditText name = (EditText)promptView.findViewById(R.id.promptAddCatalogueInput);
+                            curCategory.setName(name.getText().toString());
+                            db.updateCategory(curCategory);
+                            setListViewWithCatalogueByLevel(currentCategoryParent);
+                        }
+                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+
+                    if (curCategory.getName().length() > CHAR_THRESHOLD) {
+                        alertDialog.setTitle("Edit: \n"+curCategory.getName().substring(0, CHAR_THRESHOLD -2)+"...");
+                    } else {
+                        alertDialog.setTitle("Edit: \n"+curCategory.getName());
+                    }
+                    alertDialog.setIcon(categoryIconScaled);
+                    name.setTextKeepState(curCategory.getName());
+                    alertDialog.show();
+
+                }  else if (curCatalogue.getCard() != null ) {
+                    //curCard = curCatalogue.getCard();
+                    /*
+                    if (curCard.getQuestion().length() > CHAR_THRESHOLD) {
+                        dialog.setTitle(curCard.getQuestion().substring(0,CHAR_THRESHOLD-2)+"...");
+                    } else {
+                        dialog.setTitle(curCard.getQuestion());
+                    }
+                    */
+                }
                 return true;
             }
         });
     }
 
-    private void makeCard() {
+
+    private void makePromptAddCard() {
 
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         promptView = layoutInflater.inflate(R.layout.prompt_add_card, null);
@@ -198,9 +237,9 @@ public class CatalogueActivity extends ListActivity {
                 if (curCategory != null) {
                     setListViewWithCatalogueByLevel(curCategory.getParentId());
                     if (curCategory == null) {
-                        buttonCategoryBack.setText("back");
+                        buttonCategoryBack.setText("back to home");
                     } else {
-                        buttonCategoryBack.setText("back to "+curCategory.getName());
+                        buttonCategoryBack.setText("../"+curCategory.getName());
                     }
                 } else {
                     Intent myIntent = new Intent(CatalogueActivity.this, Home.class);
@@ -208,7 +247,7 @@ public class CatalogueActivity extends ListActivity {
                 }
                 break;
             case R.id.buttonCardNew:
-                makeCard();
+                makePromptAddCard();
                 break;
         }
     }
@@ -217,9 +256,7 @@ public class CatalogueActivity extends ListActivity {
         //final ArrayAdapter<Catalogue> adapter = (ArrayAdapter<Catalogue>) getListAdapter();
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         promptView = layoutInflater.inflate(R.layout.prompt_add_category, null);
-        textViewPrompt = (TextView) findViewById(R.id.textViewPrompt);
 
-        //textViewPrompt.setText("Enter category name:");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setView(promptView);
         final EditText input = (EditText) promptView.findViewById(R.id.promptAddCatalogueInput);
@@ -227,7 +264,6 @@ public class CatalogueActivity extends ListActivity {
         alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Category category = db.createCategory(new Category(currentCategoryParent,input.getText().toString()));
-                //adapter.add(new Catalogue(category));
                 setListViewWithCatalogueByLevel(currentCategoryParent); // has to be reset to be correctly sorted
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -237,6 +273,8 @@ public class CatalogueActivity extends ListActivity {
         });
 
         AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setIcon(categoryIconScaled);
+        alertDialog.setTitle("Enter category name:");
         alertDialog.show();
     }
 
