@@ -60,10 +60,19 @@ public class CatalogueActivity extends ListActivity {
         categoryIconScaled = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(categoryIcon, 50, 50, true));
         cardIconScaled = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(cardIcon, 50, 50, true));
         openDb();
-        setListViewWithCatalogueByLevel(currentCategoryParent);
         //listViewCatalogue = getListView();
         buttonAddCategory = (Button) findViewById(R.id.buttonCategoryNew);
         buttonCategoryBack = (Button) findViewById(R.id.buttonCategoryBack);
+        Bundle extras;
+        if (savedInstanceState == null) {
+            extras = getIntent().getExtras();
+            if(extras == null) {
+                currentCategoryParent= -1;
+            } else {
+                currentCategoryParent= extras.getInt("currentCategoryParent");
+            }
+        }
+        setListViewWithCatalogueByLevel(currentCategoryParent);
     }
 
     @Override
@@ -72,8 +81,7 @@ public class CatalogueActivity extends ListActivity {
         openDb();
         addClickListenersToListView();
         context = this;
-        buttonAddCategory = (Button) findViewById(R.id.buttonCategoryNew);
-        buttonCategoryBack = (Button) findViewById(R.id.buttonCategoryBack);
+        setListViewWithCatalogueByLevel(currentCategoryParent);
     }
 
     private void addClickListenersToListView() {
@@ -248,6 +256,7 @@ public class CatalogueActivity extends ListActivity {
                 break;
             case R.id.buttonCardNew:
                 Intent myIntent = new Intent(CatalogueActivity.this, cardActivity.class);
+                myIntent.putExtra("currentCategoryParent",currentCategoryParent);
                 startActivity(myIntent);
                 //makePromptAddCard();
                 break;
