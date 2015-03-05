@@ -20,6 +20,10 @@
             android:name=".activity.CatalogueActivity"
             android:label="@string/title_activity_catalogue_home" >
         </activity>
+        <activity
+            android:name=".activity.cardActivity"
+            android:label="@string/title_activity_card" >
+        </activity>
     </application>
 
 </manifest>

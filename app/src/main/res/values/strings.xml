@@ -7,4 +7,7 @@
     <string name="prompt_add_question">Enter Question:</string>
     <string name="prompt_add_answer">Enter Answer:</string>
     <string name="prompt_add_hint">Enter Hint:</string>
+    <string name="title_activity_card">cardActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

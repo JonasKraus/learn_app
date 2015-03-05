@@ -247,7 +247,9 @@ public class CatalogueActivity extends ListActivity {
                 }
                 break;
             case R.id.buttonCardNew:
-                makePromptAddCard();
+                Intent myIntent = new Intent(CatalogueActivity.this, cardActivity.class);
+                startActivity(myIntent);
+                //makePromptAddCard();
                 break;
         }
     }
