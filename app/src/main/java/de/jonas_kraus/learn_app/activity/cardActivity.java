@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -43,7 +44,7 @@ public class cardActivity extends ActionBarActivity {
     int _intMyLineCount;
 
     private List<EditText> editTextList = new ArrayList<EditText>();
-    private List<TextView> textviewList=new ArrayList<TextView>();
+    private List<CheckedTextView> textviewList=new ArrayList<CheckedTextView>();
     private List<LinearLayout> linearlayoutList=new ArrayList<LinearLayout>();
 
     @Override
@@ -153,14 +154,14 @@ public class cardActivity extends ActionBarActivity {
                 /* @TODO for loop over all edittexts */
 
                 if (editTextList.size() != 0) {
-                    for (EditText editText : editTextList) {
-                        answers.add(new Answer(editText.getText().toString()));
+                    for (int i = 0; i < editTextList.size(); i++) {
+                        answers.add(new Answer(textviewList.get(i).isChecked(),editTextList.get(i).getText().toString()));
                     }
                 } else {
                     answers.add(new Answer(editTextAnswer.getText().toString()));
                 }
                 for (Answer ans : answers) {
-                    Log.d("Save:", ans.getAnswer());
+                    Log.d("Save:", ans.toString());
                 }
                 Card card = new Card(cardType,editTextQuestion.getText().toString(), answers,false,0,editTextHint.getText().toString(),currentCategoryParent);
                 db.createCard(card);
@@ -205,11 +206,12 @@ public class cardActivity extends ActionBarActivity {
         editTextList.add(editText);
         return editText;
     }
-    private TextView textView(int _intID)
+    private CheckedTextView textView(int _intID)
     {
-        TextView txtviewAll=new TextView(this);
+        final CheckedTextView txtviewAll=new CheckedTextView(this);
         txtviewAll.setId(_intID);
         txtviewAll.setText("Answer:");
+
         //txtviewAll.setTextColor(Color.RED);
         //txtviewAll.setTypeface(Typeface.DEFAULT_BOLD);
         textviewList.add(txtviewAll);
@@ -219,7 +221,23 @@ public class cardActivity extends ActionBarActivity {
     {
         LinearLayout LLMain=new LinearLayout(this);
         LLMain.setId(_intID);
-        LLMain.addView(textView(_intID));
+        final CheckedTextView txtView = textView(_intID);
+        txtView.setClickable(true);
+        txtView.setChecked(true);
+        txtView.setCheckMarkDrawable(R.drawable.checkmark);
+        txtView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtView.setChecked(!txtView.isChecked());
+                Log.d("Txt view", "" + txtView.isChecked());
+                if (txtView.isChecked()) {
+                    txtView.setCheckMarkDrawable(R.drawable.checkmark);
+                } else {
+                    txtView.setCheckMarkDrawable(R.drawable.uncheckmark);
+                }
+            }
+        });
+        LLMain.addView(txtView);
         LLMain.addView(editText(_intID));
         LLMain.setOrientation(LinearLayout.VERTICAL);
         linearlayoutList.add(LLMain);

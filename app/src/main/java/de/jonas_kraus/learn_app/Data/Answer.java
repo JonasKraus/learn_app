@@ -49,4 +49,12 @@ public class Answer {
         this.answer = answer;
     }
 
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", correct=" + correct +
+                ", answer='" + answer + '\'' +
+                '}';
+    }
 }
