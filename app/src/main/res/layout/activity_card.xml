@@ -34,7 +34,8 @@
             <RadioGroup
                 android:id="@+id/radioGroupType"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                     <RadioButton
                         android:layout_width="wrap_content"
@@ -58,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Answer:"
-                android:id="@+id/textView4" />
+                android:id="@+id/textViewAnswer" />
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,6 +67,36 @@
                 android:ems="10"
                 android:id="@+id/editTextAnswer"
                 android:layout_weight="1" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/LlTitle"
+                android:orientation="horizontal">
+
+                </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:id="@+id/buttonAddAnswerField"
+                android:visibility="gone"
+                android:onClick="onClick" />
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:id="@+id/buttonDeleteAnswerField"
+                android:visibility="gone"
+                android:onClick="onClick" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -80,14 +111,7 @@
                 android:id="@+id/editTextHint"
                 android:layout_weight="1" />
 
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="+"
-                android:id="@+id/buttonAddAnswerField"
-                android:visibility="invisible"
-                android:onClick="onClick" />
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
