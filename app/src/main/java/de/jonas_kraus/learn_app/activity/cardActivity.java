@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +42,7 @@ public class cardActivity extends ActionBarActivity {
     private DbManager db;
     private LinearLayout LLEnterText;
 
-    int _intMyLineCount;
+    private int _intMyLineCount =0;
 
     private List<EditText> editTextList = new ArrayList<EditText>();
     private List<CheckedTextView> textviewList=new ArrayList<CheckedTextView>();
@@ -101,7 +102,7 @@ public class cardActivity extends ActionBarActivity {
                     cardType = Card.CardType.NOTECARD;
                     editTextList = new ArrayList<EditText>();
                     LLEnterText.removeAllViews();
-                    textViewAnswer.setVisibility(View.VISIBLE);
+                    //textViewAnswer.setVisibility(View.VISIBLE);
                 } else {
                     buttonAddAnswer.setVisibility(View.VISIBLE);
                     buttonDeleteAnswer.setVisibility(View.VISIBLE);
@@ -141,7 +142,7 @@ public class cardActivity extends ActionBarActivity {
                     LLEnterText.removeView(linearlayoutList.get(_intMyLineCount));
                     linearlayoutList.remove(_intMyLineCount);
                 } else {
-                    Toast.makeText(getApplicationContext(), "At least one Answer must be set", Toast.LENGTH_LONG);
+                    Toast.makeText(getApplicationContext(), "At least two answers must be set!", Toast.LENGTH_LONG);
                 }
                 break;
             case R.id.buttonCancel:
@@ -214,6 +215,14 @@ public class cardActivity extends ActionBarActivity {
 
         //txtviewAll.setTextColor(Color.RED);
         //txtviewAll.setTypeface(Typeface.DEFAULT_BOLD);
+
+        TableLayout.LayoutParams params = new TableLayout.LayoutParams();
+        txtviewAll.setLayoutParams(params);
+
+        txtviewAll.setHeight(100);
+        txtviewAll.setHint("Answer");
+        txtviewAll.setBackgroundColor(Color.parseColor("#fefefe"));
+
         textviewList.add(txtviewAll);
         return txtviewAll;
     }
@@ -237,7 +246,11 @@ public class cardActivity extends ActionBarActivity {
                 }
             }
         });
+        TableLayout.LayoutParams params = new TableLayout.LayoutParams();
+        params.setMargins(0, 0, 0, 15);
+        LLMain.setLayoutParams(params);
         LLMain.addView(txtView);
+        LLMain.setBackgroundColor(Color.parseColor("#fefefe"));
         LLMain.addView(editText(_intID));
         LLMain.setOrientation(LinearLayout.VERTICAL);
         linearlayoutList.add(LLMain);

@@ -21,14 +21,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Question:"
-                android:id="@+id/textView3" />
+                android:id="@+id/textView3"
+                android:visibility="gone"/>
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:ems="10"
                 android:id="@+id/editTextQuestion"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:hint="Question"
+                android:layout_height="100dp"
+                android:background="#fefefe"/>
 
 
             <RadioGroup
@@ -59,14 +62,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Answer:"
-                android:id="@+id/textViewAnswer" />
+                android:id="@+id/textViewAnswer"
+                android:visibility="gone"/>
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:ems="10"
                 android:id="@+id/editTextAnswer"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:hint="Answer"
+                android:layout_height="100dp"
+                android:background="#fefefe"/>
 
 
             <LinearLayout
@@ -102,21 +108,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hint:"
-                android:id="@+id/textView5" />
+                android:id="@+id/textView5"
+                android:visibility="gone"/>
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:ems="10"
                 android:id="@+id/editTextHint"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:hint="Hint"
+                android:layout_height="100dp"
+                android:background="#fefefe"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"/>
 
 
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#aaaaaa"
+                android:background="#fefefe"
                 android:layout_alignParentBottom="true">
                 <Button
                     style="?android:attr/buttonStyleSmall"
