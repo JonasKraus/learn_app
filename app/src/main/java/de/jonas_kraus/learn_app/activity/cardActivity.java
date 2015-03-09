@@ -3,6 +3,7 @@ package de.jonas_kraus.learn_app.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Layout;
@@ -43,6 +44,8 @@ public class cardActivity extends ActionBarActivity {
     private LinearLayout LLEnterText;
 
     private int _intMyLineCount =0;
+    private Card editCard;
+    private Boolean editMode = false;
 
     private List<EditText> editTextList = new ArrayList<EditText>();
     private List<CheckedTextView> textviewList=new ArrayList<CheckedTextView>();
@@ -77,6 +80,11 @@ public class cardActivity extends ActionBarActivity {
                 currentCategoryParent = -1;
             } else {
                 currentCategoryParent = extras.getInt("currentCategoryParent");
+                editCard = extras.getParcelable("card");
+                if (editCard != null) {
+                    editMode = true;
+                    Log.d("editMode:",  editCard.toString());
+                }
             }
         }
 
@@ -88,13 +96,34 @@ public class cardActivity extends ActionBarActivity {
 
     }
 
+    private void setEditCard() {
+        Log.d("setEditCard", editMode + "");
+        editTextQuestion.setText(editCard.getQuestion());
+        if (editCard.getType() == Card.CardType.MULTIPLECHOICE) {
+            radioMulti.setChecked(true);
+            for(int i = 0; i< editCard.getAnswers().size(); i++) {
+                LLEnterText.addView(linearlayout(_intMyLineCount));
+                _intMyLineCount++;
+                editTextList.get(i).setText(editCard.getAnswers().get(i).getAnswer());
+                textviewList.get(i).setChecked(editCard.getAnswers().get(i).isCorrect());
+                if (!textviewList.get(i).isChecked()) {
+                    textviewList.get(i).setCheckMarkDrawable(R.drawable.uncheckmark);
+                }
+                Log.d("Answers",editCard.getAnswers().toString());
+            }
+        } else {
+            editTextAnswer.setText(editCard.getAnswers().get(0).getAnswer());
+        }
+        editTextHint.setText(editCard.getHint());
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         radioMulti.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toast.makeText(getApplicationContext(),"checked: "+isChecked, Toast.LENGTH_SHORT).show();
+
                 if (!isChecked) {
                     buttonAddAnswer.setVisibility(View.GONE);
                     buttonDeleteAnswer.setVisibility(View.GONE);
@@ -109,9 +138,12 @@ public class cardActivity extends ActionBarActivity {
                     editTextAnswer.setVisibility(View.GONE);
                     cardType = Card.CardType.MULTIPLECHOICE;
                     textViewAnswer.setVisibility(View.GONE);
-                    for (int i = 0; i < 2; i++) {
-                        LLEnterText.addView(linearlayout(_intMyLineCount));
-                        _intMyLineCount++;
+
+                    if (!editMode) {
+                        for (int i = 0; i < 2; i++) {
+                            LLEnterText.addView(linearlayout(_intMyLineCount));
+                            _intMyLineCount++;
+                        }
                     }
                 }
             }
@@ -120,6 +152,9 @@ public class cardActivity extends ActionBarActivity {
             db.open();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        if (editMode) {
+            setEditCard();
         }
     }
 
@@ -156,13 +191,12 @@ public class cardActivity extends ActionBarActivity {
 
                 if (editTextList.size() != 0) {
                     for (int i = 0; i < editTextList.size(); i++) {
-                        answers.add(new Answer(textviewList.get(i).isChecked(),editTextList.get(i).getText().toString()));
+                        Answer answer = new Answer(textviewList.get(i).isChecked(),editTextList.get(i).getText().toString());
+                        Log.d("Asnwers Save", answer.toString());
+                        answers.add(answer);
                     }
                 } else {
                     answers.add(new Answer(editTextAnswer.getText().toString()));
-                }
-                for (Answer ans : answers) {
-                    Log.d("Save:", ans.toString());
                 }
                 Card card = new Card(cardType,editTextQuestion.getText().toString(), answers,false,0,editTextHint.getText().toString(),currentCategoryParent);
                 db.createCard(card);
@@ -201,7 +235,7 @@ public class cardActivity extends ActionBarActivity {
         editText.setId(_intID);
         //editText.setHint("Answer");
         //editText.setWidth(Layout.match_parent);
-        //editText.setBackgroundColor(Color.WHITE);
+        editText.setBackgroundColor(Color.parseColor("#fefefe"));
         editText.setLayoutParams(new LinearLayout.LayoutParams
                 (LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT, 1f) );
         editTextList.add(editText);

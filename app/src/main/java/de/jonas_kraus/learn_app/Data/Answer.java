@@ -1,12 +1,22 @@
 package de.jonas_kraus.learn_app.Data;
 
+import java.io.Serializable;
+
 /**
  * Created by Jonas on 01.03.2015.
  */
-public class Answer {
+public class Answer implements Serializable{
     private int id;
+    private int questionId;
     private boolean correct;
     private String answer;
+
+    public Answer(int id, int questionId, boolean correct, String answer) {
+        this.id = id;
+        this.questionId = questionId;
+        this.correct = correct;
+        this.answer = answer;
+    }
 
     public Answer(int id, boolean correct, String answer) {
         this.id = id;
@@ -35,6 +45,14 @@ public class Answer {
 
     public boolean isCorrect() {
         return correct;
+    }
+
+    public int getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(int questionId) {
+        this.questionId = questionId;
     }
 
     public void setCorrect(boolean correct) {

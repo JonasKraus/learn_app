@@ -79,9 +79,9 @@ public class CatalogueActivity extends ListActivity {
     protected void onResume() {
         super.onResume();
         openDb();
-        addClickListenersToListView();
         context = this;
         setListViewWithCatalogueByLevel(currentCategoryParent);
+        addClickListenersToListView();
     }
 
     private void addClickListenersToListView() {
@@ -104,7 +104,11 @@ public class CatalogueActivity extends ListActivity {
 
                 } else if (curCatalogue.getCard() != null ) { /* @TODO Preview of Card */
                     curCard = curCatalogue.getCard();
-                    Toast.makeText(context,"This is a card: "+curCard.getQuestion(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"This is a card: "+curCard.getQuestion(), Toast.LENGTH_SHORT).show();
+                    Intent myIntent = new Intent(CatalogueActivity.this, cardActivity.class);
+                    myIntent.putExtra("currentCategoryParent",currentCategoryParent);
+                    myIntent.putExtra("card",curCatalogue.getCard());
+                    startActivity(myIntent);
                 }
 
             }
