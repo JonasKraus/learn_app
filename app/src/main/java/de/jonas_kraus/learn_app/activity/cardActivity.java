@@ -83,7 +83,6 @@ public class cardActivity extends ActionBarActivity {
                 editCard = extras.getParcelable("card");
                 if (editCard != null) {
                     editMode = true;
-                    Log.d("editMode:",  editCard.toString());
                 }
             }
         }
@@ -97,7 +96,6 @@ public class cardActivity extends ActionBarActivity {
     }
 
     private void setEditCard() {
-        Log.d("setEditCard", editMode + "");
         editTextQuestion.setText(editCard.getQuestion());
         if (editCard.getType() == Card.CardType.MULTIPLECHOICE) {
             radioMulti.setChecked(true);
@@ -109,7 +107,6 @@ public class cardActivity extends ActionBarActivity {
                 if (!textviewList.get(i).isChecked()) {
                     textviewList.get(i).setCheckMarkDrawable(R.drawable.uncheckmark);
                 }
-                Log.d("Answers",editCard.getAnswers().toString());
             }
         } else {
             editTextAnswer.setText(editCard.getAnswers().get(0).getAnswer());
@@ -139,7 +136,7 @@ public class cardActivity extends ActionBarActivity {
                     cardType = Card.CardType.MULTIPLECHOICE;
                     textViewAnswer.setVisibility(View.GONE);
 
-                    if (!editMode) {
+                    if (!editMode) { /* @TODO Mode changed */
                         for (int i = 0; i < 2; i++) {
                             LLEnterText.addView(linearlayout(_intMyLineCount));
                             _intMyLineCount++;
@@ -192,14 +189,19 @@ public class cardActivity extends ActionBarActivity {
                 if (editTextList.size() != 0) {
                     for (int i = 0; i < editTextList.size(); i++) {
                         Answer answer = new Answer(textviewList.get(i).isChecked(),editTextList.get(i).getText().toString());
-                        Log.d("Asnwers Save", answer.toString());
                         answers.add(answer);
                     }
                 } else {
                     answers.add(new Answer(editTextAnswer.getText().toString()));
                 }
                 Card card = new Card(cardType,editTextQuestion.getText().toString(), answers,false,0,editTextHint.getText().toString(),currentCategoryParent);
-                db.createCard(card);
+                if (editMode) {
+                    card.setId(editCard.getId());
+                    card.getAnswers().get(0).setQuestionId(editCard.getAnswers().get(0).getQuestionId());
+                    db.updateEditCard(card);
+                } else {
+                    db.createCard(card);
+                }
                 Intent myIntent2 = new Intent(cardActivity.this, CatalogueActivity.class);
                 myIntent2.putExtra("currentCategoryParent", currentCategoryParent);
                 startActivity(myIntent2);
@@ -233,8 +235,11 @@ public class cardActivity extends ActionBarActivity {
     private EditText editText(int _intID) {
         EditText editText = new EditText(this);
         editText.setId(_intID);
+        editText.setHeight(100);
+        editText.setHint("Answer");
         //editText.setHint("Answer");
         //editText.setWidth(Layout.match_parent);
+
         editText.setBackgroundColor(Color.parseColor("#fefefe"));
         editText.setLayoutParams(new LinearLayout.LayoutParams
                 (LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT, 1f) );
@@ -245,7 +250,7 @@ public class cardActivity extends ActionBarActivity {
     {
         final CheckedTextView txtviewAll=new CheckedTextView(this);
         txtviewAll.setId(_intID);
-        txtviewAll.setText("Answer:");
+        //txtviewAll.setText("Answer:");
 
         //txtviewAll.setTextColor(Color.RED);
         //txtviewAll.setTypeface(Typeface.DEFAULT_BOLD);
@@ -253,8 +258,6 @@ public class cardActivity extends ActionBarActivity {
         TableLayout.LayoutParams params = new TableLayout.LayoutParams();
         txtviewAll.setLayoutParams(params);
 
-        txtviewAll.setHeight(100);
-        txtviewAll.setHint("Answer");
         txtviewAll.setBackgroundColor(Color.parseColor("#fefefe"));
 
         textviewList.add(txtviewAll);
@@ -272,7 +275,6 @@ public class cardActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 txtView.setChecked(!txtView.isChecked());
-                Log.d("Txt view", "" + txtView.isChecked());
                 if (txtView.isChecked()) {
                     txtView.setCheckMarkDrawable(R.drawable.checkmark);
                 } else {

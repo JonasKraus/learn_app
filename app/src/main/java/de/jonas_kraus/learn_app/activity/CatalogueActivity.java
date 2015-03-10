@@ -171,7 +171,7 @@ public class CatalogueActivity extends ListActivity {
         });
     }
 
-
+    @Deprecated
     private void makePromptAddCard() {
 
         LayoutInflater layoutInflater = LayoutInflater.from(context);
