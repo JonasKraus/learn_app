@@ -50,6 +50,7 @@ public class cardActivity extends ActionBarActivity {
     private List<EditText> editTextList = new ArrayList<EditText>();
     private List<CheckedTextView> textviewList=new ArrayList<CheckedTextView>();
     private List<LinearLayout> linearlayoutList=new ArrayList<LinearLayout>();
+    private boolean checkModeChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,17 +131,38 @@ public class cardActivity extends ActionBarActivity {
                     LLEnterText.removeAllViews();
                     //textViewAnswer.setVisibility(View.VISIBLE);
                 } else {
+                    checkModeChanged = true;
                     buttonAddAnswer.setVisibility(View.VISIBLE);
                     buttonDeleteAnswer.setVisibility(View.VISIBLE);
                     editTextAnswer.setVisibility(View.GONE);
                     cardType = Card.CardType.MULTIPLECHOICE;
                     textViewAnswer.setVisibility(View.GONE);
 
-                    if (!editMode) { /* @TODO Mode changed */
+                    if (!editMode) {
                         for (int i = 0; i < 2; i++) {
                             LLEnterText.addView(linearlayout(_intMyLineCount));
                             _intMyLineCount++;
+                            Log.d("editMode","angehangt");
                         }
+                    } else if (checkModeChanged) { /* @TODO Mode changed set old answers*/
+                        /*
+                        for(int i = 0; i< editCard.getAnswers().size(); i++) {
+                            LLEnterText.addView(linearlayout(_intMyLineCount));
+                            _intMyLineCount++;
+                            editTextList.get(i).setText(editCard.getAnswers().get(i).getAnswer());
+                            textviewList.get(i).setChecked(editCard.getAnswers().get(i).isCorrect());
+                            if (!textviewList.get(i).isChecked()) {
+                                textviewList.get(i).setCheckMarkDrawable(R.drawable.uncheckmark);
+                            }
+                        }
+
+                        Log.d("editMode","geladen"+ editCard.getAnswers());
+                        if (editCard.getAnswers().size() == 1) {
+                            LLEnterText.addView(linearlayout(_intMyLineCount));
+                            _intMyLineCount++;
+
+                        }
+                        */
                     }
                 }
             }
@@ -172,6 +194,8 @@ public class cardActivity extends ActionBarActivity {
                 if (_intMyLineCount > 2) {
                     _intMyLineCount--;
                     LLEnterText.removeView(linearlayoutList.get(_intMyLineCount));
+                    editTextList.remove(_intMyLineCount);
+                    textviewList.remove(_intMyLineCount);
                     linearlayoutList.remove(_intMyLineCount);
                 } else {
                     Toast.makeText(getApplicationContext(), "At least two answers must be set!", Toast.LENGTH_LONG);
