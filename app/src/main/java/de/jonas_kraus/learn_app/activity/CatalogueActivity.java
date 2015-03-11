@@ -121,7 +121,7 @@ public class CatalogueActivity extends ListActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                Catalogue curCatalogue = (Catalogue) getListAdapter().getItem(position);
+                final Catalogue curCatalogue = (Catalogue) getListAdapter().getItem(position);
 
                 if ( curCatalogue.getCategory() != null ) {
                     curCategory = curCatalogue.getCategory();
@@ -161,14 +161,27 @@ public class CatalogueActivity extends ListActivity {
                     alertDialog.show();
 
                 }  else if (curCatalogue.getCard() != null ) {
-                    //curCard = curCatalogue.getCard();
-                    /*
-                    if (curCard.getQuestion().length() > CHAR_THRESHOLD) {
-                        dialog.setTitle(curCard.getQuestion().substring(0,CHAR_THRESHOLD-2)+"...");
-                    } else {
-                        dialog.setTitle(curCard.getQuestion());
-                    }
-                    */
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    //Yes button clicked
+                                    db.deleteCard(curCatalogue.getCard().getId());
+                                    setListViewWithCatalogueByLevel(currentCategoryParent);
+                                    Toast.makeText(context,"Card deleted",Toast.LENGTH_SHORT).show();
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage("Are you sure you want to delete the card:\n\t"+curCatalogue.getCard().getQuestion()).setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener).show();
                 }
                 return true;
             }
