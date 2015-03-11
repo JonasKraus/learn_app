@@ -55,10 +55,14 @@ public class CatalogueActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalogue);
         context = this;
-        cardIcon = BitmapFactory.decodeResource(getResources(), R.drawable.cardicon);
-        categoryIcon = BitmapFactory.decodeResource(getResources(), R.drawable.categoryicon);
-        categoryIconScaled = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(categoryIcon, 50, 50, true));
-        cardIconScaled = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(cardIcon, 50, 50, true));
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 8;
+        options.inPurgeable = true;
+        options.inScaled = true;
+        cardIcon = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.cardicon,options);
+        categoryIcon = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.categoryicon, options);
+        categoryIconScaled = new BitmapDrawable(getApplicationContext().getResources(), Bitmap.createScaledBitmap(categoryIcon, 50, 50, true));
+        cardIconScaled = new BitmapDrawable(getApplicationContext().getResources(), Bitmap.createScaledBitmap(cardIcon, 50, 50, true));
         openDb();
         //listViewCatalogue = getListView();
         buttonAddCategory = (Button) findViewById(R.id.buttonCategoryNew);
@@ -311,6 +315,7 @@ public class CatalogueActivity extends ListActivity {
         buttonAddCategory.setOnClickListener(null);
         listViewCatalogue.setOnItemClickListener(null);
         listViewCatalogue.setOnItemLongClickListener(null);
+        System.gc();
     }
 
     @Override

@@ -1,17 +1,17 @@
 package de.jonas_kraus.learn_app.activity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.os.Parcelable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -48,14 +48,21 @@ public class cardActivity extends ActionBarActivity {
     private Boolean editMode = false;
 
     private List<EditText> editTextList = new ArrayList<EditText>();
-    private List<CheckedTextView> textviewList=new ArrayList<CheckedTextView>();
+    private List<CheckBox> checkBoxList =new ArrayList<CheckBox>();
     private List<LinearLayout> linearlayoutList=new ArrayList<LinearLayout>();
     private boolean checkModeChanged = false;
+    private byte checkModeChangedCount = 0;
+
+    private Drawable uncheckmark, checkmark;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card);
+
+        Resources res = getResources();
+        uncheckmark = res.getDrawable(R.drawable.uncheckmark);
+        checkmark = res.getDrawable(R.drawable.checkmark);
 
         editTextQuestion = (EditText)findViewById(R.id.editTextQuestion);
         editTextAnswer = (EditText)findViewById(R.id.editTextAnswer);
@@ -104,10 +111,12 @@ public class cardActivity extends ActionBarActivity {
                 LLEnterText.addView(linearlayout(_intMyLineCount));
                 _intMyLineCount++;
                 editTextList.get(i).setText(editCard.getAnswers().get(i).getAnswer());
-                textviewList.get(i).setChecked(editCard.getAnswers().get(i).isCorrect());
-                if (!textviewList.get(i).isChecked()) {
-                    textviewList.get(i).setCheckMarkDrawable(R.drawable.uncheckmark);
+                checkBoxList.get(i).setChecked(editCard.getAnswers().get(i).isCorrect());
+                /*
+                if (!checkBoxList.get(i).isChecked()) {
+                    checkBoxList.get(i).setButtonDrawable(uncheckmark);
                 }
+                */
             }
         } else {
             editTextAnswer.setText(editCard.getAnswers().get(0).getAnswer());
@@ -131,7 +140,10 @@ public class cardActivity extends ActionBarActivity {
                     LLEnterText.removeAllViews();
                     //textViewAnswer.setVisibility(View.VISIBLE);
                 } else {
-                    checkModeChanged = true;
+                    checkModeChangedCount ++;
+                    if (checkModeChangedCount > 1 ) {
+                        checkModeChanged = true;
+                    }
                     buttonAddAnswer.setVisibility(View.VISIBLE);
                     buttonDeleteAnswer.setVisibility(View.VISIBLE);
                     editTextAnswer.setVisibility(View.GONE);
@@ -144,25 +156,36 @@ public class cardActivity extends ActionBarActivity {
                             _intMyLineCount++;
                             Log.d("editMode","angehangt");
                         }
-                    } else if (checkModeChanged) { /* @TODO Mode changed set old answers*/
-                        /*
+                    } else if (checkModeChanged || (editCard.getType() == Card.CardType.NOTECARD)) { /* @TODO Mode changed set right checkmark*/
+                        checkBoxList.removeAll(checkBoxList);
                         for(int i = 0; i< editCard.getAnswers().size(); i++) {
                             LLEnterText.addView(linearlayout(_intMyLineCount));
                             _intMyLineCount++;
+                            checkBoxList.get(i).setButtonDrawable(R.drawable.checkbox_drawable);
                             editTextList.get(i).setText(editCard.getAnswers().get(i).getAnswer());
-                            textviewList.get(i).setChecked(editCard.getAnswers().get(i).isCorrect());
-                            if (!textviewList.get(i).isChecked()) {
-                                textviewList.get(i).setCheckMarkDrawable(R.drawable.uncheckmark);
+                            checkBoxList.get(i).setChecked(editCard.getAnswers().get(i).isCorrect());
+
+
+                            Log.d("check list", checkBoxList.get(i).isChecked()+""+checkBoxList.get(i));
+                            /*
+                            if (!checkBoxList.get(i).isChecked()) {
+                                checkBoxList.get(i).setButtonDrawable(uncheckmark);
+                                checkBoxList.get(i).forceLayout();
+                                Log.d("uncheck", "hier" + i + " " + checkBoxList.get(i).isChecked() + " " );
                             }
+                            */
                         }
 
                         Log.d("editMode","geladen"+ editCard.getAnswers());
                         if (editCard.getAnswers().size() == 1) {
                             LLEnterText.addView(linearlayout(_intMyLineCount));
                             _intMyLineCount++;
-
+                            checkBoxList.get(0).setChecked(true);
+                            //checkBoxList.get(0).setButtonDrawable(checkmark);
+                            checkBoxList.get(1).setChecked(false);
+                            //checkBoxList.get(1).setButtonDrawable(uncheckmark);
                         }
-                        */
+
                     }
                 }
             }
@@ -195,7 +218,7 @@ public class cardActivity extends ActionBarActivity {
                     _intMyLineCount--;
                     LLEnterText.removeView(linearlayoutList.get(_intMyLineCount));
                     editTextList.remove(_intMyLineCount);
-                    textviewList.remove(_intMyLineCount);
+                    checkBoxList.remove(_intMyLineCount);
                     linearlayoutList.remove(_intMyLineCount);
                 } else {
                     Toast.makeText(getApplicationContext(), "At least two answers must be set!", Toast.LENGTH_LONG);
@@ -212,7 +235,7 @@ public class cardActivity extends ActionBarActivity {
 
                 if (editTextList.size() != 0) {
                     for (int i = 0; i < editTextList.size(); i++) {
-                        Answer answer = new Answer(textviewList.get(i).isChecked(),editTextList.get(i).getText().toString());
+                        Answer answer = new Answer(checkBoxList.get(i).isChecked(),editTextList.get(i).getText().toString());
                         answers.add(answer);
                     }
                 } else {
@@ -270,9 +293,9 @@ public class cardActivity extends ActionBarActivity {
         editTextList.add(editText);
         return editText;
     }
-    private CheckedTextView textView(int _intID)
+    private CheckBox checkBox(int _intID)
     {
-        final CheckedTextView txtviewAll=new CheckedTextView(this);
+        final CheckBox txtviewAll=new CheckBox(this);
         txtviewAll.setId(_intID);
         //txtviewAll.setText("Answer:");
 
@@ -284,32 +307,36 @@ public class cardActivity extends ActionBarActivity {
 
         txtviewAll.setBackgroundColor(Color.parseColor("#fefefe"));
 
-        textviewList.add(txtviewAll);
+        checkBoxList.add(txtviewAll);
         return txtviewAll;
     }
     private LinearLayout linearlayout(int _intID)
     {
         LinearLayout LLMain=new LinearLayout(this);
         LLMain.setId(_intID);
-        final CheckedTextView txtView = textView(_intID);
-        txtView.setClickable(true);
-        txtView.setChecked(true);
-        txtView.setCheckMarkDrawable(R.drawable.checkmark);
-        txtView.setOnClickListener(new View.OnClickListener() {
+        final CheckBox checkBox = checkBox(_intID);
+        checkBox.setButtonDrawable(R.drawable.checkbox_drawable);
+        /*
+        checkBox.setClickable(true);
+        checkBox.setChecked(true);
+        checkBox.setButtonDrawable(checkmark);
+        checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                txtView.setChecked(!txtView.isChecked());
-                if (txtView.isChecked()) {
-                    txtView.setCheckMarkDrawable(R.drawable.checkmark);
+                checkBox.setChecked(!checkBox.isChecked());
+                if (checkBox.isChecked()) {
+                    checkBox.setButtonDrawable(checkmark);
                 } else {
-                    txtView.setCheckMarkDrawable(R.drawable.uncheckmark);
+                    checkBox.setButtonDrawable(uncheckmark);
                 }
             }
         });
         TableLayout.LayoutParams params = new TableLayout.LayoutParams();
         params.setMargins(0, 0, 0, 15);
+
         LLMain.setLayoutParams(params);
-        LLMain.addView(txtView);
+        */
+        LLMain.addView(checkBox);
         LLMain.setBackgroundColor(Color.parseColor("#fefefe"));
         LLMain.addView(editText(_intID));
         LLMain.setOrientation(LinearLayout.VERTICAL);
