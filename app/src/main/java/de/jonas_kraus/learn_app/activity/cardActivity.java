@@ -52,6 +52,7 @@ public class cardActivity extends ActionBarActivity {
     private List<LinearLayout> linearlayoutList=new ArrayList<LinearLayout>();
     private boolean checkModeChanged = false;
     private byte checkModeChangedCount = 0;
+    private final int backColor = Color.parseColor("#fefefe");
 
     private Drawable uncheckmark, checkmark;
 
@@ -287,7 +288,7 @@ public class cardActivity extends ActionBarActivity {
         //editText.setHint("Answer");
         //editText.setWidth(Layout.match_parent);
 
-        editText.setBackgroundColor(Color.parseColor("#fefefe"));
+        editText.setBackgroundColor(backColor);
         editText.setLayoutParams(new LinearLayout.LayoutParams
                 (LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT, 1f) );
         editTextList.add(editText);
@@ -297,16 +298,7 @@ public class cardActivity extends ActionBarActivity {
     {
         final CheckBox txtviewAll=new CheckBox(this);
         txtviewAll.setId(_intID);
-        //txtviewAll.setText("Answer:");
-
-        //txtviewAll.setTextColor(Color.RED);
-        //txtviewAll.setTypeface(Typeface.DEFAULT_BOLD);
-
-        TableLayout.LayoutParams params = new TableLayout.LayoutParams();
-        txtviewAll.setLayoutParams(params);
-
-        txtviewAll.setBackgroundColor(Color.parseColor("#fefefe"));
-
+        txtviewAll.setBackgroundColor(backColor);
         checkBoxList.add(txtviewAll);
         return txtviewAll;
     }
@@ -331,17 +323,16 @@ public class cardActivity extends ActionBarActivity {
                 }
             }
         });
+        */
         TableLayout.LayoutParams params = new TableLayout.LayoutParams();
         params.setMargins(0, 0, 0, 15);
 
         LLMain.setLayoutParams(params);
-        */
         LLMain.addView(checkBox);
-        LLMain.setBackgroundColor(Color.parseColor("#fefefe"));
+        LLMain.setBackgroundColor(backColor);
         LLMain.addView(editText(_intID));
         LLMain.setOrientation(LinearLayout.VERTICAL);
         linearlayoutList.add(LLMain);
         return LLMain;
-
     }
 }

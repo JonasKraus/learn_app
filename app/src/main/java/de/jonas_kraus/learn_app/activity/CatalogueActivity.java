@@ -312,7 +312,6 @@ public class CatalogueActivity extends ListActivity {
     protected void onPause() {
         super.onPause();
         db.close();
-        buttonAddCategory.setOnClickListener(null);
         listViewCatalogue.setOnItemClickListener(null);
         listViewCatalogue.setOnItemLongClickListener(null);
         System.gc();
