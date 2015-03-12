@@ -28,7 +28,7 @@ import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.Data.Category;
 import de.jonas_kraus.learn_app.R;
 
-public class CustomList extends ArrayAdapter<Catalogue> implements Checkable{
+public class CustomList extends ArrayAdapter<Catalogue> {
     private final Activity context;
     private final List<Catalogue> catalogue;
     private final int imgCat = R.drawable.categoryicon;
@@ -58,6 +58,7 @@ public class CustomList extends ArrayAdapter<Catalogue> implements Checkable{
         box.setTag(position);
         if (!checkedListPos.isEmpty() && checkedListPos.contains(position)) {
             box.setBackground(check);
+
         } else {
             box.setBackground(uncheck);
         }
@@ -100,18 +101,4 @@ public class CustomList extends ArrayAdapter<Catalogue> implements Checkable{
         return rowView;
     }
 
-    @Override
-    public void setChecked(boolean checked) {
-
-    }
-
-    @Override
-    public boolean isChecked() {
-        return false;
-    }
-
-    @Override
-    public void toggle() {
-
-    }
 }
