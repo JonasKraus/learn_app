@@ -101,4 +101,11 @@ public class CustomList extends ArrayAdapter<Catalogue> {
         return rowView;
     }
 
+    public List<Catalogue> getCheckedList() {
+        return checkedList;
+    }
+
+    public List<Integer> getCheckedListPos() {
+        return checkedListPos;
+    }
 }

@@ -49,6 +49,8 @@ public class CatalogueActivity extends ListActivity {
     private Bitmap categoryIcon, cardIcon;
     private final int CHAR_THRESHOLD = 30; // Maximum Chars that should be displayed in a Dialog's Title
     private Drawable categoryIconScaled, cardIconScaled;
+    private CustomList customListAdapter;
+    private List<Catalogue>checkedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public class CatalogueActivity extends ListActivity {
             }
         }
         setListViewWithCatalogueByLevel(currentCategoryParent);
+        checkedList = new ArrayList<>();
     }
 
     @Override
@@ -93,7 +96,7 @@ public class CatalogueActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Toast.makeText(getApplicationContext(), "On item click", Toast.LENGTH_SHORT).show();
-                Log.d("Adapter", getListAdapter()+"");
+                //Log.d("Adapter", getListAdapter()+"");
                 Catalogue curCatalogue = (Catalogue) getListAdapter().getItem(position);
                 //Log.d("View Item",curCat+"");
                 //Category curCategory;
@@ -248,19 +251,18 @@ public class CatalogueActivity extends ListActivity {
         }
         currentCategoryParent = level;
 
-        CustomList adapter = new CustomList(CatalogueActivity.this, catalogue);
-        setListAdapter(adapter);
+        customListAdapter = new CustomList(CatalogueActivity.this, catalogue);
+        setListAdapter(customListAdapter);
         listViewCatalogue=getListView();
-        listViewCatalogue.setAdapter(adapter);
+        listViewCatalogue.setAdapter(customListAdapter);
+
     }
 
     public void onClick(View view) {
 
         switch(view.getId()) {
             case R.id.buttonCategoryNew:
-
                 makeCategory();
-
                 break;
             case R.id.buttonCategoryBack:
                 if (curCategory != null) {
@@ -280,6 +282,12 @@ public class CatalogueActivity extends ListActivity {
                 myIntent.putExtra("currentCategoryParent",currentCategoryParent);
                 startActivity(myIntent);
                 //makePromptAddCard();
+                break;
+            case R.id.startCards:
+                checkedList = customListAdapter.getCheckedList();
+                Intent myIntentPlay = new Intent(CatalogueActivity.this, PlayActivity.class);
+                //myIntentPlay.putParcelableArrayListExtra("catalogue",checkedList);
+                startActivity(myIntentPlay);
                 break;
         }
     }
