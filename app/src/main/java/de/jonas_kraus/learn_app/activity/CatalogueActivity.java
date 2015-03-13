@@ -50,7 +50,7 @@ public class CatalogueActivity extends ListActivity {
     private final int CHAR_THRESHOLD = 30; // Maximum Chars that should be displayed in a Dialog's Title
     private Drawable categoryIconScaled, cardIconScaled;
     private CustomList customListAdapter;
-    private List<Catalogue>checkedList;
+    private ArrayList<Catalogue>checkedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -286,7 +286,8 @@ public class CatalogueActivity extends ListActivity {
             case R.id.startCards:
                 checkedList = customListAdapter.getCheckedList();
                 Intent myIntentPlay = new Intent(CatalogueActivity.this, PlayActivity.class);
-                //myIntentPlay.putParcelableArrayListExtra("catalogue",checkedList);
+                myIntentPlay.putExtra("currentCategoryParent",currentCategoryParent);
+                myIntentPlay.putParcelableArrayListExtra("catalogue",checkedList);
                 startActivity(myIntentPlay);
                 break;
         }

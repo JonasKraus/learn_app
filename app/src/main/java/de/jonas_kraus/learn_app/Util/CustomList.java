@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.nfc.Tag;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,7 @@ public class CustomList extends ArrayAdapter<Catalogue> {
     private final int imgCard = R.drawable.cardicon;
     private boolean checked;
     private  Drawable check,uncheck;
-    private List<Catalogue>checkedList;
+    private ArrayList<Catalogue>checkedList;
     private List<Integer>checkedListPos;
 
     public CustomList(Activity context,List<Catalogue> catalogue) {
@@ -101,11 +102,12 @@ public class CustomList extends ArrayAdapter<Catalogue> {
         return rowView;
     }
 
-    public List<Catalogue> getCheckedList() {
+    public ArrayList<Catalogue> getCheckedList() {
         return checkedList;
     }
 
     public List<Integer> getCheckedListPos() {
         return checkedListPos;
     }
+
 }
