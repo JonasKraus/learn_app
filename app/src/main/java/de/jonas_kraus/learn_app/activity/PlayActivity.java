@@ -3,9 +3,9 @@ package de.jonas_kraus.learn_app.activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +35,7 @@ public class PlayActivity extends ActionBarActivity {
     private int cardsPosition = 0;
     private TextView textViewPercent, textViewAnswer, textViewQuestion;
     private Button buttonNext;
+    private Card.CardType curCardType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,9 +77,21 @@ public class PlayActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         setSeekBarChangeListener();
-        openDb();
         textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
-        textViewAnswer.setText(null);
+        prepareAnswers();
+        openDb();
+    }
+
+    private void prepareAnswers() {
+        textViewAnswer.setVisibility(View.INVISIBLE);
+        curCardType = cards.get(cardsPosition).getType();
+        if (curCardType == Card.CardType.NOTECARD) {
+            textViewAnswer.setText(cards.get(cardsPosition).getAnswers().get(0).getAnswer());
+            textViewAnswer.setVisibility(View.INVISIBLE);
+        } else {
+            /* @TODO Make multiple answer checkboxes */
+            textViewAnswer.setText(curCardType.toString());
+        }
     }
 
     @Override
@@ -94,7 +107,7 @@ public class PlayActivity extends ActionBarActivity {
                 linearLayoutHintAnswer.setVisibility(View.INVISIBLE);
                 linearLayoutHintKnown.setVisibility(View.VISIBLE);
                 seekBar.setEnabled(true);
-                textViewAnswer.setText(cards.get(cardsPosition).getAnswers().get(0).getAnswer());
+                textViewAnswer.setVisibility(View.VISIBLE);
                 break;
             case R.id.buttonHint:
                 /*
@@ -133,41 +146,33 @@ public class PlayActivity extends ActionBarActivity {
 
                 break;
             case R.id.buttonKnown:
-                seekBar.setProgress(0);
-                seekBar.setEnabled(false);
-                buttonNext.setEnabled(false);
-                cardsPosition ++;
-                if (cardsPosition == cards.size())
-                    Toast.makeText(context,"Learned all Cards", Toast.LENGTH_SHORT);
-                linearLayoutHintAnswer.setVisibility(View.VISIBLE);
-                linearLayoutHintKnown.setVisibility(View.INVISIBLE);
-                textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
-                textViewAnswer.setText(null);
+                changeToNextCard();
                 break;
             case R.id.buttonNotKnown:
-                seekBar.setProgress(0);
-                seekBar.setEnabled(false);
-                buttonNext.setEnabled(false);
-                cardsPosition ++;
-                if (cardsPosition == cards.size())
-                    Toast.makeText(context,"Learned all Cards", Toast.LENGTH_SHORT);
-                linearLayoutHintAnswer.setVisibility(View.VISIBLE);
-                linearLayoutHintKnown.setVisibility(View.INVISIBLE);
-                textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
-                textViewAnswer.setText(null);
+                changeToNextCard();
                 break;
             case R.id.buttonNext:
-                seekBar.setProgress(0);
-                seekBar.setEnabled(false);
-                buttonNext.setEnabled(false);
-                cardsPosition ++;
-                if (cardsPosition == cards.size())
-                    Toast.makeText(context,"Learned all Cards", Toast.LENGTH_SHORT);
-                linearLayoutHintAnswer.setVisibility(View.VISIBLE);
-                linearLayoutHintKnown.setVisibility(View.INVISIBLE);
-                textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
-                textViewAnswer.setText(null);
+                changeToNextCard();
                 break;
+        }
+    }
+
+    private void changeToNextCard() {
+        seekBar.setProgress(cards.get(cardsPosition).getRating());
+        seekBar.setEnabled(false);
+        buttonNext.setEnabled(false);
+        cardsPosition ++;
+        if (cardsPosition == cards.size()) {
+            Toast.makeText(context, "Learned all Cards", Toast.LENGTH_SHORT).show();
+            Intent myIntent = new Intent(PlayActivity.this, CatalogueActivity.class);
+            myIntent.putExtra("currentCategoryParent",currentCategoryParent);
+            startActivity(myIntent);
+        } else {
+            linearLayoutHintAnswer.setVisibility(View.VISIBLE);
+            linearLayoutHintKnown.setVisibility(View.INVISIBLE);
+            textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
+
+            prepareAnswers();
         }
     }
 
