@@ -41,7 +41,7 @@ public class PlayActivity extends ActionBarActivity {
     private ArrayList<Catalogue>checkedCatalogue;
     private List<Card> cards;
     private int cardsPosition = 0;
-    private TextView textViewPercent, textViewAnswer, textViewQuestion;
+    private TextView textViewPercent, textViewAnswer, textViewQuestion, textViewQuestionCounter;
     private Button buttonNext, buttonKnown, buttonNotKnown;
     private Card.CardType curCardType;
     private List<TextView> listTextView;
@@ -61,6 +61,7 @@ public class PlayActivity extends ActionBarActivity {
         textViewPercent = (TextView) findViewById(R.id.textViewPercent);
         textViewQuestion = (TextView) findViewById(R.id.textViewQuestion);
         textViewAnswer = (TextView) findViewById(R.id.textViewAnswer);
+        textViewQuestionCounter = (TextView) findViewById(R.id.textViewQuestionCounter);
         buttonNext = (Button) findViewById(R.id.buttonNext);
         buttonKnown = (Button) findViewById(R.id.buttonKnown);
         buttonNotKnown = (Button) findViewById(R.id.buttonNotKnown);
@@ -93,6 +94,7 @@ public class PlayActivity extends ActionBarActivity {
         setSeekBarChangeListener();
         textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
         seekBar.setProgress(cards.get(cardsPosition).getRating());
+        textViewQuestionCounter.setText("1/"+cards.size()+"\t\t\t"+cards.size()/100*1+"%");
         prepareAnswers();
         openDb();
     }
@@ -202,6 +204,8 @@ public class PlayActivity extends ActionBarActivity {
         seekBar.setEnabled(false);
         buttonNext.setEnabled(false);
         cardsPosition ++;
+        cardsPosition %= cards.size(); // makes the roundtrip
+        textViewQuestionCounter.setText((cardsPosition+1)+"/"+cards.size()+"\t\t\t"+Math.round((100/cards.size()*(cardsPosition+1)))+"%");
         linearLayOutDynamic.removeAllViews();
         if (cardsPosition == cards.size()) {
             Toast.makeText(context, "Learned all Cards", Toast.LENGTH_SHORT).show();

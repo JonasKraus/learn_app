@@ -7,18 +7,30 @@
     tools:context="de.jonas_kraus.learn_app.activity.PlayActivity">
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:text="Question: "/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:id="@+id/textViewQuestionCounter"
+        android:text="0/0\t\t\t0%"/>
+
+
+    <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
         android:id="@+id/textViewQuestion"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:textColor="#e1200091"
         android:focusable="true"
         android:background="#fefefe"
         android:textSize="18dp"
         android:padding="15dp"
+        android:layout_marginTop="25dp"
         android:textStyle="bold"
         android:layout_marginBottom="15dp" />
 
