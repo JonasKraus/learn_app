@@ -110,40 +110,10 @@ public class PlayActivity extends ActionBarActivity {
                 textViewAnswer.setVisibility(View.VISIBLE);
                 break;
             case R.id.buttonHint:
-                /*
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
-                                //Yes button clicked
-                                break;
-                        }
-                    }
-                };
-
-                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage("Hint").setTitle("Hint").setPositiveButton("Ok", dialogClickListener).show(); /* @TODO Set message to hint */
-
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
-                            case DialogInterface.BUTTON_POSITIVE:
-                                //Yes button clicked
-                                break;
-
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                //No button clicked
-                                break;
-                        }
-                    }
-                };
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage("Are you sure you want to delete the card:").setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener).show();
-
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(cards.get(cardsPosition).getHint()).setTitle("Hint");
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 break;
             case R.id.buttonKnown:
                 changeToNextCard();

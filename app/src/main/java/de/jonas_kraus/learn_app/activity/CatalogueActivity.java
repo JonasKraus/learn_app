@@ -155,9 +155,9 @@ public class CatalogueActivity extends ListActivity {
 
 
                     if (curCategory.getName().length() > CHAR_THRESHOLD) {
-                        alertDialog.setTitle("Edit: \n"+curCategory.getName().substring(0, CHAR_THRESHOLD -2)+"...");
+                        alertDialog.setTitle("Edit: "+curCategory.getName().substring(0, CHAR_THRESHOLD -2)+"...");
                     } else {
-                        alertDialog.setTitle("Edit: \n"+curCategory.getName());
+                        alertDialog.setTitle("Edit: "+curCategory.getName());
                     }
                     alertDialog.setIcon(categoryIconScaled);
                     name.setTextKeepState(curCategory.getName());
@@ -183,7 +183,15 @@ public class CatalogueActivity extends ListActivity {
                     };
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage("Are you sure you want to delete the card:\n\t"+curCatalogue.getCard().getQuestion()).setPositiveButton("Yes", dialogClickListener)
+                    builder.setTitle("Delete: ");
+                    builder.setIcon(cardIconScaled);
+                    String quest = curCatalogue.getCard().getQuestion();
+                    if (quest.length() > CHAR_THRESHOLD) {
+                        builder.setTitle("Delete: "+quest.substring(0, CHAR_THRESHOLD -2)+"...");
+                    } else {
+                        builder.setTitle("Delete: "+quest);
+                    }
+                    builder.setMessage("Are you sure you want to delete this card?").setPositiveButton("Yes", dialogClickListener)
                             .setNegativeButton("No", dialogClickListener).show();
                 }
                 return true;
