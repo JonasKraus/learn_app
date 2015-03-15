@@ -1,15 +1,20 @@
 package de.jonas_kraus.learn_app.activity;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -19,13 +24,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jonas_kraus.learn_app.Data.Answer;
 import de.jonas_kraus.learn_app.Data.Card;
 import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
 
+import static android.widget.LinearLayout.*;
+
 public class PlayActivity extends ActionBarActivity {
-    private LinearLayout linearLayoutHintAnswer, linearLayoutHintKnown;
+    private LinearLayout linearLayoutHintAnswer, linearLayoutHintKnown, linearLayOutDynamic;
     private SeekBar seekBar;
     private DbManager db;
     private Context context;
@@ -34,8 +42,11 @@ public class PlayActivity extends ActionBarActivity {
     private List<Card> cards;
     private int cardsPosition = 0;
     private TextView textViewPercent, textViewAnswer, textViewQuestion;
-    private Button buttonNext;
+    private Button buttonNext, buttonKnown, buttonNotKnown;
     private Card.CardType curCardType;
+    private List<TextView> listTextView;
+    private List<CheckBox> listCheckBox;
+    private boolean known;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +54,16 @@ public class PlayActivity extends ActionBarActivity {
         setContentView(R.layout.activity_play);
 
         linearLayoutHintAnswer = (LinearLayout)findViewById(R.id.linearLayOutButtonsHintAnswer);
-        linearLayoutHintKnown= (LinearLayout)findViewById(R.id.linearLayOutButtonsKnown);
+        linearLayoutHintKnown = (LinearLayout)findViewById(R.id.linearLayOutButtonsKnown);
+        linearLayOutDynamic = (LinearLayout)findViewById(R.id.linearLayOutDynamic);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         seekBar.setEnabled(false);
         textViewPercent = (TextView) findViewById(R.id.textViewPercent);
         textViewQuestion = (TextView) findViewById(R.id.textViewQuestion);
         textViewAnswer = (TextView) findViewById(R.id.textViewAnswer);
         buttonNext = (Button) findViewById(R.id.buttonNext);
+        buttonKnown = (Button) findViewById(R.id.buttonKnown);
+        buttonNotKnown = (Button) findViewById(R.id.buttonNotKnown);
         buttonNext.setEnabled(false);
 
         context = getApplicationContext();
@@ -78,6 +92,7 @@ public class PlayActivity extends ActionBarActivity {
         super.onResume();
         setSeekBarChangeListener();
         textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
+        seekBar.setProgress(cards.get(cardsPosition).getRating());
         prepareAnswers();
         openDb();
     }
@@ -85,12 +100,32 @@ public class PlayActivity extends ActionBarActivity {
     private void prepareAnswers() {
         textViewAnswer.setVisibility(View.INVISIBLE);
         curCardType = cards.get(cardsPosition).getType();
+        seekBar.setProgress(cards.get(cardsPosition).getRating());
         if (curCardType == Card.CardType.NOTECARD) {
             textViewAnswer.setText(cards.get(cardsPosition).getAnswers().get(0).getAnswer());
             textViewAnswer.setVisibility(View.INVISIBLE);
         } else {
             /* @TODO Make multiple answer checkboxes */
+            listCheckBox = new ArrayList<CheckBox>();
             textViewAnswer.setText(curCardType.toString());
+            textViewAnswer.setVisibility(View.GONE);
+            for (Answer ans: cards.get(cardsPosition).getAnswers()) {
+                CheckBox box = new CheckBox(context);
+                box.setText(ans.getAnswer());
+                box.setHint(ans.getAnswer());
+                box.setBackgroundColor(Color.parseColor("#fefefe"));
+                box.setPadding(15, 15, 15, 15);
+                listCheckBox.add(box);
+                linearLayOutDynamic.addView(box);
+                linearLayOutDynamic.setLayoutParams(new LinearLayout.LayoutParams
+                        (LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT, 1f));
+                box.setText(ans.getAnswer());
+                box.setHint(ans.getAnswer());
+                box.setBackgroundColor(Color.parseColor("#fefefe"));
+                box.setTextColor(Color.parseColor("#999999"));
+                box.setPadding(15,15,15,15);
+            }
+
         }
     }
 
@@ -107,7 +142,35 @@ public class PlayActivity extends ActionBarActivity {
                 linearLayoutHintAnswer.setVisibility(View.INVISIBLE);
                 linearLayoutHintKnown.setVisibility(View.VISIBLE);
                 seekBar.setEnabled(true);
-                textViewAnswer.setVisibility(View.VISIBLE);
+                buttonNotKnown.setEnabled(true);
+                buttonKnown.setEnabled(true);
+                if (curCardType == Card.CardType.NOTECARD) {
+                    textViewAnswer.setVisibility(View.VISIBLE);
+                } else {
+                    textViewAnswer.setVisibility(View.GONE);
+                    List<Answer>curAns = cards.get(cardsPosition).getAnswers();
+                    buttonNext.setEnabled(true);
+                    seekBar.setEnabled(false);
+                    buttonNotKnown.setEnabled(false);
+                    buttonKnown.setEnabled(false);
+                    known = true;
+                    for (int i = 0; i < curAns.size(); i ++) {
+                        listCheckBox.get(i).setEnabled(false);
+                        if (listCheckBox.get(i).isChecked() == curAns.get(i).isCorrect()) {
+                            listCheckBox.get(i).setTextColor(Color.GREEN);
+                        } else {
+                            listCheckBox.get(i).setTextColor(Color.RED);
+                            listCheckBox.get(i).setChecked(curAns.get(i).isCorrect());
+                            known = false;
+                        }
+                    }
+                    if (known) {
+                        seekBar.setProgress(100);
+                    } else {
+                        seekBar.setProgress(0);
+                    }
+
+                }
                 break;
             case R.id.buttonHint:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -116,12 +179,19 @@ public class PlayActivity extends ActionBarActivity {
                 dialog.show();
                 break;
             case R.id.buttonKnown:
+                known = true;
+                db.updateRating(cards.get(cardsPosition).getId(), 100, known);
                 changeToNextCard();
                 break;
             case R.id.buttonNotKnown:
+                known = false;
+                db.updateRating(cards.get(cardsPosition).getId(), 0, known);
                 changeToNextCard();
                 break;
             case R.id.buttonNext:
+                known = false;
+                int rating = seekBar.getProgress();
+                db.updateRating(cards.get(cardsPosition).getId(), rating, known);
                 changeToNextCard();
                 break;
         }
@@ -132,6 +202,7 @@ public class PlayActivity extends ActionBarActivity {
         seekBar.setEnabled(false);
         buttonNext.setEnabled(false);
         cardsPosition ++;
+        linearLayOutDynamic.removeAllViews();
         if (cardsPosition == cards.size()) {
             Toast.makeText(context, "Learned all Cards", Toast.LENGTH_SHORT).show();
             Intent myIntent = new Intent(PlayActivity.this, CatalogueActivity.class);
@@ -141,7 +212,7 @@ public class PlayActivity extends ActionBarActivity {
             linearLayoutHintAnswer.setVisibility(View.VISIBLE);
             linearLayoutHintKnown.setVisibility(View.INVISIBLE);
             textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
-
+            Log.d("On change", "id: " + cards.get(cardsPosition).getId() + " rating: " + cards.get(cardsPosition).getRating() + "  known: " + cards.get(cardsPosition).isKnown());
             prepareAnswers();
         }
     }

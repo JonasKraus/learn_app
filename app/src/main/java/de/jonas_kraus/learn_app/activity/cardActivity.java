@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -52,7 +51,7 @@ public class cardActivity extends ActionBarActivity {
     private List<LinearLayout> linearlayoutList=new ArrayList<LinearLayout>();
     private boolean checkModeChanged = false;
     private byte checkModeChangedCount = 0;
-    private final int backColor = Color.parseColor("#fefefe");
+    private final int BACK_COLOR = Color.parseColor("#fefefe");
 
     private Drawable uncheckmark, checkmark;
 
@@ -288,7 +287,7 @@ public class cardActivity extends ActionBarActivity {
         //editText.setHint("Answer");
         //editText.setWidth(Layout.match_parent);
 
-        editText.setBackgroundColor(backColor);
+        editText.setBackgroundColor(BACK_COLOR);
         editText.setLayoutParams(new LinearLayout.LayoutParams
                 (LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT, 1f) );
         editTextList.add(editText);
@@ -298,7 +297,7 @@ public class cardActivity extends ActionBarActivity {
     {
         final CheckBox txtviewAll=new CheckBox(this);
         txtviewAll.setId(_intID);
-        txtviewAll.setBackgroundColor(backColor);
+        txtviewAll.setBackgroundColor(BACK_COLOR);
         checkBoxList.add(txtviewAll);
         return txtviewAll;
     }
@@ -329,7 +328,7 @@ public class cardActivity extends ActionBarActivity {
 
         LLMain.setLayoutParams(params);
         LLMain.addView(checkBox);
-        LLMain.setBackgroundColor(backColor);
+        LLMain.setBackgroundColor(BACK_COLOR);
         LLMain.addView(editText(_intID));
         LLMain.setOrientation(LinearLayout.VERTICAL);
         linearlayoutList.add(LLMain);

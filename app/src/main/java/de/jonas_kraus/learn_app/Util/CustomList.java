@@ -74,7 +74,7 @@ public class CustomList extends ArrayAdapter<Catalogue> {
             imageView.setImageResource(imgCard);
         }
 
-        Log.d("box list","checked "+checkedListPos.toString());
+        //Log.d("box list","checked "+checkedListPos.toString());
 
         box.setOnClickListener(new View.OnClickListener() {
             @Override
