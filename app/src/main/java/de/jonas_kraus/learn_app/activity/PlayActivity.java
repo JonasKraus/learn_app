@@ -81,11 +81,12 @@ public class PlayActivity extends ActionBarActivity {
                 currentCategoryParent = -1;
             } else {
                 currentCategoryParent = extras.getInt("currentCategoryParent");
-                checkedCatalogue = extras.getParcelableArrayList("catalogue");
-                cards = db.getCardDescendantsFromCatalogues(checkedCatalogue);
+                //checkedCatalogue = extras.getParcelableArrayList("catalogue");
+                //cards = db.getCardDescendantsFromCatalogues(checkedCatalogue);
                 //Log.d("list", cards.size() + " "+cards.toString());
             }
         }
+        cards = db.getMarkedCards();
     }
 
     @Override
@@ -135,6 +136,7 @@ public class PlayActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         seekBar.setOnSeekBarChangeListener(null);
+        db.deleteAllMarks();
         db.close();
     }
 

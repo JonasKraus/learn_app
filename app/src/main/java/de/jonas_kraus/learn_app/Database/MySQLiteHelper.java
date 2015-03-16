@@ -18,6 +18,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_QUESTION_RATING = "rating";
     public static final String COLUMN_QUESTION_HINT = "hint";
     public static final String COLUMN_QUESTION_CATEGORY_ID = "category_id";
+    public static final String COLUMN_QUESTION_DRAWER = "drawer";
+    public static final String COLUMN_QUESTION_DATE = "date";
 
     public static final String TABLE_ANSWERS = "answers";
     public static final String COLUMN_ANSWER_ID = "_id";
@@ -30,8 +32,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_CATEGORY_NAME = "name";
     public static final String COLUMN_CATEGORY_PARENT = "parent_id";
 
+    public static final String TABLE_MARKED = "marked";
+    public static final String COLUMN_MARKED_ID = "_id";
+    public static final String COLUMN_MARKED_QUESTION_ID = "question_id";
+
     private static final String DATABASE_NAME = "learning_cards_db.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database creation sql statement
     private static final String QUESTIONS_CREATE = "create table "
@@ -49,7 +55,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_QUESTION_HINT
             + " text, "
             + COLUMN_QUESTION_CATEGORY_ID
-            + " integer not null "
+            + " integer not null, "
+            + COLUMN_QUESTION_DRAWER
+            + " integer DEFAULT 0, "
+            + COLUMN_QUESTION_DATE
+            + " datetime DEFAULT now "
             + ");";
 
     // Database creation sql statement
@@ -62,7 +72,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_ANSWER_IS_CORRECT
             + " integer not null, "
             + COLUMN_ANSWER_ANSWER
-            + " text not null, FOREIGN  KEY("+ COLUMN_ANSWER_QUESTION_ID +") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+" ON DELETE CASCADE) "
+            + " text not null, FOREIGN  KEY("+ COLUMN_ANSWER_QUESTION_ID +") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+") ON DELETE CASCADE "
             + ");";
 
     // Database creation sql statement
@@ -71,9 +81,19 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_CATEGORY_ID
             + " integer primary key autoincrement, "
             + COLUMN_CATEGORY_PARENT
-            + " integer DEFAULT "+-1+" "
+            + " integer DEFAULT "+(-1)+", "
             + COLUMN_CATEGORY_NAME
-            + " text not null, " /* @TODO Check if the category has the same name and parent id, then UNIQUE?! */
+            + " text not null " /* @TODO Check if the category has the same name and parent id, then UNIQUE?! */
+            + ");";
+
+    // Database creation sql statement
+    private static final String MARKED_CREATE = "create table "
+            + TABLE_MARKED + "("
+            + COLUMN_MARKED_ID
+            + " integer primary key autoincrement, "
+            + COLUMN_MARKED_QUESTION_ID
+            + " integer UNIQUE, "
+            + "FOREIGN  KEY("+ COLUMN_MARKED_QUESTION_ID +") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+") ON DELETE CASCADE "
             + ");";
 
     public MySQLiteHelper(Context context) {
@@ -85,6 +105,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
         db.execSQL(QUESTIONS_CREATE);
         db.execSQL(ANSWERS_CREATE);
         db.execSQL(CATEGORY_CREATE);
+        db.execSQL(MARKED_CREATE);
         Log.d("created", "tabels");
     }
 
@@ -96,6 +117,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUESTIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANSWERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MARKED);
         onCreate(db);
     }
 }

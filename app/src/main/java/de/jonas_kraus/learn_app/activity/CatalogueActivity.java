@@ -259,7 +259,7 @@ public class CatalogueActivity extends ListActivity {
         }
         currentCategoryParent = level;
 
-        customListAdapter = new CustomList(CatalogueActivity.this, catalogue);
+        customListAdapter = new CustomList(CatalogueActivity.this, catalogue, db);
         setListAdapter(customListAdapter);
         listViewCatalogue=getListView();
         listViewCatalogue.setAdapter(customListAdapter);
@@ -293,10 +293,10 @@ public class CatalogueActivity extends ListActivity {
                 break;
             case R.id.startCards:
                 checkedList = customListAdapter.getCheckedList();
-                if (checkedList.size() >= 5) {
+                if (db.getMarks().size() >= 5) {
                     Intent myIntentPlay = new Intent(CatalogueActivity.this, PlayActivity.class);
                     myIntentPlay.putExtra("currentCategoryParent", currentCategoryParent);
-                    myIntentPlay.putParcelableArrayListExtra("catalogue", checkedList);
+                    //myIntentPlay.putParcelableArrayListExtra("catalogue", checkedList);
                     startActivity(myIntentPlay);
                 } else {
                     Toast.makeText(context,"You have to choose at least 5 cards!", Toast.LENGTH_LONG).show();

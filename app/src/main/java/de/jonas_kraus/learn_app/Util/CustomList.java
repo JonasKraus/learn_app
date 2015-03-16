@@ -27,6 +27,7 @@ import java.util.List;
 import de.jonas_kraus.learn_app.Data.Card;
 import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.Data.Category;
+import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
 
 public class CustomList extends ArrayAdapter<Catalogue> {
@@ -38,12 +39,16 @@ public class CustomList extends ArrayAdapter<Catalogue> {
     private  Drawable check,uncheck;
     private ArrayList<Catalogue>checkedList;
     private List<Integer>checkedListPos;
+    private DbManager db;
+    private List<Integer> marksFromDb;
 
-    public CustomList(Activity context,List<Catalogue> catalogue) {
+    public CustomList(Activity context,List<Catalogue> catalogue, DbManager db) {
         super(context, R.layout.list_single, catalogue);
+        this.db = db;
         this.context = context;
         this.catalogue = catalogue;
         this.checkedList = new ArrayList<Catalogue>();
+        //this.marksFromDb = db.getMarks();
         this.checkedListPos = new ArrayList<Integer>();
         check = context.getResources().getDrawable( R.drawable.checkmark );
         uncheck = context.getResources().getDrawable( R.drawable.checkmark_shadow );
@@ -90,10 +95,12 @@ public class CustomList extends ArrayAdapter<Catalogue> {
                     box.setBackground(check);
                     checkedList.add(catalogue.get(position));
                     checkedListPos.add(position);
+                    db.createMarks(catalogue.get(position));
                 } else {
                     box.setBackground(uncheck);
                     checkedList.remove(catalogue.get(position));
                     checkedListPos.remove((Integer)position);
+                    db.deleteMarks(catalogue.get(position));
                 }
                 //Log.d("Click",card +" "+ category + " equals? " + (drawable +" ," + check+" ," + uncheck));
             }
