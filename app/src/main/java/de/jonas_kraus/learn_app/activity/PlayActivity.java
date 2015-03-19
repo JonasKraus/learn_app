@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,8 +48,8 @@ public class PlayActivity extends ActionBarActivity {
     private ArrayList<Catalogue>checkedCatalogue;
     private List<Card> cards;
     private int cardsPosition = 0;
-    private TextView textViewPercent, textViewAnswer, textViewQuestion, textViewQuestionCounter;
-    private Button buttonNext, buttonKnown, buttonNotKnown;
+    private TextView textViewPercent, textViewAnswer, textViewQuestion, textViewQuestionCounter, textViewTimerValue;
+    private Button buttonNext, buttonKnown, buttonNotKnown, stopTimerValue;
     private Card.CardType curCardType;
     private List<TextView> listTextView;
     private List<CheckBox> listCheckBox;
@@ -55,6 +57,33 @@ public class PlayActivity extends ActionBarActivity {
     private Drawable drawableBorderHighlight;
     private int currentDrawer;
     private int countKnownDrawer;
+
+    private long startTime = 0L;
+    private Handler customHandler = new Handler();
+    long timeInMilliseconds = 0L;
+    long timeSwapBuff = 0L;
+    long updatedTime = 0L;
+    private Runnable runnable;
+
+    private Runnable updateTimerThread = new Runnable() {
+        public void run() {
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+            updatedTime = timeSwapBuff + timeInMilliseconds;
+            runnable = this;
+            int secs = (int) (updatedTime / 1000);
+            int mins = secs / 60;
+            int hours = mins / 60;
+            secs = secs % 60;
+            int milliseconds = (int) (updatedTime % 1000);
+            if (textViewTimerValue != null) {
+                textViewTimerValue.setText("" + hours + ":"
+                        + String.format("%02d",mins%60) + ":"
+                        + String.format("%02d", secs));
+                customHandler.postDelayed(this, 0);
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +127,9 @@ public class PlayActivity extends ActionBarActivity {
                 //Log.d("list", cards.size() + " "+cards.toString());
             }
         }
+
+        startTime = SystemClock.uptimeMillis();
+        customHandler.postDelayed(updateTimerThread, 0);
 
     }
 
@@ -325,6 +357,18 @@ public class PlayActivity extends ActionBarActivity {
             return true;
         } else if (id == R.id.action_play_stats) {
 
+            customHandler.postDelayed(runnable, 0); // refreshes the timer
+
+            /* @TODO Button is in view disabled - make real stop
+            stopTimerValue.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    timeSwapBuff += timeInMilliseconds;
+                    customHandler.removeCallbacks(updateTimerThread);
+
+                }
+            });
+            */
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             View promptView = layoutInflater.inflate(R.layout.prompt_stats, null);
 
@@ -334,6 +378,9 @@ public class PlayActivity extends ActionBarActivity {
             TextView text3 = (TextView)promptView.findViewById(R.id.textViewDrawer3);
             TextView text4 = (TextView)promptView.findViewById(R.id.textViewDrawer4);
             TextView text5 = (TextView)promptView.findViewById(R.id.textViewDrawer5);
+
+            textViewTimerValue = (TextView) promptView.findViewById(R.id.textViewTimerValue);
+            stopTimerValue = (Button) promptView.findViewById(R.id.stopTimerValue);
 
             int count0 = 0;
             int count1 = 0;

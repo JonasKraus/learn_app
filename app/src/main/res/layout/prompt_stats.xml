@@ -6,7 +6,12 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="15dp"
+        android:background="#fefefe"
+        android:layout_marginBottom="15dp"
+        android:layout_gravity="fill"
+        android:gravity="center_horizontal">
 
         <TextView
             android:layout_width="wrap_content"
@@ -69,5 +74,34 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/border_shape"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="15dp"
+        android:background="#fefefe">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="00:00:00"
+            android:id="@+id/textViewTimerValue"
+            android:layout_weight="1"
+            android:textSize="30dp"
+            android:textColor="#333333"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pause"
+            android:id="@+id/stopTimerValue"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"/>
     </LinearLayout>
 </LinearLayout>
