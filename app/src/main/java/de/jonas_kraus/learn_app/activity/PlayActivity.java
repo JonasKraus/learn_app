@@ -86,18 +86,20 @@ public class PlayActivity extends ActionBarActivity {
                 //Log.d("list", cards.size() + " "+cards.toString());
             }
         }
-        cards = db.getMarkedCards();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         setSeekBarChangeListener();
+        openDb();
+        //cards = db.getCardsFromMarked();
+        cards = db.getMarkedCards();
         textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
         seekBar.setProgress(cards.get(cardsPosition).getRating());
         textViewQuestionCounter.setText("1/"+cards.size()+"\t\t\t"+cards.size()/100*1+"%");
         prepareAnswers();
-        openDb();
     }
 
     private void prepareAnswers() {
@@ -105,6 +107,7 @@ public class PlayActivity extends ActionBarActivity {
         curCardType = cards.get(cardsPosition).getType();
         seekBar.setProgress(cards.get(cardsPosition).getRating());
         if (curCardType == Card.CardType.NOTECARD) {
+            Log.d("hieree",cards.get(cardsPosition).getAnswers().get(0).getAnswer());
             textViewAnswer.setText(cards.get(cardsPosition).getAnswers().get(0).getAnswer());
             textViewAnswer.setVisibility(View.INVISIBLE);
         } else {
@@ -136,7 +139,7 @@ public class PlayActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         seekBar.setOnSeekBarChangeListener(null);
-        db.deleteAllMarks();
+        //db.deleteAllMarks();
         db.close();
     }
 
@@ -184,18 +187,21 @@ public class PlayActivity extends ActionBarActivity {
                 break;
             case R.id.buttonKnown:
                 known = true;
-                db.updateRating(cards.get(cardsPosition).getId(), 100, known);
+                cards.add(cardsPosition, db.updateRating(cards.get(cardsPosition).getId(), 100, known, cards.get(cardsPosition).getDrawer()));
+                cards.remove(cardsPosition+1);
                 changeToNextCard();
                 break;
             case R.id.buttonNotKnown:
                 known = false;
-                db.updateRating(cards.get(cardsPosition).getId(), 0, known);
+                cards.add(cardsPosition, db.updateRating(cards.get(cardsPosition).getId(), 0, known, cards.get(cardsPosition).getDrawer()));
+                cards.remove(cardsPosition+1);
                 changeToNextCard();
                 break;
             case R.id.buttonNext:
                 known = false;
                 int rating = seekBar.getProgress();
-                db.updateRating(cards.get(cardsPosition).getId(), rating, known);
+                cards.add(cardsPosition, db.updateRating(cards.get(cardsPosition).getId(), rating, known, cards.get(cardsPosition).getDrawer()));
+                cards.remove(cardsPosition+1);
                 changeToNextCard();
                 break;
         }
@@ -207,7 +213,7 @@ public class PlayActivity extends ActionBarActivity {
         buttonNext.setEnabled(false);
         cardsPosition ++;
         cardsPosition %= cards.size(); // makes the roundtrip
-        textViewQuestionCounter.setText((cardsPosition+1)+"/"+cards.size()+"\t\t\t"+Math.round((100/cards.size()*(cardsPosition+1)))+"%");
+        textViewQuestionCounter.setText((cardsPosition+1)+"/"+cards.size()+"\t\t\t"+Math.round((100 / cards.size() * (cardsPosition + 1)))+"%");
         linearLayOutDynamic.removeAllViews();
         if (cardsPosition == cards.size()) {
             Toast.makeText(context, "Learned all Cards", Toast.LENGTH_SHORT).show();

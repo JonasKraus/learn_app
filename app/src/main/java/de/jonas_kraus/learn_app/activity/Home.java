@@ -60,6 +60,7 @@ public class Home extends ActionBarActivity {
             e.printStackTrace();
             Log.d("dBManager", "error happened");
         }
+        //dbManager.deleteAllMarks();
         setCatalogueButtonListener();
         setTodoButtonListener();
     }

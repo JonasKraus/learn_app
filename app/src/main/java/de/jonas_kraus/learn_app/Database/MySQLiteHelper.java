@@ -20,6 +20,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_QUESTION_CATEGORY_ID = "category_id";
     public static final String COLUMN_QUESTION_DRAWER = "drawer";
     public static final String COLUMN_QUESTION_DATE = "date";
+    public static final String COLUMN_QUESTION_MARKED = "marked";
+
 
     public static final String TABLE_ANSWERS = "answers";
     public static final String COLUMN_ANSWER_ID = "_id";
@@ -31,13 +33,15 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_CATEGORY_ID = "_id";
     public static final String COLUMN_CATEGORY_NAME = "name";
     public static final String COLUMN_CATEGORY_PARENT = "parent_id";
+    public static final String COLUMN_CATEGORY_MARKED = "marked";
+
 
     public static final String TABLE_MARKED = "marked";
     public static final String COLUMN_MARKED_ID = "_id";
     public static final String COLUMN_MARKED_QUESTION_ID = "question_id";
 
     private static final String DATABASE_NAME = "learning_cards_db.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 7;
 
     // Database creation sql statement
     private static final String QUESTIONS_CREATE = "create table "
@@ -59,7 +63,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_QUESTION_DRAWER
             + " integer DEFAULT 0, "
             + COLUMN_QUESTION_DATE
-            + " datetime DEFAULT now "
+            + " datetime DEFAULT now, "
+            + COLUMN_QUESTION_MARKED
+            + " ineteger DEFAULT 0 "
             + ");";
 
     // Database creation sql statement
@@ -83,7 +89,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_CATEGORY_PARENT
             + " integer DEFAULT "+(-1)+", "
             + COLUMN_CATEGORY_NAME
-            + " text not null " /* @TODO Check if the category has the same name and parent id, then UNIQUE?! */
+            + " text not null, " /* @TODO Check if the category has the same name and parent id, then UNIQUE?! */
+            + COLUMN_CATEGORY_MARKED
+            + " ineteger DEFAULT 0 "
             + ");";
 
     // Database creation sql statement
@@ -92,8 +100,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_MARKED_ID
             + " integer primary key autoincrement, "
             + COLUMN_MARKED_QUESTION_ID
-            + " integer UNIQUE, "
-            + "FOREIGN  KEY("+ COLUMN_MARKED_QUESTION_ID +") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+") ON DELETE CASCADE "
+            + " integer "
+            //+ "FOREIGN  KEY("+ COLUMN_MARKED_QUESTION_ID +") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+") ON DELETE CASCADE "
             + ");";
 
     public MySQLiteHelper(Context context) {
@@ -105,7 +113,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
         db.execSQL(QUESTIONS_CREATE);
         db.execSQL(ANSWERS_CREATE);
         db.execSQL(CATEGORY_CREATE);
-        db.execSQL(MARKED_CREATE);
+        //db.execSQL(MARKED_CREATE);
         Log.d("created", "tabels");
     }
 

@@ -5,19 +5,11 @@ package de.jonas_kraus.learn_app.Util;
  */
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.nfc.Tag;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.Checkable;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,7 +32,6 @@ public class CustomList extends ArrayAdapter<Catalogue> {
     private ArrayList<Catalogue>checkedList;
     private List<Integer>checkedListPos;
     private DbManager db;
-    private List<Integer> marksFromDb;
 
     public CustomList(Activity context,List<Catalogue> catalogue, DbManager db) {
         super(context, R.layout.list_single, catalogue);
@@ -74,9 +65,19 @@ public class CustomList extends ArrayAdapter<Catalogue> {
         if (category != null) {
             txtTitle.setText(category.getName());
             imageView.setImageResource(imgCat);
+            if(category.isMarked()) {
+                box.setBackground(check);
+            } else {
+                box.setBackground(uncheck);
+            }
         } else {
             txtTitle.setText(card.getQuestion());
             imageView.setImageResource(imgCard);
+            if(card.isMarked()) {
+                box.setBackground(check);
+            } else {
+                box.setBackground(uncheck);
+            }
         }
 
         //Log.d("box list","checked "+checkedListPos.toString());
@@ -95,12 +96,14 @@ public class CustomList extends ArrayAdapter<Catalogue> {
                     box.setBackground(check);
                     checkedList.add(catalogue.get(position));
                     checkedListPos.add(position);
-                    db.createMarks(catalogue.get(position));
+                    //db.createMarks(catalogue.get(position));
+                    db.markCardOrCategory(catalogue.get(position));
                 } else {
                     box.setBackground(uncheck);
                     checkedList.remove(catalogue.get(position));
                     checkedListPos.remove((Integer)position);
-                    db.deleteMarks(catalogue.get(position));
+                    //db.deleteMark(catalogue.get(position));
+                    db.unmarkCardOrCategory(catalogue.get(position));
                 }
                 //Log.d("Click",card +" "+ category + " equals? " + (drawable +" ," + check+" ," + uncheck));
             }
