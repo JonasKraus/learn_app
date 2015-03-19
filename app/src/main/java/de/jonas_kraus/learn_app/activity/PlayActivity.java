@@ -6,15 +6,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -22,6 +25,8 @@ import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import de.jonas_kraus.learn_app.Data.Answer;
@@ -47,6 +52,9 @@ public class PlayActivity extends ActionBarActivity {
     private List<TextView> listTextView;
     private List<CheckBox> listCheckBox;
     private boolean known;
+    private Drawable drawableBorderHighlight;
+    private int currentDrawer;
+    private int countKnownDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +77,14 @@ public class PlayActivity extends ActionBarActivity {
 
         context = getApplicationContext();
 
+        drawableBorderHighlight = getResources().getDrawable(R.drawable.border_shape_highlight);
+
         openDb();
 
         checkedCatalogue = new ArrayList<Catalogue>();
         cards = new ArrayList<Card>();
+        currentDrawer = 0;
+        countKnownDrawer = 0;
 
         Bundle extras;
         if (savedInstanceState == null) {
@@ -96,6 +108,7 @@ public class PlayActivity extends ActionBarActivity {
         openDb();
         //cards = db.getCardsFromMarked();
         cards = db.getMarkedCards();
+        currentDrawer = cards.get(cardsPosition).getDrawer();
         textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
         seekBar.setProgress(cards.get(cardsPosition).getRating());
         textViewQuestionCounter.setText("1/"+cards.size()+"\t\t\t"+cards.size()/100*1+"%");
@@ -188,7 +201,10 @@ public class PlayActivity extends ActionBarActivity {
             case R.id.buttonKnown:
                 known = true;
                 cards.add(cardsPosition, db.updateRating(cards.get(cardsPosition).getId(), 100, known, cards.get(cardsPosition).getDrawer()));
-                cards.remove(cardsPosition+1);
+                if (cards.get(cardsPosition).getDrawer() == 5) {
+                    countKnownDrawer++;
+                }
+                cards.remove(cardsPosition + 1);
                 changeToNextCard();
                 break;
             case R.id.buttonNotKnown:
@@ -198,8 +214,15 @@ public class PlayActivity extends ActionBarActivity {
                 changeToNextCard();
                 break;
             case R.id.buttonNext:
-                known = false;
                 int rating = seekBar.getProgress();
+                if (rating == 100) {
+                    known = true;
+                    if (cards.get(cardsPosition).getDrawer() == 5) {
+                        countKnownDrawer++;
+                    }
+                } else {
+                    known = false;
+                }
                 cards.add(cardsPosition, db.updateRating(cards.get(cardsPosition).getId(), rating, known, cards.get(cardsPosition).getDrawer()));
                 cards.remove(cardsPosition+1);
                 changeToNextCard();
@@ -211,8 +234,58 @@ public class PlayActivity extends ActionBarActivity {
         seekBar.setProgress(cards.get(cardsPosition).getRating());
         seekBar.setEnabled(false);
         buttonNext.setEnabled(false);
+
         cardsPosition ++;
         cardsPosition %= cards.size(); // makes the roundtrip
+        int count0 = 0;
+        int count1 = 0;
+        int count2 = 0;
+        int count3 = 0;
+        int count4 = 0;
+        int count5 = 0;
+        for (Card card : cards) {
+            switch(card.getDrawer()){
+                case 0:
+                    count0++;
+                    break;
+                case 1:
+                    count1++;
+                    break;
+                case 2:
+                    count2++;
+                    break;
+                case 3:
+                    count3++;
+                    break;
+                case 4:
+                    count4++;
+                    break;
+                case 5:
+                    count5++;
+                    break;
+            }
+        }
+        if (currentDrawer == 5 && countKnownDrawer == count5) {
+            currentDrawer = 0;
+            countKnownDrawer = 0;
+        }
+        if (count0>0 && currentDrawer <= 0) {
+            currentDrawer = 0;
+        } else if (count1 >0 && currentDrawer <= 1) {
+            currentDrawer = 1;
+        } else if (count2 >0 && currentDrawer <= 2) {
+            currentDrawer = 2;
+        } else if (count3 >0 && currentDrawer <= 3) {
+            currentDrawer = 3;
+        } else if (count4 >0 && currentDrawer <= 4) {
+            currentDrawer = 4;
+        } else if (count5 >0 && currentDrawer <= 5) {
+            currentDrawer = 5;
+        }
+        while(cards.get(cardsPosition).getDrawer() != currentDrawer) {
+            cardsPosition++;
+            cardsPosition %= cards.size();
+        }
         textViewQuestionCounter.setText((cardsPosition+1)+"/"+cards.size()+"\t\t\t"+Math.round((100 / cards.size() * (cardsPosition + 1)))+"%");
         linearLayOutDynamic.removeAllViews();
         if (cardsPosition == cards.size()) {
@@ -245,7 +318,71 @@ public class PlayActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_play_close) {
+            Intent myIntent = new Intent(PlayActivity.this, CatalogueActivity.class);
+            myIntent.putExtra("currentCategoryParent",currentCategoryParent);
+            startActivity(myIntent);
+            return true;
+        } else if (id == R.id.action_play_stats) {
+
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            View promptView = layoutInflater.inflate(R.layout.prompt_stats, null);
+
+            TextView text0 = (TextView)promptView.findViewById(R.id.textViewDrawer0);
+            TextView text1 = (TextView)promptView.findViewById(R.id.textViewDrawer1);
+            TextView text2 = (TextView)promptView.findViewById(R.id.textViewDrawer2);
+            TextView text3 = (TextView)promptView.findViewById(R.id.textViewDrawer3);
+            TextView text4 = (TextView)promptView.findViewById(R.id.textViewDrawer4);
+            TextView text5 = (TextView)promptView.findViewById(R.id.textViewDrawer5);
+
+            int count0 = 0;
+            int count1 = 0;
+            int count2 = 0;
+            int count3 = 0;
+            int count4 = 0;
+            int count5 = 0;
+            TextView curDrawer = (TextView)promptView.findViewWithTag("drawer_"+currentDrawer);
+            curDrawer.setBackgroundDrawable(drawableBorderHighlight);
+            curDrawer.setTextColor(Color.parseColor("#555555"));
+            for (Card card : cards) {
+                switch(card.getDrawer()){
+                    case 0:
+                        count0++;
+                        break;
+                    case 1:
+                        count1++;
+                        break;
+                    case 2:
+                        count2++;
+                        break;
+                    case 3:
+                        count3++;
+                        break;
+                    case 4:
+                        count4++;
+                        break;
+                    case 5:
+                        count5++;
+                        break;
+                }
+            }
+            text0.setText(count0+"");
+            text1.setText(count1+"");
+            text2.setText(count2+"");
+            text3.setText(count3+"");
+            text4.setText(count4+"");
+            text5.setText(count5+"");
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setView(promptView);
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.setIcon(R.drawable.information_black);
+            alertDialog.setTitle("Statistics");
+            alertDialog.show();
+
+            return true;
+        } else if(id == R.id.action_play_swap_direction) {
+            Collections.rotate(cards,cards.size()); /* @TODO rotate the list */
             return true;
         }
 

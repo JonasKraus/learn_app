@@ -1,7 +1,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="de.jonas_kraus.learn_app.activity.PlayActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    tools:context="de.jonas_kraus.learn_app">
+
+    <item
+        android:id="@+id/action_play_swap_direction"
+        android:orderInCategory="100"
+        android:icon="@drawable/swap"
+        app:showAsAction="always"
+        android:title="Swap direction"/>
+    <item
+        android:id="@+id/action_play_stats"
+        android:orderInCategory="100"
+        android:icon="@drawable/information"
+        app:showAsAction="always"
+        android:title="Statistics"/>
+    <item
+        android:id="@+id/action_play_close"
+        android:orderInCategory="100"
+        android:icon="@drawable/close"
+        app:showAsAction="always"
+        android:title="Close"/>
+
 </menu>
