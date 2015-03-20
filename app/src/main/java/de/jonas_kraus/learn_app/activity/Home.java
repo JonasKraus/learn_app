@@ -3,20 +3,17 @@ package de.jonas_kraus.learn_app.activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
-import java.sql.SQLException;
 
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
 
 
 public class Home extends ActionBarActivity {
-    Button buttonCatalogue, buttonTodo;
+    Button buttonCatalogue, buttonTodo, buttonSettings, buttonStats;
     private DbManager dbManager;
 
     @Override
@@ -25,6 +22,28 @@ public class Home extends ActionBarActivity {
         setContentView(R.layout.activity_home);
         buttonCatalogue = (Button) findViewById(R.id.buttonCatalogue);
         buttonTodo = (Button) findViewById(R.id.buttonTodos);
+        buttonStats = (Button) findViewById(R.id.buttonStats);
+        buttonSettings = (Button) findViewById(R.id.buttonSettings);
+    }
+
+    public void onClick(View view) {
+        int id = view.getId();
+        switch(id) {
+            case R.id.buttonCatalogue:
+                Intent myIntent = new Intent(Home.this, CatalogueActivity.class);
+                startActivity(myIntent);
+                break;
+            case R.id.buttonTodos:
+                /* @TODO */
+                break;
+            case R.id.buttonSettings:
+                /* @TODO */
+                break;
+            case R.id.buttonStats:
+                Intent myIntentStats = new Intent(Home.this, CatalogueActivity.class);
+                startActivity(myIntentStats);
+                break;
+        }
     }
 
 
@@ -53,42 +72,11 @@ public class Home extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        dbManager = new DbManager(this);
-        try {
-            dbManager.open();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            Log.d("dBManager", "error happened");
-        }
-        //dbManager.deleteAllMarks();
-        setCatalogueButtonListener();
-        setTodoButtonListener();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        buttonTodo.setOnClickListener(null);
-        buttonCatalogue.setOnClickListener(null);
-        dbManager.close();
     }
 
-    private void setTodoButtonListener() {
-        buttonTodo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*@TODO */
-            }
-        });
-    }
-
-    private void setCatalogueButtonListener() {
-        buttonCatalogue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent(Home.this, CatalogueActivity.class);
-                startActivity(myIntent);
-            }
-        });
-    }
 }
