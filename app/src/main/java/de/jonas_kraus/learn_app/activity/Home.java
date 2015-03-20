@@ -40,7 +40,7 @@ public class Home extends ActionBarActivity {
                 /* @TODO */
                 break;
             case R.id.buttonStats:
-                Intent myIntentStats = new Intent(Home.this, CatalogueActivity.class);
+                Intent myIntentStats = new Intent(Home.this, StatisticsActivity.class);
                 startActivity(myIntentStats);
                 break;
         }
