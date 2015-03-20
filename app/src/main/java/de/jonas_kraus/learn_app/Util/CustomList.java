@@ -54,10 +54,10 @@ public class CustomList extends ArrayAdapter<Catalogue> {
         ImageView box = (ImageView) rowView.findViewById(R.id.checkBox);
         box.setTag(position);
         if (!checkedListPos.isEmpty() && checkedListPos.contains(position)) {
-            box.setBackground(check);
+            box.setBackgroundDrawable(check);
 
         } else {
-            box.setBackground(uncheck);
+            box.setBackgroundDrawable(uncheck);
         }
         Category category = catalogue.get(position).getCategory();
         Card card = catalogue.get(position).getCard();
@@ -66,17 +66,17 @@ public class CustomList extends ArrayAdapter<Catalogue> {
             txtTitle.setText(category.getName());
             imageView.setImageResource(imgCat);
             if(category.isMarked()) {
-                box.setBackground(check);
+                box.setBackgroundDrawable(check);
             } else {
-                box.setBackground(uncheck);
+                box.setBackgroundDrawable(uncheck);
             }
         } else {
             txtTitle.setText(card.getQuestion());
             imageView.setImageResource(imgCard);
             if(card.isMarked()) {
-                box.setBackground(check);
+                box.setBackgroundDrawable(check);
             } else {
-                box.setBackground(uncheck);
+                box.setBackgroundDrawable(uncheck);
             }
         }
 
@@ -93,13 +93,13 @@ public class CustomList extends ArrayAdapter<Catalogue> {
                 //box.setTag(checked);
                 Drawable drawable = box.getBackground();
                 if (drawable == uncheck) {
-                    box.setBackground(check);
+                    box.setBackgroundDrawable(check);
                     checkedList.add(catalogue.get(position));
                     checkedListPos.add(position);
                     //db.createMarks(catalogue.get(position));
                     db.markCardOrCategory(catalogue.get(position));
                 } else {
-                    box.setBackground(uncheck);
+                    box.setBackgroundDrawable(uncheck);
                     checkedList.remove(catalogue.get(position));
                     checkedListPos.remove((Integer)position);
                     //db.deleteMark(catalogue.get(position));
