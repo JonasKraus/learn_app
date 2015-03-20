@@ -81,7 +81,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="15dp"
-        android:background="#fefefe">
+        android:background="#fefefe"
+        android:layout_marginBottom="15dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -103,5 +104,52 @@
             android:id="@+id/stopTimerValue"
             android:visibility="gone"
             android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:background="#fefefe">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Known:"
+            android:id="@+id/textViewCountKnown"
+            android:layout_weight="1"
+            android:textColor="#00cc44"
+            android:layout_marginBottom="5dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Not known:"
+            android:id="@+id/textViewCountNotKnown"
+            android:layout_weight="1"
+            android:textColor="#990000"
+            android:layout_marginBottom="5dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Viewed:"
+            android:id="@+id/textViewCountViewed"
+            android:layout_weight="1"
+            android:textColor="#00cc44"
+            android:layout_marginBottom="5dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Not viewed:"
+            android:id="@+id/textViewCountNotViewed"
+            android:layout_weight="1"
+            android:textColor="#990000"
+            />
     </LinearLayout>
 </LinearLayout>

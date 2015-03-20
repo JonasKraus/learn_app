@@ -1,9 +1,7 @@
 package de.jonas_kraus.learn_app.activity;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -16,10 +14,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -27,17 +23,15 @@ import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import de.jonas_kraus.learn_app.Data.Answer;
 import de.jonas_kraus.learn_app.Data.Card;
 import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
-
-import static android.widget.LinearLayout.*;
 
 public class PlayActivity extends ActionBarActivity {
     private LinearLayout linearLayoutHintAnswer, linearLayoutHintKnown, linearLayOutDynamic;
@@ -57,6 +51,9 @@ public class PlayActivity extends ActionBarActivity {
     private Drawable drawableBorderHighlight;
     private int currentDrawer;
     private int countKnownDrawer;
+
+    private int countKnown, countNotKnown, countNotViewd, countViewed = 0;
+    private List<Integer> uniqueCardIds;
 
     private long startTime = 0L;
     private Handler customHandler = new Handler();
@@ -140,6 +137,11 @@ public class PlayActivity extends ActionBarActivity {
         openDb();
         //cards = db.getCardsFromMarked();
         cards = db.getMarkedCards();
+        uniqueCardIds = new ArrayList<Integer>();
+        for (Card card : cards) {
+            uniqueCardIds.add(card.getId());
+        }
+        countNotViewd = uniqueCardIds.size()-1;
         currentDrawer = cards.get(cardsPosition).getDrawer();
         textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
         seekBar.setProgress(cards.get(cardsPosition).getRating());
@@ -152,7 +154,6 @@ public class PlayActivity extends ActionBarActivity {
         curCardType = cards.get(cardsPosition).getType();
         seekBar.setProgress(cards.get(cardsPosition).getRating());
         if (curCardType == Card.CardType.NOTECARD) {
-            Log.d("hieree",cards.get(cardsPosition).getAnswers().get(0).getAnswer());
             textViewAnswer.setText(cards.get(cardsPosition).getAnswers().get(0).getAnswer());
             textViewAnswer.setVisibility(View.INVISIBLE);
         } else {
@@ -238,8 +239,10 @@ public class PlayActivity extends ActionBarActivity {
                 }
                 cards.remove(cardsPosition + 1);
                 changeToNextCard();
+                countKnown++;
                 break;
             case R.id.buttonNotKnown:
+                countNotKnown++;
                 known = false;
                 cards.add(cardsPosition, db.updateRating(cards.get(cardsPosition).getId(), 0, known, cards.get(cardsPosition).getDrawer()));
                 cards.remove(cardsPosition+1);
@@ -249,11 +252,13 @@ public class PlayActivity extends ActionBarActivity {
                 int rating = seekBar.getProgress();
                 if (rating == 100) {
                     known = true;
+                    countKnown++;
                     if (cards.get(cardsPosition).getDrawer() == 5) {
                         countKnownDrawer++;
                     }
                 } else {
                     known = false;
+                    countNotKnown++;
                 }
                 cards.add(cardsPosition, db.updateRating(cards.get(cardsPosition).getId(), rating, known, cards.get(cardsPosition).getDrawer()));
                 cards.remove(cardsPosition+1);
@@ -267,8 +272,11 @@ public class PlayActivity extends ActionBarActivity {
         seekBar.setEnabled(false);
         buttonNext.setEnabled(false);
 
+        Log.d("unique", uniqueCardIds.toString());
+
         cardsPosition ++;
         cardsPosition %= cards.size(); // makes the roundtrip
+
         int count0 = 0;
         int count1 = 0;
         int count2 = 0;
@@ -318,6 +326,12 @@ public class PlayActivity extends ActionBarActivity {
             cardsPosition++;
             cardsPosition %= cards.size();
         }
+        if (uniqueCardIds.size()>0) {
+            uniqueCardIds.remove((Object) cards.get(cardsPosition).getId());
+        }
+        countNotViewd = uniqueCardIds.size();
+        countViewed = countNotKnown+countKnown;
+
         textViewQuestionCounter.setText((cardsPosition+1)+"/"+cards.size()+"\t\t\t"+Math.round((100 / cards.size() * (cardsPosition + 1)))+"%");
         linearLayOutDynamic.removeAllViews();
         if (cardsPosition == cards.size()) {
@@ -329,7 +343,6 @@ public class PlayActivity extends ActionBarActivity {
             linearLayoutHintAnswer.setVisibility(View.VISIBLE);
             linearLayoutHintKnown.setVisibility(View.INVISIBLE);
             textViewQuestion.setText(cards.get(cardsPosition).getQuestion());
-            Log.d("On change", "id: " + cards.get(cardsPosition).getId() + " rating: " + cards.get(cardsPosition).getRating() + "  known: " + cards.get(cardsPosition).isKnown());
             prepareAnswers();
         }
     }
@@ -378,6 +391,16 @@ public class PlayActivity extends ActionBarActivity {
             TextView text3 = (TextView)promptView.findViewById(R.id.textViewDrawer3);
             TextView text4 = (TextView)promptView.findViewById(R.id.textViewDrawer4);
             TextView text5 = (TextView)promptView.findViewById(R.id.textViewDrawer5);
+
+            TextView textViewKnown = (TextView)promptView.findViewById(R.id.textViewCountKnown);
+            TextView textViewNotKnown = (TextView)promptView.findViewById(R.id.textViewCountNotKnown);
+            TextView textViewViewed = (TextView)promptView.findViewById(R.id.textViewCountViewed);
+            TextView textViewNotViewed = (TextView)promptView.findViewById(R.id.textViewCountNotViewed);
+
+            textViewKnown.setText("Known:\t\t\t\t\t\t"+countKnown);
+            textViewNotKnown.setText("Not known:\t\t\t"+countNotKnown);
+            textViewViewed.setText("Viewed:\t\t\t\t\t\t"+ (countViewed+1));
+            textViewNotViewed.setText("Not viewed:\t\t\t"+ (countNotViewd));
 
             textViewTimerValue = (TextView) promptView.findViewById(R.id.textViewTimerValue);
             stopTimerValue = (Button) promptView.findViewById(R.id.stopTimerValue);
