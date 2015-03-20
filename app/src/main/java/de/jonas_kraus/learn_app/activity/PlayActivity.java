@@ -272,8 +272,6 @@ public class PlayActivity extends ActionBarActivity {
         seekBar.setEnabled(false);
         buttonNext.setEnabled(false);
 
-        Log.d("unique", uniqueCardIds.toString());
-
         cardsPosition ++;
         cardsPosition %= cards.size(); // makes the roundtrip
 
@@ -397,10 +395,10 @@ public class PlayActivity extends ActionBarActivity {
             TextView textViewViewed = (TextView)promptView.findViewById(R.id.textViewCountViewed);
             TextView textViewNotViewed = (TextView)promptView.findViewById(R.id.textViewCountNotViewed);
 
-            textViewKnown.setText("Known:\t\t\t\t\t\t"+countKnown);
-            textViewNotKnown.setText("Not known:\t\t\t"+countNotKnown);
-            textViewViewed.setText("Viewed:\t\t\t\t\t\t"+ (countViewed+1));
-            textViewNotViewed.setText("Not viewed:\t\t\t"+ (countNotViewd));
+            textViewKnown.setText(countKnown+"\tknown");
+            textViewNotKnown.setText(countNotKnown+"\tnot known");
+            textViewViewed.setText((countViewed+1)+"\tviewed");
+            textViewNotViewed.setText((countNotViewd)+"\tnot viewed");
 
             textViewTimerValue = (TextView) promptView.findViewById(R.id.textViewTimerValue);
             stopTimerValue = (Button) promptView.findViewById(R.id.stopTimerValue);
