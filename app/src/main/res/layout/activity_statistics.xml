@@ -8,89 +8,152 @@
     android:orientation="vertical">
 
     <TextView
-        android:text="Cards"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewCountCards"/>
-    <TextView
         android:text="Categories"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewCountCategories"/>
+        android:id="@+id/textViewCountCategories"
+        android:padding="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:background="#fefefe"/>
+
+    <TextView
+        android:text="Cards"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewCountCards"
+        android:padding="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:background="#fefefe"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Drawers"
+        android:background="#fefefe"
+        android:layout_marginTop="15dp"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutChart"
+        android:layout_width="fill_parent"
+        android:layout_height="300dp"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:background="#fefefe">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/border_shape"
+            android:layout_weight="1"
+            android:id="@+id/imageViewDrawerBar_0"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/border_shape"
+            android:layout_weight="1"
+            android:id="@+id/imageViewDrawerBar_1"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/border_shape"
+            android:layout_weight="1"
+            android:id="@+id/imageViewDrawerBar_2"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/border_shape"
+            android:layout_weight="1"
+            android:id="@+id/imageViewDrawerBar_3"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/border_shape"
+            android:layout_weight="1"
+            android:id="@+id/imageViewDrawerBar_4"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/border_shape"
+            android:layout_weight="1"
+            android:id="@+id/imageViewDrawerBar_5"/>
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="bottom"
-        android:background="#fefefe"
-        android:layout_marginTop="15dp">
+        android:background="#fefefe">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="40dp"
-            android:background="@drawable/border_shape"
             android:text="0"
             android:id="@+id/textViewDrawerChart_0"
             android:layout_margin="10dp"
             android:padding="10dp"
-            android:gravity="bottom"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:gravity="center_horizontal"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="40dp"
-            android:background="@drawable/border_shape"
             android:text="0"
             android:id="@+id/textViewDrawerChart_1"
             android:layout_margin="10dp"
             android:padding="10dp"
-            android:gravity="bottom"
+            android:gravity="center_horizontal"
             android:layout_weight="1"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="40dp"
-            android:background="@drawable/border_shape"
             android:text="0"
             android:id="@+id/textViewDrawerChart_2"
             android:layout_margin="10dp"
             android:padding="10dp"
-            android:gravity="bottom"
+            android:gravity="center_horizontal"
             android:layout_weight="1"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="40dp"
-            android:background="@drawable/border_shape"
             android:text="0"
             android:id="@+id/textViewDrawerChart_3"
             android:layout_margin="10dp"
             android:padding="10dp"
-            android:gravity="bottom"
+            android:gravity="center_horizontal"
             android:layout_weight="1"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="40dp"
-            android:background="@drawable/border_shape"
             android:text="0"
             android:id="@+id/textViewDrawerChart_4"
             android:layout_margin="10dp"
             android:padding="10dp"
-            android:gravity="bottom"
+            android:gravity="center_horizontal"
             android:layout_weight="1"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="40dp"
-            android:background="@drawable/border_shape"
             android:text="0"
             android:id="@+id/textViewDrawerChart_5"
             android:layout_margin="10dp"
             android:padding="10dp"
-            android:gravity="bottom"
+            android:gravity="center_horizontal"
             android:layout_weight="1"/>
 
     </LinearLayout>

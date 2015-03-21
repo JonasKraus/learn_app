@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.sql.SQLException;
@@ -16,7 +20,9 @@ import de.jonas_kraus.learn_app.R;
 public class StatisticsActivity extends ActionBarActivity {
 
     private TextView textViewDrawer0, textViewDrawer1, textViewDrawer2, textViewDrawer3, textViewDrawer4, textViewDrawer5, textViewCountCards, textViewCountCategories;
+    private ImageView imageViewDrawerBar_0, imageViewDrawerBar_1, imageViewDrawerBar_2, imageViewDrawerBar_3, imageViewDrawerBar_4, imageViewDrawerBar_5;
     private DbManager db;
+    private LinearLayout llChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,18 @@ public class StatisticsActivity extends ActionBarActivity {
         textViewDrawer4 = (TextView)findViewById(R.id.textViewDrawerChart_4);
         textViewDrawer5 = (TextView)findViewById(R.id.textViewDrawerChart_5);
 
+        imageViewDrawerBar_0 = (ImageView)findViewById(R.id.imageViewDrawerBar_0);
+        imageViewDrawerBar_1 = (ImageView)findViewById(R.id.imageViewDrawerBar_1);
+        imageViewDrawerBar_2 = (ImageView)findViewById(R.id.imageViewDrawerBar_2);
+        imageViewDrawerBar_3 = (ImageView)findViewById(R.id.imageViewDrawerBar_3);
+        imageViewDrawerBar_4 = (ImageView)findViewById(R.id.imageViewDrawerBar_4);
+        imageViewDrawerBar_5 = (ImageView)findViewById(R.id.imageViewDrawerBar_5);
+
+        llChart = (LinearLayout)findViewById(R.id.linearLayoutChart);
+        int llHeight = llChart.getLayoutParams().height -100;
+
+        RotateAnimation rotate= (RotateAnimation) AnimationUtils.loadAnimation(this, R.anim.rotate_chart_text);
+
         textViewCountCards = (TextView)findViewById(R.id.textViewCountCards);
         textViewCountCategories = (TextView)findViewById(R.id.textViewCountCategories);
 
@@ -54,18 +72,24 @@ public class StatisticsActivity extends ActionBarActivity {
             }
         }
 
-        textViewDrawer0.setText(distr[0]+"");
-        textViewDrawer0.setHeight(distr[0]*(200/maxDrawer));
+        textViewDrawer0.setText(distr[0]+""); /* @TODO add +"\n"+"Drawer 1" to label */
+        //textViewDrawer0.setAnimation(rotate);
+        imageViewDrawerBar_0.getLayoutParams().height = distr[0]*(llHeight/maxDrawer);
         textViewDrawer1.setText(distr[1]+"");
-        textViewDrawer1.setHeight(distr[1]*(200/maxDrawer));
+        //textViewDrawer1.setAnimation(rotate);
+        imageViewDrawerBar_1.getLayoutParams().height = distr[1]*(llHeight/maxDrawer);
         textViewDrawer2.setText(distr[2]+"");
-        textViewDrawer2.setHeight(distr[2]*(200/maxDrawer));
+        //textViewDrawer2.setAnimation(rotate);
+        imageViewDrawerBar_2.getLayoutParams().height = distr[2]*(llHeight/maxDrawer);
         textViewDrawer3.setText(distr[3]+"");
-        textViewDrawer3.setHeight(distr[3]*(200/maxDrawer));
+        //textViewDrawer3.setAnimation(rotate);
+        imageViewDrawerBar_3.getLayoutParams().height = distr[3]*(llHeight/maxDrawer);
         textViewDrawer4.setText(distr[4]+"");
-        textViewDrawer4.setHeight(distr[4]*(200/maxDrawer));
+        //textViewDrawer4.setAnimation(rotate);
+        imageViewDrawerBar_4.getLayoutParams().height = distr[4]*(llHeight/maxDrawer);
         textViewDrawer5.setText(distr[5]+"");
-        textViewDrawer5.setHeight(distr[5]*(200/maxDrawer));
+        //textViewDrawer5.setAnimation(rotate);
+        imageViewDrawerBar_5.getLayoutParams().height = distr[5]*(llHeight/maxDrawer);
 
     }
 
