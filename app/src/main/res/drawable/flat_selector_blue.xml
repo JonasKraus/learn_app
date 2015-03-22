@@ -1,0 +1,10 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:state_pressed="true"
+        android:drawable="@drawable/rect_pressed_blue"/>
+    <item
+        android:state_enabled="false"
+        android:drawable="@drawable/rect_disabled_blue"/>
+    <item
+        android:drawable="@drawable/rect_normal_blue"/>
+</selector>

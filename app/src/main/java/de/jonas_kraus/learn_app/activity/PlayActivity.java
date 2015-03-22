@@ -52,6 +52,8 @@ public class PlayActivity extends ActionBarActivity {
     private int currentDrawer;
     private int countKnownDrawer;
 
+    private final int WHITE = R.color.white;
+
     private int countKnown, countNotKnown, countNotViewd, countViewed = 0;
     private List<Integer> uniqueCardIds;
 
@@ -165,7 +167,7 @@ public class PlayActivity extends ActionBarActivity {
                 CheckBox box = new CheckBox(context);
                 box.setText(ans.getAnswer());
                 box.setHint(ans.getAnswer());
-                box.setBackgroundColor(Color.parseColor("#fefefe"));
+                box.setBackgroundColor(WHITE);
                 box.setPadding(15, 15, 15, 15);
                 listCheckBox.add(box);
                 linearLayOutDynamic.addView(box);
@@ -173,7 +175,7 @@ public class PlayActivity extends ActionBarActivity {
                         (LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT, 1f));
                 box.setText(ans.getAnswer());
                 box.setHint(ans.getAnswer());
-                box.setBackgroundColor(Color.parseColor("#fefefe"));
+                box.setBackgroundColor(WHITE);
                 box.setTextColor(Color.parseColor("#999999"));
                 box.setPadding(15,15,15,15);
             }

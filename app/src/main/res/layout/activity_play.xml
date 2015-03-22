@@ -26,9 +26,9 @@
         android:layout_height="wrap_content"
         android:text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
         android:id="@+id/textViewQuestion"
-        android:textColor="#e1200091"
+        android:textColor="@color/blue_3"
         android:focusable="true"
-        android:background="#fefefe"
+        android:background="@color/white"
         android:textSize="18dp"
         android:padding="10dp"
         android:layout_marginTop="25dp"
@@ -54,7 +54,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:padding="10dp"
-                android:background="#fefefe" />
+                android:background="@color/white" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/linearLayout"
-        android:background="#fefefe"
+        android:background="@color/white"
         android:padding="5dp"
         android:id="@+id/linearLayout2">
     <TextView
@@ -92,7 +92,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/linearLayOutButtonsHintAnswer"
-        android:background="#fefefe"
+        android:background="@color/white"
         android:id="@+id/linearLayout">
         <SeekBar
             android:layout_width="fill_parent"
@@ -103,17 +103,16 @@
         </LinearLayout>
 
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:id="@+id/linearLayOutButtonsHintAnswer"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="#fefefe">
+        android:layout_alignParentStart="true">
 
         <Button
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hint"
@@ -122,10 +121,12 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:onClick="onClick"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"
+            android:layout_marginRight="10dp"/>
 
         <Button
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Answer"
@@ -135,9 +136,13 @@
             android:layout_alignParentEnd="true"
             android:layout_gravity="right"
             android:onClick="onClick"
-            android:layout_weight="1"/>
-        </LinearLayout>
+            android:layout_weight="1"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"/>
+    </LinearLayout>
+
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:id="@+id/linearLayOutButtonsKnown"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -145,44 +150,38 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="#fefefe"
         android:visibility="gone">
 
         <Button
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Not known"
             android:id="@+id/buttonNotKnown"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             android:onClick="onClick"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:background="@drawable/flat_selector_red"
+            android:textColor="@color/light_grey"
+            android:layout_marginRight="10dp"/>
 
         <Button
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Next"
             android:id="@+id/buttonNext"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_gravity="right"
             android:onClick="onClick"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"
+            android:layout_marginRight="10dp"/>
         <Button
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Known"
             android:id="@+id/buttonKnown"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_gravity="right"
             android:onClick="onClick"
-            android:layout_weight="1"/>
+            android:background="@drawable/flat_selector_green"
+            android:textColor="@color/light_grey"
+            android:layout_weight="1"
+            />
     </LinearLayout>
 </RelativeLayout>

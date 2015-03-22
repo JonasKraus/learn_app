@@ -3,6 +3,7 @@
 
     <color name="white">#fefefe</color>
     <color name="black">#333333</color>
+    <color name="light_grey">#eeeeee</color>
 
     <color name="red_0">#AA3939</color>
     <color name="red_1">#FFAAAA</color>
@@ -18,6 +19,7 @@
 
     <color name="green_0">#7B9F35</color>
     <color name="green_1">#D4EE9F</color>
+    <color name="green_5">#F2FFDD</color>
     <color name="green_2">#A5C663</color>
     <color name="green_3">#567714</color>
     <color name="green_4">#354F00</color>

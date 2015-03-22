@@ -14,7 +14,7 @@
         android:id="@+id/textViewCountCategories"
         android:padding="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:background="#fefefe"/>
+        android:background="@color/white"/>
 
     <TextView
         android:text="Cards"
@@ -23,7 +23,7 @@
         android:id="@+id/textViewCountCards"
         android:padding="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:background="#fefefe"/>
+        android:background="@color/white"/>
 
     <TextView
         android:layout_width="fill_parent"
@@ -31,7 +31,7 @@
         android:padding="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Drawers"
-        android:background="#fefefe"
+        android:background="@color/white"
         android:layout_marginTop="15dp"/>
 
     <LinearLayout
@@ -40,7 +40,7 @@
         android:layout_height="300dp"
         android:orientation="horizontal"
         android:gravity="bottom"
-        android:background="#fefefe">
+        android:background="@color/white">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -99,7 +99,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="bottom"
-        android:background="#fefefe">
+        android:background="@color/white">
 
         <TextView
             android:layout_width="wrap_content"

@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="10dp"
-        android:background="#fefefe"
+        android:background="@color/white"
         android:layout_marginBottom="10dp">
         <TextView
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="15dp"
-        android:background="#fefefe"
+        android:background="@color/white"
         android:layout_marginBottom="15dp"
         android:layout_gravity="fill"
         android:gravity="center_horizontal">
@@ -115,7 +115,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="15dp"
-        android:background="#fefefe"
+        android:background="@color/white"
         android:layout_weight="1">
         <TextView
             android:layout_width="wrap_content"
@@ -141,7 +141,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="15dp"
-            android:background="#fefefe"
+            android:background="@color/white"
             android:layout_weight="1">
             <TextView
                 android:layout_width="wrap_content"

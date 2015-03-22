@@ -33,7 +33,6 @@ import de.jonas_kraus.learn_app.R;
 public class cardActivity extends ActionBarActivity {
 
     private EditText editTextQuestion, editTextAnswer, editTextHint;
-    private TextView textViewAnswer;
     private RadioGroup radioGroupType;
     private Button buttonAddAnswer, buttonDeleteAnswer, buttonCancel, buttonSave;
     private RadioButton radioSingle, radioMulti;
@@ -51,7 +50,7 @@ public class cardActivity extends ActionBarActivity {
     private List<LinearLayout> linearlayoutList=new ArrayList<LinearLayout>();
     private boolean checkModeChanged = false;
     private byte checkModeChangedCount = 0;
-    private final int BACK_COLOR = Color.parseColor("#fefefe");
+    private final int BACK_COLOR = R.color.white;
 
     private Drawable uncheckmark, checkmark;
 
@@ -74,7 +73,6 @@ public class cardActivity extends ActionBarActivity {
         buttonSave = (Button)findViewById(R.id.buttonSave);
         radioSingle = (RadioButton)findViewById(R.id.radioSingle);
         radioMulti = (RadioButton)findViewById(R.id.radioMultiplechoice);
-        textViewAnswer = (TextView) findViewById(R.id.textViewAnswer);
         
         LLEnterText=(LinearLayout) findViewById(R.id.LlTitle);
         LLEnterText.setOrientation(LinearLayout.VERTICAL);
@@ -148,7 +146,6 @@ public class cardActivity extends ActionBarActivity {
                     buttonDeleteAnswer.setVisibility(View.VISIBLE);
                     editTextAnswer.setVisibility(View.GONE);
                     cardType = Card.CardType.MULTIPLECHOICE;
-                    textViewAnswer.setVisibility(View.GONE);
 
                     if (!editMode) {
                         for (int i = 0; i < 2; i++) {
