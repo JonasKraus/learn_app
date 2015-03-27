@@ -1,8 +1,48 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="android:alertDialogStyle">@style/MyDialogue</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="MyActionBar"
+        parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/flat_selector_blue_actionbar</item>
+
+        <!-- Support library compatibility -->
+        <item name="background">@drawable/flat_selector_blue_actionbar</item>
+    </style>
+
+    <!-- AlertDialogue styles -->
+    <style name="MyDialogue"
+        parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="android:background">@color/blue_3</item>
+        <item name="background">@drawable/flat_selector_blue_actionbar</item>
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
+        <!-- Copy our color theme attributes to the framework -->
+        <item name="android:colorPrimary">@color/blue_3</item>
+        <item name="android:colorPrimaryDark">@color/blue_3</item>
+        <item name="android:colorAccent">@color/blue_3</item>
+        <item name="android:colorControlNormal">@color/blue_3</item>
+        <item name="android:colorControlActivated">@color/blue_3</item>
+        <item name="android:colorControlHighlight">@color/blue_3</item>
+
+        <!-- Copy our color theme attributes to the framework -->
+        <item name="colorPrimary">@color/blue_3</item>
+        <item name="colorPrimaryDark">@color/blue_3</item>
+        <item name="colorAccent">@color/blue_3</item>
+        <item name="colorControlNormal">@color/blue_3</item>
+        <item name="colorControlActivated">@color/blue_3</item>
+        <item name="colorControlHighlight">@color/blue_3</item>
+
+
     </style>
 
 </resources>

@@ -1,13 +1,18 @@
 
 package de.jonas_kraus.learn_app.activity;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
+import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,6 +28,7 @@ public class StatisticsActivity extends ActionBarActivity {
     private ImageView imageViewDrawerBar_0, imageViewDrawerBar_1, imageViewDrawerBar_2, imageViewDrawerBar_3, imageViewDrawerBar_4, imageViewDrawerBar_5;
     private DbManager db;
     private LinearLayout llChart;
+    private Button buttonBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,8 @@ public class StatisticsActivity extends ActionBarActivity {
         textViewDrawer3 = (TextView)findViewById(R.id.textViewDrawerChart_3);
         textViewDrawer4 = (TextView)findViewById(R.id.textViewDrawerChart_4);
         textViewDrawer5 = (TextView)findViewById(R.id.textViewDrawerChart_5);
+
+        buttonBack = (Button) findViewById(R.id.buttonBackHome);
 
         imageViewDrawerBar_0 = (ImageView)findViewById(R.id.imageViewDrawerBar_0);
         imageViewDrawerBar_1 = (ImageView)findViewById(R.id.imageViewDrawerBar_1);
@@ -64,6 +72,9 @@ public class StatisticsActivity extends ActionBarActivity {
         textViewCountCategories.setText(countCategories+"\tCategories");
 
         int[] distr = db.getDrawerDistribution();
+        if (distr == null) {
+            distr = new int[]{0,0,0,0,0,0};
+        }
 
         int maxDrawer = 0;
         for (int i = 0; i < distr.length; i++) {
@@ -72,25 +83,48 @@ public class StatisticsActivity extends ActionBarActivity {
             }
         }
 
+        TranslateAnimation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, 1000, Animation.RELATIVE_TO_SELF);
+        translateAnimation.setDuration(1000);
+
         textViewDrawer0.setText(distr[0]+""); /* @TODO add +"\n"+"Drawer 1" to label */
         //textViewDrawer0.setAnimation(rotate);
         imageViewDrawerBar_0.getLayoutParams().height = distr[0]*(llHeight/maxDrawer);
+        imageViewDrawerBar_0.startAnimation(translateAnimation);
         textViewDrawer1.setText(distr[1]+"");
         //textViewDrawer1.setAnimation(rotate);
         imageViewDrawerBar_1.getLayoutParams().height = distr[1]*(llHeight/maxDrawer);
+        imageViewDrawerBar_1.startAnimation(translateAnimation);
         textViewDrawer2.setText(distr[2]+"");
         //textViewDrawer2.setAnimation(rotate);
         imageViewDrawerBar_2.getLayoutParams().height = distr[2]*(llHeight/maxDrawer);
+        imageViewDrawerBar_2.startAnimation(translateAnimation);
         textViewDrawer3.setText(distr[3]+"");
         //textViewDrawer3.setAnimation(rotate);
         imageViewDrawerBar_3.getLayoutParams().height = distr[3]*(llHeight/maxDrawer);
+        imageViewDrawerBar_3.startAnimation(translateAnimation);
         textViewDrawer4.setText(distr[4]+"");
         //textViewDrawer4.setAnimation(rotate);
         imageViewDrawerBar_4.getLayoutParams().height = distr[4]*(llHeight/maxDrawer);
+        imageViewDrawerBar_4.startAnimation(translateAnimation);
         textViewDrawer5.setText(distr[5]+"");
         //textViewDrawer5.setAnimation(rotate);
         imageViewDrawerBar_5.getLayoutParams().height = distr[5]*(llHeight/maxDrawer);
+        imageViewDrawerBar_5.startAnimation(translateAnimation);
 
+    }
+
+    /**
+     * Click on Back button
+     * @param view
+     */
+    public void onClick(View view) {
+        int id = view.getId();
+        switch (id) {
+            case R.id.buttonBackHome:
+                Intent myIntent = new Intent(StatisticsActivity.this, Home.class);
+                startActivity(myIntent);
+                break;
+        }
     }
 
     @Override
@@ -102,7 +136,7 @@ public class StatisticsActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_statistics, menu);
+        // getMenuInflater().inflate(R.menu.menu_statistics, menu);
         return true;
     }
 

@@ -29,14 +29,6 @@
             android:label="@string/title_activity_play" >
         </activity>
         <activity
-            android:name=".activity.Statistics"
-            android:label="@string/title_activity_statistics" >
-        </activity>
-        <activity
-            android:name=".activity.MainActivity"
-            android:label="@string/title_activity_main" >
-        </activity>
-        <activity
             android:name=".activity.StatisticsActivity"
             android:label="@string/title_activity_statistics" >
         </activity>

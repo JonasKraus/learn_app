@@ -14,6 +14,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -52,7 +56,7 @@ public class PlayActivity extends ActionBarActivity {
     private int currentDrawer;
     private int countKnownDrawer;
 
-    private final int WHITE = R.color.white;
+    private int WHITE, BLACK, RED, GREEN;
 
     private int countKnown, countNotKnown, countNotViewd, countViewed = 0;
     private List<Integer> uniqueCardIds;
@@ -63,6 +67,9 @@ public class PlayActivity extends ActionBarActivity {
     long timeSwapBuff = 0L;
     long updatedTime = 0L;
     private Runnable runnable;
+
+    private final AlphaAnimation alphaAnimation = new AlphaAnimation(0,1);
+    private final TranslateAnimation translateAnimation= new TranslateAnimation(1000,Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF);
 
     private Runnable updateTimerThread = new Runnable() {
         public void run() {
@@ -89,6 +96,11 @@ public class PlayActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
+        WHITE = getResources().getColor(R.color.white);
+        BLACK = getResources().getColor(R.color.black);
+        GREEN = getResources().getColor(R.color.green_3);
+        RED = getResources().getColor(R.color.red_3);
+
         linearLayoutHintAnswer = (LinearLayout)findViewById(R.id.linearLayOutButtonsHintAnswer);
         linearLayoutHintKnown = (LinearLayout)findViewById(R.id.linearLayOutButtonsKnown);
         linearLayOutDynamic = (LinearLayout)findViewById(R.id.linearLayOutDynamic);
@@ -102,6 +114,9 @@ public class PlayActivity extends ActionBarActivity {
         buttonKnown = (Button) findViewById(R.id.buttonKnown);
         buttonNotKnown = (Button) findViewById(R.id.buttonNotKnown);
         buttonNext.setEnabled(false);
+
+        alphaAnimation.setDuration(300);
+        translateAnimation.setDuration(600);
 
         context = getApplicationContext();
 
@@ -164,6 +179,7 @@ public class PlayActivity extends ActionBarActivity {
             textViewAnswer.setText(curCardType.toString());
             textViewAnswer.setVisibility(View.GONE);
             for (Answer ans: cards.get(cardsPosition).getAnswers()) {
+                /*
                 CheckBox box = new CheckBox(context);
                 box.setText(ans.getAnswer());
                 box.setHint(ans.getAnswer());
@@ -176,10 +192,18 @@ public class PlayActivity extends ActionBarActivity {
                 box.setText(ans.getAnswer());
                 box.setHint(ans.getAnswer());
                 box.setBackgroundColor(WHITE);
-                box.setTextColor(Color.parseColor("#999999"));
+                box.setTextColor(BLACK);
                 box.setPadding(15,15,15,15);
+                Log.d("Color", box.getDrawingCacheBackgroundColor() +", " + WHITE + ", " +box.getBackground() );
+                */
+                CheckBox box = new CheckBox(context);
+                box.setText(ans.getAnswer());
+                box.setPadding(15, 15, 15, 15);
+                box.setTextColor(BLACK);
+                listCheckBox.add(box);
+                linearLayOutDynamic.addView(box);
+                linearLayOutDynamic.setBackgroundColor(WHITE);
             }
-
         }
     }
 
@@ -201,6 +225,7 @@ public class PlayActivity extends ActionBarActivity {
                 buttonKnown.setEnabled(true);
                 if (curCardType == Card.CardType.NOTECARD) {
                     textViewAnswer.setVisibility(View.VISIBLE);
+                    textViewAnswer.startAnimation(alphaAnimation);
                 } else {
                     textViewAnswer.setVisibility(View.GONE);
                     List<Answer>curAns = cards.get(cardsPosition).getAnswers();
@@ -212,9 +237,9 @@ public class PlayActivity extends ActionBarActivity {
                     for (int i = 0; i < curAns.size(); i ++) {
                         listCheckBox.get(i).setEnabled(false);
                         if (listCheckBox.get(i).isChecked() == curAns.get(i).isCorrect()) {
-                            listCheckBox.get(i).setTextColor(Color.GREEN);
+                            listCheckBox.get(i).setTextColor(GREEN);
                         } else {
-                            listCheckBox.get(i).setTextColor(Color.RED);
+                            listCheckBox.get(i).setTextColor(RED);
                             listCheckBox.get(i).setChecked(curAns.get(i).isCorrect());
                             known = false;
                         }
@@ -273,6 +298,12 @@ public class PlayActivity extends ActionBarActivity {
         seekBar.setProgress(cards.get(cardsPosition).getRating());
         seekBar.setEnabled(false);
         buttonNext.setEnabled(false);
+
+        //textViewQuestion.startAnimation(rotateAnimationFull);
+        textViewQuestion.startAnimation(translateAnimation);
+        //linearLayOutDynamic.startAnimation(alphaAnimationInv);
+        //linearLayOutDynamic.startAnimation(rotateAnimationFull);
+        linearLayOutDynamic.startAnimation(translateAnimation);
 
         cardsPosition ++;
         cardsPosition %= cards.size(); // makes the roundtrip
@@ -412,8 +443,12 @@ public class PlayActivity extends ActionBarActivity {
             int count4 = 0;
             int count5 = 0;
             TextView curDrawer = (TextView)promptView.findViewWithTag("drawer_"+currentDrawer);
-            curDrawer.setBackgroundDrawable(drawableBorderHighlight);
-            curDrawer.setTextColor(Color.parseColor("#555555"));
+            //curDrawer.setBackgroundDrawable(drawableBorderHighlight);
+            //curDrawer.setPadding(30,30,30,30);
+            //curDrawer.setTextColor(getResources().getColor(R.color.white));
+            //curDrawer.setTextSize(30);
+            //curDrawer.setTextColor(Color.parseColor("#555555"));
+            curDrawer.setAlpha(1);
             for (Card card : cards) {
                 switch(card.getDrawer()){
                     case 0:

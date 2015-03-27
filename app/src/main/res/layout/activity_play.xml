@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:text="Question: "/>
+        android:text="Card: "/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,10 +20,11 @@
         android:id="@+id/textViewQuestionCounter"
         android:text="0/0\t\t\t0%"/>
 
-
+    <!-- @TODO make scrollviewe -->
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:maxHeight="400dp"
         android:text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
         android:id="@+id/textViewQuestion"
         android:textColor="@color/blue_3"

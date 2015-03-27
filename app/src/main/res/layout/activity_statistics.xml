@@ -14,7 +14,8 @@
         android:id="@+id/textViewCountCategories"
         android:padding="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:background="@color/white"/>
+        android:background="@color/white"
+        android:textColor="@color/blue_3"/>
 
     <TextView
         android:text="Cards"
@@ -23,7 +24,8 @@
         android:id="@+id/textViewCountCards"
         android:padding="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:background="@color/white"/>
+        android:background="@color/white"
+        android:textColor="@color/blue_3"/>
 
     <TextView
         android:layout_width="fill_parent"
@@ -32,12 +34,13 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Drawers"
         android:background="@color/white"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="15dp"
+        android:textColor="@color/blue_3"/>
 
     <LinearLayout
         android:id="@+id/linearLayoutChart"
         android:layout_width="fill_parent"
-        android:layout_height="300dp"
+        android:layout_height="270dp"
         android:orientation="horizontal"
         android:gravity="bottom"
         android:background="@color/white">
@@ -158,4 +161,20 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="bottom">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="back"
+        android:id="@+id/buttonBackHome"
+        android:layout_weight="1"
+        android:background="@drawable/flat_selector_blue"
+        android:textColor="@color/white"
+        android:onClick="onClick"/>
+    </LinearLayout>
 </LinearLayout>

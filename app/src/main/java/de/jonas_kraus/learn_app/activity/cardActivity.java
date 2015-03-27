@@ -50,7 +50,7 @@ public class cardActivity extends ActionBarActivity {
     private List<LinearLayout> linearlayoutList=new ArrayList<LinearLayout>();
     private boolean checkModeChanged = false;
     private byte checkModeChangedCount = 0;
-    private final int BACK_COLOR = R.color.white;
+    private int white;
 
     private Drawable uncheckmark, checkmark;
 
@@ -62,6 +62,8 @@ public class cardActivity extends ActionBarActivity {
         Resources res = getResources();
         uncheckmark = res.getDrawable(R.drawable.uncheckmark);
         checkmark = res.getDrawable(R.drawable.checkmark);
+
+        white = res.getColor(R.color.white);
 
         editTextQuestion = (EditText)findViewById(R.id.editTextQuestion);
         editTextAnswer = (EditText)findViewById(R.id.editTextAnswer);
@@ -257,7 +259,7 @@ public class cardActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_card, menu);
+        // getMenuInflater().inflate(R.menu.menu_card, menu);
         return true;
     }
 
@@ -284,7 +286,7 @@ public class cardActivity extends ActionBarActivity {
         //editText.setHint("Answer");
         //editText.setWidth(Layout.match_parent);
 
-        editText.setBackgroundColor(BACK_COLOR);
+        editText.setBackgroundColor(white);
         editText.setLayoutParams(new LinearLayout.LayoutParams
                 (LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT, 1f) );
         editTextList.add(editText);
@@ -294,7 +296,7 @@ public class cardActivity extends ActionBarActivity {
     {
         final CheckBox txtviewAll=new CheckBox(this);
         txtviewAll.setId(_intID);
-        txtviewAll.setBackgroundColor(BACK_COLOR);
+        txtviewAll.setBackgroundColor(white);
         checkBoxList.add(txtviewAll);
         return txtviewAll;
     }
@@ -325,7 +327,7 @@ public class cardActivity extends ActionBarActivity {
 
         LLMain.setLayoutParams(params);
         LLMain.addView(checkBox);
-        LLMain.setBackgroundColor(BACK_COLOR);
+        LLMain.setBackgroundColor(white);
         LLMain.addView(editText(_intID));
         LLMain.setOrientation(LinearLayout.VERTICAL);
         linearlayoutList.add(LLMain);

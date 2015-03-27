@@ -1,6 +1,7 @@
 package de.jonas_kraus.learn_app.activity;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,6 +21,9 @@ public class Home extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
         buttonCatalogue = (Button) findViewById(R.id.buttonCatalogue);
         buttonTodo = (Button) findViewById(R.id.buttonTodos);
         buttonStats = (Button) findViewById(R.id.buttonStats);

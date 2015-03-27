@@ -18,7 +18,7 @@
             android:id="@+id/textViewTimerValue"
             android:layout_weight="1"
             android:textSize="30dp"
-            android:textColor="#333333"
+            android:textColor="@color/blue_0"
             android:layout_gravity="center"
             android:gravity="center_horizontal"
             />
@@ -37,9 +37,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="15dp"
+        android:padding="10dp"
         android:background="@color/white"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="10dp"
         android:layout_gravity="fill"
         android:gravity="center_horizontal">
 
@@ -52,7 +52,9 @@
             android:padding="15dp"
             android:layout_margin="5dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"/>
+            android:background="@drawable/border_shape"
+            android:alpha="0.3"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,7 +64,9 @@
             android:padding="15dp"
             android:layout_margin="5dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"/>
+            android:background="@drawable/border_shape"
+            android:alpha="0.3"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +76,9 @@
             android:padding="15dp"
             android:layout_margin="5dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"/>
+            android:background="@drawable/border_shape"
+            android:alpha="0.3"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,7 +88,9 @@
             android:padding="15dp"
             android:layout_margin="5dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"/>
+            android:background="@drawable/border_shape"
+            android:alpha="0.3"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -92,7 +100,9 @@
             android:padding="15dp"
             android:layout_margin="5dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"/>
+            android:background="@drawable/border_shape"
+            android:alpha="0.3"
+            android:textStyle="bold"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -102,7 +112,9 @@
             android:padding="15dp"
             android:layout_margin="5dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"/>
+            android:background="@drawable/border_shape"
+            android:alpha="0.3"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 
@@ -124,7 +136,7 @@
             android:text="Known:"
             android:id="@+id/textViewCountKnown"
             android:layout_weight="1"
-            android:textColor="#00cc44"
+            android:textColor="@color/green_3"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -133,7 +145,7 @@
             android:text="Not known:"
             android:id="@+id/textViewCountNotKnown"
             android:layout_weight="1"
-            android:textColor="#990000"
+            android:textColor="@color/red_3"
             />
         </LinearLayout>
         <LinearLayout
@@ -150,7 +162,7 @@
                 android:text="Viewed:"
                 android:id="@+id/textViewCountViewed"
                 android:layout_weight="1"
-                android:textColor="#00cc44"
+                android:textColor="@color/green_3"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -159,7 +171,7 @@
                 android:text="Not viewed:"
                 android:id="@+id/textViewCountNotViewed"
                 android:layout_weight="1"
-                android:textColor="#990000"
+                android:textColor="@color/red_3"
                 />
         </LinearLayout>
     </LinearLayout>

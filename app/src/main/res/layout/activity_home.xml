@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <ImageView
+        android:layout_marginTop="40dp"
         android:layout_width="250dp"
         android:layout_height="300dp"
         android:src="@drawable/flash"
@@ -14,62 +15,64 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_alignParentBottom="true">
-    <Button
-        android:layout_marginTop="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="My Catalogue"
-        android:id="@+id/buttonCatalogue"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:onClick="onClick"
-        android:background="@drawable/flat_selector_blue"
-        android:textColor="@color/light_grey"
-        android:padding="15dp"
-        />
+        android:gravity="bottom">
+        <Button
+            android:layout_marginTop="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="My Catalogue"
+            android:id="@+id/buttonCatalogue"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:onClick="onClick"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"
+            android:padding="15dp"
+            />
 
-    <Button
-        android:layout_marginTop="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Todos"
-        android:id="@+id/buttonTodos"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="onClick"
-        android:background="@drawable/flat_selector_blue"
-        android:textColor="@color/light_grey"/>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
 
-    <Button
-        android:layout_marginTop="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Statistics"
-        android:id="@+id/buttonStats"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="onClick"
-        android:background="@drawable/flat_selector_blue"
-        android:textColor="@color/light_grey"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:id="@+id/buttonSettings"
+                android:onClick="onClick"
+                android:background="@drawable/flat_selector_blue"
+                android:textColor="@color/light_grey"
+                android:layout_weight="1"
+                android:layout_marginRight="5dp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Statistics"
+                android:id="@+id/buttonStats"
+                android:onClick="onClick"
+                android:background="@drawable/flat_selector_blue"
+                android:textColor="@color/light_grey"
+                android:layout_weight="1"
+                android:layout_marginRight="5dp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Todos"
+                android:id="@+id/buttonTodos"
+                android:onClick="onClick"
+                android:background="@drawable/flat_selector_blue"
+                android:textColor="@color/light_grey"
+                android:layout_weight="1"/>
 
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_marginTop="5dp"
-        android:layout_height="wrap_content"
-        android:text="Settings"
-        android:id="@+id/buttonSettings"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="onClick"
-        android:background="@drawable/flat_selector_blue"
-        android:textColor="@color/light_grey"/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

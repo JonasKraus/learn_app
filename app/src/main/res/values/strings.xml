@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">learn_app</string>
+    <string name="app_name">Flash Cards</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_catalogue_home">CatalogueHome</string>
@@ -7,10 +7,9 @@
     <string name="prompt_add_question">Enter Question:</string>
     <string name="prompt_add_answer">Enter Answer:</string>
     <string name="prompt_add_hint">Enter Hint:</string>
-    <string name="title_activity_card">cardActivity</string>
+    <string name="title_activity_card">Card</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_play">PlayActivity</string>
+    <string name="title_activity_play"></string>
     <string name="title_activity_statistics">Statistics</string>
 
 
