@@ -153,14 +153,13 @@ public class cardActivity extends ActionBarActivity {
                         for (int i = 0; i < 2; i++) {
                             LLEnterText.addView(linearlayout(_intMyLineCount));
                             _intMyLineCount++;
-                            Log.d("editMode","angehangt");
                         }
                     } else if (checkModeChanged || (editCard.getType() == Card.CardType.NOTECARD)) { /* @TODO Mode changed set right checkmark*/
                         checkBoxList.removeAll(checkBoxList);
                         for(int i = 0; i< editCard.getAnswers().size(); i++) {
                             LLEnterText.addView(linearlayout(_intMyLineCount));
                             _intMyLineCount++;
-                            checkBoxList.get(i).setButtonDrawable(R.drawable.checkbox_drawable);
+                            checkBoxList.get(i).setButtonDrawable(R.drawable.checkbox_icon);
                             editTextList.get(i).setText(editCard.getAnswers().get(i).getAnswer());
                             checkBoxList.get(i).setChecked(editCard.getAnswers().get(i).isCorrect());
 
@@ -305,7 +304,7 @@ public class cardActivity extends ActionBarActivity {
         LinearLayout LLMain=new LinearLayout(this);
         LLMain.setId(_intID);
         final CheckBox checkBox = checkBox(_intID);
-        checkBox.setButtonDrawable(R.drawable.checkbox_drawable);
+        checkBox.setButtonDrawable(R.drawable.checkbox_icon);
         /*
         checkBox.setClickable(true);
         checkBox.setChecked(true);

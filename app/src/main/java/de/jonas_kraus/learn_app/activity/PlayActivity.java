@@ -197,6 +197,7 @@ public class PlayActivity extends ActionBarActivity {
                 Log.d("Color", box.getDrawingCacheBackgroundColor() +", " + WHITE + ", " +box.getBackground() );
                 */
                 CheckBox box = new CheckBox(context);
+                box.setButtonDrawable(getResources().getDrawable(R.drawable.checkbox_icon));
                 box.setText(ans.getAnswer());
                 box.setPadding(15, 15, 15, 15);
                 box.setTextColor(BLACK);
@@ -238,9 +239,21 @@ public class PlayActivity extends ActionBarActivity {
                         listCheckBox.get(i).setEnabled(false);
                         if (listCheckBox.get(i).isChecked() == curAns.get(i).isCorrect()) {
                             listCheckBox.get(i).setTextColor(GREEN);
+                            if (listCheckBox.get(i).isChecked()) {
+                                listCheckBox.get(i).setButtonDrawable(getResources().getDrawable(R.drawable.checkbox_checked_right));
+                            } else {
+                                listCheckBox.get(i).setButtonDrawable(getResources().getDrawable(R.drawable.checkbox_unchecked_right));
+                            }
+                            listCheckBox.get(i).startAnimation(alphaAnimation);
                         } else {
                             listCheckBox.get(i).setTextColor(RED);
                             listCheckBox.get(i).setChecked(curAns.get(i).isCorrect());
+                            if (listCheckBox.get(i).isChecked()) {
+                                listCheckBox.get(i).setButtonDrawable(getResources().getDrawable(R.drawable.checkbox_checked_wrong));
+                            } else {
+                                listCheckBox.get(i).setButtonDrawable(getResources().getDrawable(R.drawable.checkbox_unchecked_wrong));
+                            }
+                            listCheckBox.get(i).startAnimation(alphaAnimation);
                             known = false;
                         }
                     }
