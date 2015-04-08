@@ -71,10 +71,8 @@ public class StatisticsActivity extends ActionBarActivity {
         textViewCountCards.setText(countCards+"\tCards");
         textViewCountCategories.setText(countCategories+"\tCategories");
 
-        int[] distr = db.getDrawerDistribution();
-        if (distr == null) {
-            distr = new int[]{0,0,0,0,0,0};
-        }
+        int[] distr = new int[]{0,0,0,0,0,0};
+        distr = db.getDrawerDistribution();
 
         int maxDrawer = 0;
         for (int i = 0; i < distr.length; i++) {

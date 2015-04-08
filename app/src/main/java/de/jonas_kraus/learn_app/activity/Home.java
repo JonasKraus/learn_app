@@ -8,6 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import java.sql.SQLException;
 
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
@@ -28,6 +31,13 @@ public class Home extends ActionBarActivity {
         buttonTodo = (Button) findViewById(R.id.buttonTodos);
         buttonStats = (Button) findViewById(R.id.buttonStats);
         buttonSettings = (Button) findViewById(R.id.buttonSettings);
+
+        dbManager = new DbManager(this);
+        try {
+            dbManager.open();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onClick(View view) {
@@ -44,8 +54,12 @@ public class Home extends ActionBarActivity {
                 /* @TODO */
                 break;
             case R.id.buttonStats:
-                Intent myIntentStats = new Intent(Home.this, StatisticsActivity.class);
-                startActivity(myIntentStats);
+                if (dbManager.getCardsCount() > 0) {
+                    Intent myIntentStats = new Intent(Home.this, StatisticsActivity.class);
+                    startActivity(myIntentStats);
+                } else {
+                    Toast.makeText(this, "No data to display!", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }
