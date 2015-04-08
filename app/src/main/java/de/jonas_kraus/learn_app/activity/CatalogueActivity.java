@@ -301,6 +301,11 @@ public class CatalogueActivity extends ListActivity {
                     Toast.makeText(context,"You have to choose at least 5 cards!", Toast.LENGTH_LONG).show();
                 }
                 break;
+            case R.id.statistics:
+                Intent myIntentStats = new Intent(CatalogueActivity.this, StatisticsActivity.class);
+                myIntentStats.putExtra("currentCategoryParent",currentCategoryParent);
+                startActivity(myIntentStats);
+                break;
         }
     }
 

@@ -30,6 +30,9 @@ public class StatisticsActivity extends ActionBarActivity {
     private LinearLayout llChart;
     private Button buttonBack;
 
+    private int currentCategoryParent;
+    private boolean returnToCatatlogue = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +42,18 @@ public class StatisticsActivity extends ActionBarActivity {
             db.open();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        Bundle extras;
+        if (savedInstanceState == null) {
+            extras = getIntent().getExtras();
+            if(extras == null) {
+                currentCategoryParent = -1;
+                returnToCatatlogue = false;
+            } else {
+                currentCategoryParent = extras.getInt("currentCategoryParent");
+                returnToCatatlogue = true;
+            }
         }
 
         textViewDrawer0 = (TextView)findViewById(R.id.textViewDrawerChart_0);
@@ -65,16 +80,16 @@ public class StatisticsActivity extends ActionBarActivity {
         textViewCountCards = (TextView)findViewById(R.id.textViewCountCards);
         textViewCountCategories = (TextView)findViewById(R.id.textViewCountCategories);
 
-        int countCards = db.getCardsCount();
-        int countCategories = db.getCategoryCount();
+        int countCards = db.getCardsCount(currentCategoryParent);
+        int countCategories = db.getCategoryCount(currentCategoryParent);
 
         textViewCountCards.setText(countCards+"\tCards");
         textViewCountCategories.setText(countCategories+"\tCategories");
 
         int[] distr = new int[]{0,0,0,0,0,0};
-        distr = db.getDrawerDistribution();
+        distr = db.getDrawerDistribution(currentCategoryParent);
 
-        int maxDrawer = 0;
+        int maxDrawer = 1;
         for (int i = 0; i < distr.length; i++) {
             if (maxDrawer < distr[i]) {
                 maxDrawer = distr[i];
@@ -119,8 +134,15 @@ public class StatisticsActivity extends ActionBarActivity {
         int id = view.getId();
         switch (id) {
             case R.id.buttonBackHome:
-                Intent myIntent = new Intent(StatisticsActivity.this, Home.class);
-                startActivity(myIntent);
+
+                if (!returnToCatatlogue) {
+                    Intent myIntent = new Intent(StatisticsActivity.this, Home.class);
+                    startActivity(myIntent);
+                } else {
+                    Intent myIntent = new Intent(StatisticsActivity.this, CatalogueActivity.class);
+                    myIntent.putExtra("currentCategoryParent",currentCategoryParent);
+                    startActivity(myIntent);
+                }
                 break;
         }
     }
