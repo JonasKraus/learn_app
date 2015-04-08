@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.sql.SQLException;
+
 /**
  * Created by Jonas on 26.02.2015.
  */
@@ -40,8 +42,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_MARKED_ID = "_id";
     public static final String COLUMN_MARKED_QUESTION_ID = "question_id";
 
+    public static final String TABLE_SETTINGS = "settings";
+    public static final String COLUMN_SETTINGS_SHOW_HINT = "show_hint";
+    public static final String COLUMN_SETTINGS_SHOW_BAR = "show_known_bar";
+    public static final String COLUMN_SETTINGS_MULTIPLECHOICE_CHANGE_ANSWER_ORDER = "multiple_choice_change_answer_order";
+    public static final String COLUMN_SETTINGS_VIEW_RANDOM_CARDS = "view_random_cards";
+    public static final String COLUMN_SETTINGS_VIEW_LAST_DRAWER_CARDS = "view_last_drawer_cards";
+    public static final String COLUMN_SETTINGS_NIGHT_MODE = "night_mode";
+    public static final String COLUMN_SETTINGS_CARDS_ORDER = "cards_order";
+
     private static final String DATABASE_NAME = "learning_cards_db.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 9;
 
     // Database creation sql statement
     private static final String QUESTIONS_CREATE = "create table "
@@ -104,6 +115,25 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             //+ "FOREIGN  KEY("+ COLUMN_MARKED_QUESTION_ID +") REFERENCES "+TABLE_QUESTIONS+"("+COLUMN_QUESTION_ID+") ON DELETE CASCADE "
             + ");";
 
+    // Database creation sql statement
+    private static final String SETTINGS_CREATE = "create table "
+            + TABLE_SETTINGS + "("
+            + COLUMN_SETTINGS_SHOW_HINT
+            + " ineteger DEFAULT 1, "
+            + COLUMN_SETTINGS_SHOW_BAR
+            + " ineteger DEFAULT 1, "
+            + COLUMN_SETTINGS_MULTIPLECHOICE_CHANGE_ANSWER_ORDER
+            + " ineteger DEFAULT 0, "
+            + COLUMN_SETTINGS_VIEW_RANDOM_CARDS
+            + " ineteger DEFAULT 0, "
+            + COLUMN_SETTINGS_VIEW_LAST_DRAWER_CARDS
+            + " ineteger DEFAULT 1, "
+            + COLUMN_SETTINGS_NIGHT_MODE
+            + " ineteger DEFAULT 0, "
+            + COLUMN_SETTINGS_CARDS_ORDER
+            + " ineteger DEFAULT 0"
+            + ");";
+
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -113,8 +143,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
         db.execSQL(QUESTIONS_CREATE);
         db.execSQL(ANSWERS_CREATE);
         db.execSQL(CATEGORY_CREATE);
+        db.execSQL(SETTINGS_CREATE);
         //db.execSQL(MARKED_CREATE);
-        Log.d("created", "tabels");
     }
 
     @Override
@@ -126,6 +156,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANSWERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MARKED);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SETTINGS);
         onCreate(db);
     }
 }

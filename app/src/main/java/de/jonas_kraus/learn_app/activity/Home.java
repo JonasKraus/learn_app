@@ -51,7 +51,8 @@ public class Home extends ActionBarActivity {
                 /* @TODO */
                 break;
             case R.id.buttonSettings:
-                /* @TODO */
+                Intent myIntentSettings = new Intent(Home.this, SettingsActivity.class);
+                startActivity(myIntentSettings);
                 break;
             case R.id.buttonStats:
                 if (dbManager.getCardsCount() > 0) {

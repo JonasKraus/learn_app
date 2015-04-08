@@ -1,0 +1,109 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="de.jonas_kraus.learn_app.activity.SettingsActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:padding="10dp">
+        <CheckBox
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="show hint"
+            android:checked="true"
+            android:id="@+id/settings_checkbox_showHint"
+            android:layout_marginBottom="10dp"
+            android:onClick="onCheckedChange"/>
+        <CheckBox
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="show known bar"
+            android:checked="true"
+            android:id="@+id/settings_checkbox_showKnownBar"
+            android:layout_marginBottom="10dp"
+            android:onClick="onCheckedChange"/>
+        <CheckBox
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="change order of multiplechoice answers"
+            android:checked="false"
+            android:id="@+id/settings_checkbox_multiplechoiceOrder"
+            android:layout_marginBottom="10dp"
+            android:onClick="onCheckedChange"/>
+        <CheckBox
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="View random cards"
+            android:checked="false"
+            android:id="@+id/settings_checkbox_viewRandomCards"
+            android:layout_marginBottom="10dp"
+            android:onClick="onCheckedChange"/>
+        <CheckBox
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="View cards of last drawer"
+            android:checked="true"
+            android:id="@+id/settings_checkbox_viewCardsOfLastDrawer"
+            android:layout_marginBottom="10dp"
+            android:onClick="onCheckedChange"/>
+        <CheckBox
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Night mode"
+            android:checked="false"
+            android:id="@+id/settings_checkbox_nightMode"
+            android:layout_marginBottom="10dp"
+            android:onClick="onCheckedChange"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Order cards by:"/>
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/settings_radiogroupOrder"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/settings_radio_drawer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drawer"
+                android:checked="true"
+                android:layout_marginRight="10dp"/>
+            <RadioButton
+                android:id="@+id/settings_radio_knowledge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Knowledge"
+                android:layout_marginRight="10dp"
+                android:checked="false"/>
+            <RadioButton
+                android:id="@+id/settings_radio_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:checked="false"/>
+
+        </RadioGroup>
+
+    </LinearLayout>
+    <Button
+        android:layout_marginTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:id="@+id/settings_back"
+        android:background="@drawable/flat_selector_blue"
+        android:textColor="@color/white"
+        android:onClick="onClick"/>
+
+</LinearLayout>
