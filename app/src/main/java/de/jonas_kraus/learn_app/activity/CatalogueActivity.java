@@ -292,7 +292,7 @@ public class CatalogueActivity extends ListActivity {
             case R.id.startCards:
                 checkedList = customListAdapter.getCheckedList();
                 /* @TODO new threshold */
-                if (db.getMarkedCards().size() >= 1) {
+                if (db.getMarkedCards(db.isViewCardsOfLastDrawer()).size() >= 1) {
                     Intent myIntentPlay = new Intent(CatalogueActivity.this, PlayActivity.class);
                     myIntentPlay.putExtra("currentCategoryParent", currentCategoryParent);
                     //myIntentPlay.putParcelableArrayListExtra("catalogue", checkedList);

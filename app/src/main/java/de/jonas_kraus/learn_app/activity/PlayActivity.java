@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import de.jonas_kraus.learn_app.Data.Answer;
 import de.jonas_kraus.learn_app.Data.Card;
@@ -47,7 +48,7 @@ public class PlayActivity extends ActionBarActivity {
     private List<Card> cards;
     private int cardsPosition = 0;
     private TextView textViewPercent, textViewAnswer, textViewQuestion, textViewQuestionCounter, textViewTimerValue;
-    private Button buttonNext, buttonKnown, buttonNotKnown, stopTimerValue;
+    private Button buttonNext, buttonKnown, buttonNotKnown, stopTimerValue, buttonHint;
     private Card.CardType curCardType;
     private List<TextView> listTextView;
     private List<CheckBox> listCheckBox;
@@ -67,6 +68,10 @@ public class PlayActivity extends ActionBarActivity {
     long timeSwapBuff = 0L;
     long updatedTime = 0L;
     private Runnable runnable;
+
+    // Settings
+    private boolean isShowHint, isShowKnownBar, isChangeMultipleChoiceAnswers, isViewRandomCards, isViewLastDrawer, nightMode;
+    private int orderType, knownBarVisibility;
 
     private final AlphaAnimation alphaAnimation = new AlphaAnimation(0,1);
     private final TranslateAnimation translateAnimation= new TranslateAnimation(1000,Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF);
@@ -113,6 +118,7 @@ public class PlayActivity extends ActionBarActivity {
         buttonNext = (Button) findViewById(R.id.buttonNext);
         buttonKnown = (Button) findViewById(R.id.buttonKnown);
         buttonNotKnown = (Button) findViewById(R.id.buttonNotKnown);
+        buttonHint = (Button) findViewById(R.id.buttonHint);
         buttonNext.setEnabled(false);
 
         alphaAnimation.setDuration(300);
@@ -123,6 +129,21 @@ public class PlayActivity extends ActionBarActivity {
         drawableBorderHighlight = getResources().getDrawable(R.drawable.border_shape_highlight);
 
         openDb();
+
+        //Settings
+        isShowHint = db.isShowHint();
+        if (!isShowHint) {
+            buttonHint.setVisibility(View.GONE);
+        } else {
+            buttonHint.setVisibility(View.VISIBLE);
+        }
+        isShowKnownBar = db.isShowBar();
+        setKnownBarVisibility();
+        isChangeMultipleChoiceAnswers = db.isOrderMultipleChoiceAnswers(); /* @TODO */
+        isViewRandomCards = db.isViewRandomCards(); /* @TODO */
+        isViewLastDrawer = db.isViewCardsOfLastDrawer();
+        orderType = db.getOrderCards(); /* @TODO */
+        nightMode = db.isNightMode(); /* @TODO */
 
         checkedCatalogue = new ArrayList<Catalogue>();
         cards = new ArrayList<Card>();
@@ -147,13 +168,25 @@ public class PlayActivity extends ActionBarActivity {
 
     }
 
+    private void setKnownBarVisibility() {
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linearLayoutKnownBarHeader);
+        if (!isShowKnownBar) {
+            knownBarVisibility = View.GONE;
+        } else {
+            knownBarVisibility = View.VISIBLE;
+        }
+        seekBar.setVisibility(knownBarVisibility);
+        linearLayout.setVisibility(knownBarVisibility);
+        buttonNext.setEnabled(isShowKnownBar);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         setSeekBarChangeListener();
         openDb();
         //cards = db.getCardsFromMarked();
-        cards = db.getMarkedCards();
+        cards = db.getMarkedCards(isViewLastDrawer);
         uniqueCardIds = new ArrayList<Integer>();
         for (Card card : cards) {
             uniqueCardIds.add(card.getId());
@@ -178,7 +211,12 @@ public class PlayActivity extends ActionBarActivity {
             listCheckBox = new ArrayList<CheckBox>();
             textViewAnswer.setText(curCardType.toString());
             textViewAnswer.setVisibility(View.GONE);
-            for (Answer ans: cards.get(cardsPosition).getAnswers()) {
+            List<Answer>answers = cards.get(cardsPosition).getAnswers();
+            if(isChangeMultipleChoiceAnswers) {
+                long seed = System.nanoTime();
+                Collections.shuffle(answers, new Random(seed));
+            }
+            for (Answer ans: answers) {
                 /*
                 CheckBox box = new CheckBox(context);
                 box.setText(ans.getAnswer());
@@ -507,6 +545,9 @@ public class PlayActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Sets the listener for the known bar
+     */
     private void setSeekBarChangeListener() {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -535,5 +576,14 @@ public class PlayActivity extends ActionBarActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * To set the right buttons enabled from the settings
+     * @param button
+     * @param isEnabled
+     */
+    private void enableButton(Button button, boolean isEnabled) {
+        button.setEnabled(isEnabled);
     }
 }
