@@ -7,7 +7,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp"
+        android:padding="15dp"
         android:background="@color/white"
         android:layout_marginBottom="10dp">
         <TextView
@@ -37,85 +37,141 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:padding="15dp"
+        android:background="@color/white"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="fill"
+        android:gravity="center_horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Overall knowledge:"
+                android:textColor="@color/blue_0"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="0%"
+                android:id="@+id/textViewOverallRating"
+                android:layout_weight="1"
+                android:textSize="30dp"
+                android:textColor="@color/blue_0"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutDrawers"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:padding="10dp"
         android:background="@color/white"
         android:layout_marginBottom="10dp"
         android:layout_gravity="fill"
         android:gravity="center_horizontal">
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
-            android:tag="drawer_0"
-            android:id="@+id/textViewDrawer0"
-            android:padding="15dp"
-            android:layout_margin="5dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"
-            android:alpha="0.3"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:tag="drawer_1"
-            android:id="@+id/textViewDrawer1"
-            android:padding="15dp"
-            android:layout_margin="5dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"
-            android:alpha="0.3"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:tag="drawer_2"
-            android:id="@+id/textViewDrawer2"
-            android:padding="15dp"
-            android:layout_margin="5dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"
-            android:alpha="0.3"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:tag="drawer_3"
-            android:id="@+id/textViewDrawer3"
-            android:padding="15dp"
-            android:layout_margin="5dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"
-            android:alpha="0.3"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:tag="drawer_4"
-            android:id="@+id/textViewDrawer4"
-            android:padding="15dp"
-            android:layout_margin="5dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"
-            android:alpha="0.3"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5"
-            android:tag="drawer_5"
-            android:id="@+id/textViewDrawer5"
-            android:padding="15dp"
-            android:layout_margin="5dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/border_shape"
-            android:alpha="0.3"
-            android:textStyle="bold"/>
+                android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drawers:"
+                android:textColor="@color/blue_0"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:tag="drawer_0"
+                    android:id="@+id/textViewDrawer0"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/border_shape"
+                    android:alpha="0.3"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:tag="drawer_1"
+                    android:id="@+id/textViewDrawer1"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/border_shape"
+                    android:alpha="0.3"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:tag="drawer_2"
+                    android:id="@+id/textViewDrawer2"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/border_shape"
+                    android:alpha="0.3"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:tag="drawer_3"
+                    android:id="@+id/textViewDrawer3"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/border_shape"
+                    android:alpha="0.3"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:tag="drawer_4"
+                    android:id="@+id/textViewDrawer4"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/border_shape"
+                    android:alpha="0.3"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5"
+                    android:tag="drawer_5"
+                    android:id="@+id/textViewDrawer5"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/border_shape"
+                    android:alpha="0.3"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

@@ -49,6 +49,7 @@ public class CatalogueActivity extends ListActivity {
     private Drawable categoryIconScaled, cardIconScaled;
     private CustomList customListAdapter;
     private ArrayList<Catalogue>checkedList;
+    private int MARKED_THRESHOLD = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -292,13 +293,16 @@ public class CatalogueActivity extends ListActivity {
             case R.id.startCards:
                 checkedList = customListAdapter.getCheckedList();
                 /* @TODO new threshold */
-                if (db.getMarkedCards(db.isViewCardsOfLastDrawer()).size() >= 1) {
+                if (db.isViewRandomCards()) {
+                    MARKED_THRESHOLD = 0;
+                }
+                if (db.getMarkedCards().size() >= MARKED_THRESHOLD) {
                     Intent myIntentPlay = new Intent(CatalogueActivity.this, PlayActivity.class);
                     myIntentPlay.putExtra("currentCategoryParent", currentCategoryParent);
                     //myIntentPlay.putParcelableArrayListExtra("catalogue", checkedList);
                     startActivity(myIntentPlay);
                 } else {
-                    Toast.makeText(context,"You have to choose at least 5 cards!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,"You have to choose at least "+MARKED_THRESHOLD+" cards!", Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.statistics:

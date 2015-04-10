@@ -3,20 +3,17 @@ package de.jonas_kraus.learn_app.activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,7 +26,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 import de.jonas_kraus.learn_app.Data.Answer;
@@ -142,7 +138,7 @@ public class PlayActivity extends ActionBarActivity {
         isChangeMultipleChoiceAnswers = db.isOrderMultipleChoiceAnswers(); /* @TODO */
         isViewRandomCards = db.isViewRandomCards(); /* @TODO */
         isViewLastDrawer = db.isViewCardsOfLastDrawer();
-        orderType = db.getOrderCards(); /* @TODO */
+        orderType = db.getCardsOrderType(); /* @TODO */
         nightMode = db.isNightMode(); /* @TODO */
 
         checkedCatalogue = new ArrayList<Catalogue>();
@@ -186,7 +182,11 @@ public class PlayActivity extends ActionBarActivity {
         setSeekBarChangeListener();
         openDb();
         //cards = db.getCardsFromMarked();
-        cards = db.getMarkedCards(isViewLastDrawer);
+        if (!isViewRandomCards) {
+            cards = db.getMarkedCards();
+        } else {
+            cards = db.getAllCardsRandomized();
+        }
         uniqueCardIds = new ArrayList<Integer>();
         for (Card card : cards) {
             uniqueCardIds.add(card.getId());
@@ -357,57 +357,65 @@ public class PlayActivity extends ActionBarActivity {
         linearLayOutDynamic.startAnimation(translateAnimation);
 
         cardsPosition ++;
+        if (orderType == 1 && cardsPosition == cards.size()) {
+            cards = db.getMarkedCards();
+        }
         cardsPosition %= cards.size(); // makes the roundtrip
 
-        int count0 = 0;
-        int count1 = 0;
-        int count2 = 0;
-        int count3 = 0;
-        int count4 = 0;
-        int count5 = 0;
-        for (Card card : cards) {
-            switch(card.getDrawer()){
-                case 0:
-                    count0++;
-                    break;
-                case 1:
-                    count1++;
-                    break;
-                case 2:
-                    count2++;
-                    break;
-                case 3:
-                    count3++;
-                    break;
-                case 4:
-                    count4++;
-                    break;
-                case 5:
-                    count5++;
-                    break;
-            }
+        switch(orderType) {
+            case 0:
+                int count0 = 0;
+                int count1 = 0;
+                int count2 = 0;
+                int count3 = 0;
+                int count4 = 0;
+                int count5 = 0;
+                for (Card card : cards) {
+                    switch(card.getDrawer()){
+                        case 0:
+                            count0++;
+                            break;
+                        case 1:
+                            count1++;
+                            break;
+                        case 2:
+                            count2++;
+                            break;
+                        case 3:
+                            count3++;
+                            break;
+                        case 4:
+                            count4++;
+                            break;
+                        case 5:
+                            count5++;
+                            break;
+                    }
+                }
+                if (currentDrawer == 5 && countKnownDrawer == count5) {
+                    currentDrawer = 0;
+                    countKnownDrawer = 0;
+                }
+                if (count0>0 && currentDrawer <= 0) {
+                    currentDrawer = 0;
+                } else if (count1 >0 && currentDrawer <= 1) {
+                    currentDrawer = 1;
+                } else if (count2 >0 && currentDrawer <= 2) {
+                    currentDrawer = 2;
+                } else if (count3 >0 && currentDrawer <= 3) {
+                    currentDrawer = 3;
+                } else if (count4 >0 && currentDrawer <= 4) {
+                    currentDrawer = 4;
+                } else if (count5 >0 && currentDrawer <= 5) {
+                    currentDrawer = 5;
+                }
+                while(cards.get(cardsPosition).getDrawer() != currentDrawer) {
+                    cardsPosition++;
+                    cardsPosition %= cards.size();
+                }
+                break;
         }
-        if (currentDrawer == 5 && countKnownDrawer == count5) {
-            currentDrawer = 0;
-            countKnownDrawer = 0;
-        }
-        if (count0>0 && currentDrawer <= 0) {
-            currentDrawer = 0;
-        } else if (count1 >0 && currentDrawer <= 1) {
-            currentDrawer = 1;
-        } else if (count2 >0 && currentDrawer <= 2) {
-            currentDrawer = 2;
-        } else if (count3 >0 && currentDrawer <= 3) {
-            currentDrawer = 3;
-        } else if (count4 >0 && currentDrawer <= 4) {
-            currentDrawer = 4;
-        } else if (count5 >0 && currentDrawer <= 5) {
-            currentDrawer = 5;
-        }
-        while(cards.get(cardsPosition).getDrawer() != currentDrawer) {
-            cardsPosition++;
-            cardsPosition %= cards.size();
-        }
+
         if (uniqueCardIds.size()>0) {
             uniqueCardIds.remove((Object) cards.get(cardsPosition).getId());
         }
@@ -478,6 +486,22 @@ public class PlayActivity extends ActionBarActivity {
             TextView textViewNotKnown = (TextView)promptView.findViewById(R.id.textViewCountNotKnown);
             TextView textViewViewed = (TextView)promptView.findViewById(R.id.textViewCountViewed);
             TextView textViewNotViewed = (TextView)promptView.findViewById(R.id.textViewCountNotViewed);
+
+            TextView textViewOverallRating = (TextView)promptView.findViewById(R.id.textViewOverallRating);
+
+            LinearLayout linearLayoutDrawers = (LinearLayout)promptView.findViewById(R.id.linearLayoutDrawers);
+
+            textViewOverallRating.setVisibility(View.VISIBLE);
+            float overallRating = 0.0f;
+            for (Card card : cards) {
+                overallRating += card.getRating();
+            }
+            overallRating /= cards.size();
+            textViewOverallRating.setText(overallRating+"%");
+
+            if (orderType > 0) {
+                linearLayoutDrawers.setVisibility(View.GONE);
+            }
 
             textViewKnown.setText(countKnown+"\tknown");
             textViewNotKnown.setText(countNotKnown+"\tnot known");
