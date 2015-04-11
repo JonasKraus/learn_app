@@ -119,19 +119,19 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     private static final String SETTINGS_CREATE = "create table "
             + TABLE_SETTINGS + "("
             + COLUMN_SETTINGS_SHOW_HINT
-            + " ineteger DEFAULT 1, "
+            + " integer DEFAULT 1, "
             + COLUMN_SETTINGS_SHOW_BAR
-            + " ineteger DEFAULT 1, "
+            + " integer DEFAULT 1, "
             + COLUMN_SETTINGS_MULTIPLECHOICE_CHANGE_ANSWER_ORDER
-            + " ineteger DEFAULT 0, "
+            + " integer DEFAULT 0, "
             + COLUMN_SETTINGS_VIEW_RANDOM_CARDS
-            + " ineteger DEFAULT 0, "
+            + " integer DEFAULT 0, "
             + COLUMN_SETTINGS_VIEW_LAST_DRAWER_CARDS
             + " ineteger DEFAULT 1, "
             + COLUMN_SETTINGS_NIGHT_MODE
-            + " ineteger DEFAULT 0, "
+            + " integer DEFAULT 0, "
             + COLUMN_SETTINGS_CARDS_ORDER
-            + " ineteger DEFAULT 0"
+            + " integer DEFAULT 0"
             + ");";
 
     public MySQLiteHelper(Context context) {

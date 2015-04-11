@@ -3,6 +3,7 @@ package de.jonas_kraus.learn_app.activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -18,6 +19,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,7 +68,7 @@ public class PlayActivity extends ActionBarActivity {
     private Runnable runnable;
 
     // Settings
-    private boolean isShowHint, isShowKnownBar, isChangeMultipleChoiceAnswers, isViewRandomCards, isViewLastDrawer, nightMode;
+    private boolean isShowHint, isShowKnownBar, isChangeMultipleChoiceAnswers, isViewRandomCards, isViewLastDrawer, isNightMode;
     private int orderType, knownBarVisibility;
 
     private final AlphaAnimation alphaAnimation = new AlphaAnimation(0,1);
@@ -97,10 +99,7 @@ public class PlayActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
-        WHITE = getResources().getColor(R.color.white);
-        BLACK = getResources().getColor(R.color.black);
-        GREEN = getResources().getColor(R.color.green_3);
-        RED = getResources().getColor(R.color.red_3);
+        openDb();
 
         linearLayoutHintAnswer = (LinearLayout)findViewById(R.id.linearLayOutButtonsHintAnswer);
         linearLayoutHintKnown = (LinearLayout)findViewById(R.id.linearLayOutButtonsKnown);
@@ -124,8 +123,6 @@ public class PlayActivity extends ActionBarActivity {
 
         drawableBorderHighlight = getResources().getDrawable(R.drawable.border_shape_highlight);
 
-        openDb();
-
         //Settings
         isShowHint = db.isShowHint();
         if (!isShowHint) {
@@ -135,11 +132,11 @@ public class PlayActivity extends ActionBarActivity {
         }
         isShowKnownBar = db.isShowBar();
         setKnownBarVisibility();
-        isChangeMultipleChoiceAnswers = db.isOrderMultipleChoiceAnswers(); /* @TODO */
-        isViewRandomCards = db.isViewRandomCards(); /* @TODO */
+        isChangeMultipleChoiceAnswers = db.isOrderMultipleChoiceAnswers();
+        isViewRandomCards = db.isViewRandomCards();
         isViewLastDrawer = db.isViewCardsOfLastDrawer();
-        orderType = db.getCardsOrderType(); /* @TODO */
-        nightMode = db.isNightMode(); /* @TODO */
+        orderType = db.getCardsOrderType();
+        isNightMode = db.isNightMode(); /* @TODO */
 
         checkedCatalogue = new ArrayList<Catalogue>();
         cards = new ArrayList<Card>();
@@ -161,6 +158,31 @@ public class PlayActivity extends ActionBarActivity {
 
         startTime = SystemClock.uptimeMillis();
         customHandler.postDelayed(updateTimerThread, 0);
+
+        if (!isNightMode) {
+            WHITE = getResources().getColor(R.color.white);
+            BLACK = getResources().getColor(R.color.black);
+        } else {
+
+            RelativeLayout relativeLayoutPlayActivity = (RelativeLayout)findViewById(R.id.relativeLayoutPlayActivity);
+            relativeLayoutPlayActivity.setBackgroundColor(Color.BLACK);
+            LinearLayout linearLayoutKnownBarHeader = (LinearLayout)findViewById(R.id.linearLayoutKnownBarHeader);
+            LinearLayout linearLayoutSeekbar = (LinearLayout)findViewById(R.id.linearLayoutSeekbar);
+            TextView textViewKnown = (TextView)findViewById(R.id.textViewKnown);
+            textViewKnown.setTextColor(getResources().getColor(R.color.white));
+            textViewPercent.setTextColor(getResources().getColor(R.color.white));
+            textViewAnswer.setTextColor(getResources().getColor(R.color.white));
+            linearLayoutKnownBarHeader.setBackgroundColor(Color.BLACK);
+            linearLayoutSeekbar.setBackgroundColor(Color.BLACK);
+            textViewQuestion.setBackgroundColor(Color.BLACK);
+            textViewAnswer.setBackgroundColor(Color.BLACK);
+
+            WHITE = Color.BLACK;
+            BLACK = getResources().getColor(R.color.white);
+
+        }
+        GREEN = getResources().getColor(R.color.green_3);
+        RED = getResources().getColor(R.color.red_3);
 
     }
 
@@ -307,6 +329,7 @@ public class PlayActivity extends ActionBarActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(cards.get(cardsPosition).getHint()).setTitle("Hint");
                 AlertDialog dialog = builder.create();
+                dialog.setInverseBackgroundForced(isNightMode);
                 dialog.show();
                 break;
             case R.id.buttonKnown:
@@ -501,6 +524,9 @@ public class PlayActivity extends ActionBarActivity {
 
             if (orderType > 0) {
                 linearLayoutDrawers.setVisibility(View.GONE);
+            } else {
+                LinearLayout linearLayoutOverallKnowledge = (LinearLayout)promptView.findViewById(R.id.linearLayoutOverallKnowledge);
+                linearLayoutOverallKnowledge.setVisibility(View.GONE);
             }
 
             textViewKnown.setText(countKnown+"\tknown");
