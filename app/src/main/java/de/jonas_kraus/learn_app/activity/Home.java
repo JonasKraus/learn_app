@@ -48,7 +48,8 @@ public class Home extends ActionBarActivity {
                 startActivity(myIntent);
                 break;
             case R.id.buttonTodos:
-                /* @TODO */
+                Intent myIntentTodos = new Intent(Home.this, TodosActivity.class);
+                startActivity(myIntentTodos);
                 break;
             case R.id.buttonSettings:
                 Intent myIntentSettings = new Intent(Home.this, SettingsActivity.class);

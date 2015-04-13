@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,6 +67,10 @@ public class PlayActivity extends ActionBarActivity {
     long timeSwapBuff = 0L;
     long updatedTime = 0L;
     private Runnable runnable;
+
+    private Boolean isTodos, isNewest, isOldest, isDrawers = false;
+    private String limit;
+    private ArrayList<Integer> list;
 
     // Settings
     private boolean isShowHint, isShowKnownBar, isChangeMultipleChoiceAnswers, isViewRandomCards, isViewLastDrawer, isNightMode;
@@ -153,6 +158,12 @@ public class PlayActivity extends ActionBarActivity {
                 //checkedCatalogue = extras.getParcelableArrayList("catalogue");
                 //cards = db.getCardDescendantsFromCatalogues(checkedCatalogue);
                 //Log.d("list", cards.size() + " "+cards.toString());
+                isTodos = extras.getBoolean("isTodos");
+                isNewest = extras.getBoolean("newest");
+                isOldest = extras.getBoolean("oldest");
+                limit = extras.getString("limit");
+                isDrawers = extras.getBoolean("drawers");
+                list = extras.getIntegerArrayList("drawersList");
             }
         }
 
@@ -204,11 +215,15 @@ public class PlayActivity extends ActionBarActivity {
         setSeekBarChangeListener();
         openDb();
         //cards = db.getCardsFromMarked();
-        if (!isViewRandomCards) {
+        if (isTodos) {
+            cards = db.getTodosCards(isNewest, isOldest, limit, isDrawers, list);
+            Log.d("cards", cards.size() + " -> " +  cards.toString());
+        } else if (!isViewRandomCards && !isTodos) {
             cards = db.getMarkedCards();
-        } else {
+        } else if (isViewRandomCards && !isTodos){
             cards = db.getAllCardsRandomized();
         }
+        Log.d("cards", cards.size() + " -> " +  cards.toString());
         uniqueCardIds = new ArrayList<Integer>();
         for (Card card : cards) {
             uniqueCardIds.add(card.getId());
@@ -477,9 +492,14 @@ public class PlayActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_play_close) {
-            Intent myIntent = new Intent(PlayActivity.this, CatalogueActivity.class);
-            myIntent.putExtra("currentCategoryParent",currentCategoryParent);
-            startActivity(myIntent);
+            if (!isTodos) {
+                Intent myIntent = new Intent(PlayActivity.this, CatalogueActivity.class);
+                myIntent.putExtra("currentCategoryParent", currentCategoryParent);
+                startActivity(myIntent);
+            } else {
+                Intent intent = new Intent(PlayActivity.this, TodosActivity.class);
+                startActivity(intent);
+            }
             return true;
         } else if (id == R.id.action_play_stats) {
 
