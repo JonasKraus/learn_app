@@ -506,18 +506,19 @@ public class PlayActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_play_close) {
-            if (!isTodos) {
-                Intent myIntent = new Intent(PlayActivity.this, CatalogueActivity.class);
-                myIntent.putExtra("currentCategoryParent", currentCategoryParent);
-                startActivity(myIntent);
-            } else {
-                Intent intent = new Intent(PlayActivity.this, TodosActivity.class);
-                startActivity(intent);
-            }
-            return true;
+            return showStatisticsPrompt(true);
         } else if (id == R.id.action_play_stats) {
+            return showStatisticsPrompt(false);
+        } else if(id == R.id.action_play_swap_direction) {
+            Collections.rotate(cards, cards.size()); /* @TODO rotate the list */
+            return true;
+        }
 
-            customHandler.postDelayed(runnable, 0); // refreshes the timer
+        return super.onOptionsItemSelected(item);
+    }
+
+    private boolean showStatisticsPrompt(boolean isClose) {
+        customHandler.postDelayed(runnable, 0); // refreshes the timer
 
             /* @TODO Button is in view disabled - make real stop
             stopTimerValue.setOnClickListener(new OnClickListener() {
@@ -529,104 +530,119 @@ public class PlayActivity extends ActionBarActivity {
                 }
             });
             */
-            LayoutInflater layoutInflater = LayoutInflater.from(context);
-            View promptView = layoutInflater.inflate(R.layout.prompt_stats, null);
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.prompt_stats, null);
 
-            TextView text0 = (TextView)promptView.findViewById(R.id.textViewDrawer0);
-            TextView text1 = (TextView)promptView.findViewById(R.id.textViewDrawer1);
-            TextView text2 = (TextView)promptView.findViewById(R.id.textViewDrawer2);
-            TextView text3 = (TextView)promptView.findViewById(R.id.textViewDrawer3);
-            TextView text4 = (TextView)promptView.findViewById(R.id.textViewDrawer4);
-            TextView text5 = (TextView)promptView.findViewById(R.id.textViewDrawer5);
 
-            TextView textViewKnown = (TextView)promptView.findViewById(R.id.textViewCountKnown);
-            TextView textViewNotKnown = (TextView)promptView.findViewById(R.id.textViewCountNotKnown);
-            TextView textViewViewed = (TextView)promptView.findViewById(R.id.textViewCountViewed);
-            TextView textViewNotViewed = (TextView)promptView.findViewById(R.id.textViewCountNotViewed);
-
-            TextView textViewOverallRating = (TextView)promptView.findViewById(R.id.textViewOverallRating);
-
-            LinearLayout linearLayoutDrawers = (LinearLayout)promptView.findViewById(R.id.linearLayoutDrawers);
-
-            textViewOverallRating.setVisibility(View.VISIBLE);
-            float overallRating = 0.0f;
-            for (Card card : cards) {
-                overallRating += card.getRating();
-            }
-            overallRating /= cards.size();
-            textViewOverallRating.setText(overallRating+"%");
-
-            if (orderType > 0) {
-                linearLayoutDrawers.setVisibility(View.GONE);
-            } else {
-                LinearLayout linearLayoutOverallKnowledge = (LinearLayout)promptView.findViewById(R.id.linearLayoutOverallKnowledge);
-                linearLayoutOverallKnowledge.setVisibility(View.GONE);
-            }
-
-            textViewKnown.setText(countKnown+"\tknown");
-            textViewNotKnown.setText(countNotKnown+"\tnot known");
-            textViewViewed.setText((countViewed+1)+"\tviewed");
-            textViewNotViewed.setText((countNotViewd)+"\tnot viewed");
-
-            textViewTimerValue = (TextView) promptView.findViewById(R.id.textViewTimerValue);
-            stopTimerValue = (Button) promptView.findViewById(R.id.stopTimerValue);
-
-            int count0 = 0;
-            int count1 = 0;
-            int count2 = 0;
-            int count3 = 0;
-            int count4 = 0;
-            int count5 = 0;
-            TextView curDrawer = (TextView)promptView.findViewWithTag("drawer_"+currentDrawer);
-            //curDrawer.setBackgroundDrawable(drawableBorderHighlight);
-            //curDrawer.setPadding(30,30,30,30);
-            //curDrawer.setTextColor(getResources().getColor(R.color.white));
-            //curDrawer.setTextSize(30);
-            //curDrawer.setTextColor(Color.parseColor("#555555"));
-            curDrawer.setAlpha(1);
-            for (Card card : cards) {
-                switch(card.getDrawer()){
-                    case 0:
-                        count0++;
-                        break;
-                    case 1:
-                        count1++;
-                        break;
-                    case 2:
-                        count2++;
-                        break;
-                    case 3:
-                        count3++;
-                        break;
-                    case 4:
-                        count4++;
-                        break;
-                    case 5:
-                        count5++;
-                        break;
+        final Button buttonCloseCards = (Button)promptView.findViewById(R.id.buttonCloseCards);
+        if (isClose) {
+            buttonCloseCards.setVisibility(View.VISIBLE);
+            buttonCloseCards.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!isTodos) {
+                        Intent myIntent = new Intent(PlayActivity.this, CatalogueActivity.class);
+                        myIntent.putExtra("currentCategoryParent", currentCategoryParent);
+                        buttonCloseCards.setOnClickListener(null);
+                        startActivity(myIntent);
+                    } else {
+                        Intent intent = new Intent(PlayActivity.this, TodosActivity.class);
+                        buttonCloseCards.setOnClickListener(null);
+                        startActivity(intent);
+                    }
                 }
-            }
-            text0.setText(count0+"");
-            text1.setText(count1+"");
-            text2.setText(count2+"");
-            text3.setText(count3+"");
-            text4.setText(count4+"");
-            text5.setText(count5+"");
-
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setView(promptView);
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.setIcon(R.drawable.information_black);
-            alertDialog.setTitle("Statistics");
-            alertDialog.show();
-
-            return true;
-        } else if(id == R.id.action_play_swap_direction) {
-            Collections.rotate(cards,cards.size()); /* @TODO rotate the list */
-            return true;
+            });
         }
 
-        return super.onOptionsItemSelected(item);
+        TextView text0 = (TextView)promptView.findViewById(R.id.textViewDrawer0);
+        TextView text1 = (TextView)promptView.findViewById(R.id.textViewDrawer1);
+        TextView text2 = (TextView)promptView.findViewById(R.id.textViewDrawer2);
+        TextView text3 = (TextView)promptView.findViewById(R.id.textViewDrawer3);
+        TextView text4 = (TextView)promptView.findViewById(R.id.textViewDrawer4);
+        TextView text5 = (TextView)promptView.findViewById(R.id.textViewDrawer5);
+
+        TextView textViewKnown = (TextView)promptView.findViewById(R.id.textViewCountKnown);
+        TextView textViewNotKnown = (TextView)promptView.findViewById(R.id.textViewCountNotKnown);
+        TextView textViewViewed = (TextView)promptView.findViewById(R.id.textViewCountViewed);
+        TextView textViewNotViewed = (TextView)promptView.findViewById(R.id.textViewCountNotViewed);
+
+        TextView textViewOverallRating = (TextView)promptView.findViewById(R.id.textViewOverallRating);
+
+        LinearLayout linearLayoutDrawers = (LinearLayout)promptView.findViewById(R.id.linearLayoutDrawers);
+
+        textViewOverallRating.setVisibility(View.VISIBLE);
+        float overallRating = 0.0f;
+        for (Card card : cards) {
+            overallRating += card.getRating();
+        }
+        overallRating /= cards.size();
+        textViewOverallRating.setText(overallRating+"%");
+
+        if (orderType > 0) {
+            linearLayoutDrawers.setVisibility(View.GONE);
+        } else {
+            LinearLayout linearLayoutOverallKnowledge = (LinearLayout)promptView.findViewById(R.id.linearLayoutOverallKnowledge);
+            linearLayoutOverallKnowledge.setVisibility(View.GONE);
+        }
+
+        textViewKnown.setText(countKnown+"\tknown");
+        textViewNotKnown.setText(countNotKnown+"\tnot known");
+        textViewViewed.setText((countViewed+1)+"\tviewed");
+        textViewNotViewed.setText((countNotViewd)+"\tnot viewed");
+
+        textViewTimerValue = (TextView) promptView.findViewById(R.id.textViewTimerValue);
+        stopTimerValue = (Button) promptView.findViewById(R.id.stopTimerValue);
+
+        int count0 = 0;
+        int count1 = 0;
+        int count2 = 0;
+        int count3 = 0;
+        int count4 = 0;
+        int count5 = 0;
+        TextView curDrawer = (TextView)promptView.findViewWithTag("drawer_"+currentDrawer);
+        //curDrawer.setBackgroundDrawable(drawableBorderHighlight);
+        //curDrawer.setPadding(30,30,30,30);
+        //curDrawer.setTextColor(getResources().getColor(R.color.white));
+        //curDrawer.setTextSize(30);
+        //curDrawer.setTextColor(Color.parseColor("#555555"));
+        curDrawer.setAlpha(1);
+        for (Card card : cards) {
+            switch(card.getDrawer()){
+                case 0:
+                    count0++;
+                    break;
+                case 1:
+                    count1++;
+                    break;
+                case 2:
+                    count2++;
+                    break;
+                case 3:
+                    count3++;
+                    break;
+                case 4:
+                    count4++;
+                    break;
+                case 5:
+                    count5++;
+                    break;
+            }
+        }
+        text0.setText(count0+"");
+        text1.setText(count1+"");
+        text2.setText(count2+"");
+        text3.setText(count3+"");
+        text4.setText(count4+"");
+        text5.setText(count5+"");
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setView(promptView);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setIcon(R.drawable.information_black);
+        alertDialog.setTitle("Statistics");
+        alertDialog.show();
+
+        return true;
     }
 
     /**

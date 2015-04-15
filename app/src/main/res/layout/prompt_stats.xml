@@ -232,4 +232,21 @@
                 />
         </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linearLayoutClose"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="fill"
+        android:gravity="center_horizontal">
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/flat_selector_blue"
+            android:text="ok"
+            android:textColor="@color/white"
+            android:id="@+id/buttonCloseCards"
+            android:visibility="gone"
+            android:layout_margin="10dp"/>
+    </LinearLayout>
 </LinearLayout>
