@@ -360,7 +360,9 @@ public class PlayActivity extends ActionBarActivity {
             case R.id.buttonNotKnown:
                 countNotKnown++;
                 known = false;
+                //Card cardToRemove = cards.get(cardsPosition); // Alternative zum entfernen
                 cards.add(cardsPosition, db.updateRating(cards.get(cardsPosition).getId(), 0, known, cards.get(cardsPosition).getDrawer()));
+                //cards.remove(cardToRemove); Alternative
                 cards.remove(cardsPosition+1);
                 changeToNextCard();
                 break;
@@ -384,9 +386,6 @@ public class PlayActivity extends ActionBarActivity {
     }
 
     private void changeToNextCard() {
-        seekBar.setProgress(cards.get(cardsPosition).getRating());
-        seekBar.setEnabled(false);
-        buttonNext.setEnabled(false);
 
         //textViewQuestion.startAnimation(rotateAnimationFull);
         textViewQuestion.startAnimation(translateAnimation);
@@ -395,10 +394,13 @@ public class PlayActivity extends ActionBarActivity {
         linearLayOutDynamic.startAnimation(translateAnimation);
 
         cardsPosition ++;
-        if (orderType == 1 && cardsPosition == cards.size()) {
+        if (orderType == 1 && cardsPosition == cards.size()) { // loads the same cards again with the changed values
             cards = db.getMarkedCards();
         }
         cardsPosition %= cards.size(); // makes the roundtrip
+        seekBar.setProgress(cards.get(cardsPosition).getRating());
+        seekBar.setEnabled(false);
+        buttonNext.setEnabled(false);
 
         switch(orderType) {
             case 0:
@@ -408,6 +410,7 @@ public class PlayActivity extends ActionBarActivity {
                 int count3 = 0;
                 int count4 = 0;
                 int count5 = 0;
+                List<Integer> drawerFillings = new ArrayList<Integer>(Collections.nCopies(6, 0));
                 for (Card card : cards) {
                     switch(card.getDrawer()){
                         case 0:
@@ -429,6 +432,13 @@ public class PlayActivity extends ActionBarActivity {
                             count5++;
                             break;
                     }
+                    drawerFillings = new ArrayList<>();
+                    drawerFillings.add(count0);
+                    drawerFillings.add(count1);
+                    drawerFillings.add(count2);
+                    drawerFillings.add(count3);
+                    drawerFillings.add(count4);
+                    drawerFillings.add(count5);
                 }
                 if (currentDrawer == 5 && countKnownDrawer == count5) {
                     currentDrawer = 0;
@@ -450,6 +460,10 @@ public class PlayActivity extends ActionBarActivity {
                 while(cards.get(cardsPosition).getDrawer() != currentDrawer) {
                     cardsPosition++;
                     cardsPosition %= cards.size();
+                    if (drawerFillings.get(currentDrawer) == 0) {
+                        currentDrawer++;
+                        currentDrawer %= 6;
+                    }
                 }
                 break;
         }
