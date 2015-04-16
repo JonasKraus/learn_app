@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import java.sql.SQLException;
 
@@ -21,6 +23,8 @@ public class SettingsActivity extends ActionBarActivity {
     private CheckBox boxShowHint, boxShowKnownBar, boxOrderMultiplechoiceAnswers, boxViewRandomCards, boxViewLastDrawer, boxNightMode;
     private RadioButton radioOrderByKnowledge, radioOrderByDrawer, radioOrderByDate;
     private RadioGroup radioGroupOrder;
+    private TextView textViewTextSizeQuestions, textViewTextSizeAnswers;
+    private SeekBar seekBarTextSizeQuestions, seekBarTextSizeAnswers;
     private DbManager db;
 
     @Override
@@ -38,6 +42,11 @@ public class SettingsActivity extends ActionBarActivity {
         radioOrderByDrawer = (RadioButton) findViewById(R.id.settings_radio_drawer);
         radioOrderByKnowledge = (RadioButton) findViewById(R.id.settings_radio_date);
         radioGroupOrder = (RadioGroup) findViewById(R.id.settings_radiogroupOrder);
+        textViewTextSizeAnswers = (TextView)findViewById(R.id.textViewSettingsTextSizeAnswers);
+        textViewTextSizeQuestions = (TextView)findViewById(R.id.textViewSettingsTextSizeQuestions);
+        seekBarTextSizeAnswers = (SeekBar)findViewById(R.id.seekBarSettingsTextSizeAnswers);
+        seekBarTextSizeQuestions = (SeekBar)findViewById(R.id.seekBarSettingsTextSizeQuestions);
+
         int id_first = R.id.settings_radio_drawer;
         int id_second = R.id.settings_radio_knowledge;
         int id_third = R.id.settings_radio_date;
@@ -75,6 +84,54 @@ public class SettingsActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         setOnCheckedChangeListenrOfRadioGroupOrder();
+        setSeekBarTextSizeListener();
+        int textSizeQuestions = db.getTextSizeQuestions();
+        int textSizeAnswers = db.getTextSizeAnswers();
+        Log.d("fontsize", textSizeAnswers + " " + textSizeQuestions);
+        textViewTextSizeAnswers.setTextSize(textSizeAnswers);
+        textViewTextSizeQuestions.setTextSize(textSizeQuestions);
+        seekBarTextSizeAnswers.setProgress(textSizeAnswers - 10); /* @TODO  form db*/
+        seekBarTextSizeQuestions.setProgress(textSizeQuestions-10); /* @TODO  form db*/
+    }
+
+    private void setSeekBarTextSizeListener() {
+        seekBarTextSizeQuestions.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                //seekBar.setProgress(progress+10);
+                textViewTextSizeQuestions.setText(progress + 10 + "Pt");
+                textViewTextSizeQuestions.setTextSize(progress + 10);
+                db.setTextSizeQuestions(progress+10);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        seekBarTextSizeAnswers.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                textViewTextSizeAnswers.setText(progress + 10 + "Pt");
+                textViewTextSizeAnswers.setTextSize(progress + 10);
+                db.setTextSizeAnswers(progress+10);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     private void setOnCheckedChangeListenrOfRadioGroupOrder() {
@@ -124,6 +181,8 @@ public class SettingsActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         radioGroupOrder.setOnCheckedChangeListener(null);
+        seekBarTextSizeAnswers.setOnSeekBarChangeListener(null);
+        seekBarTextSizeQuestions.setOnSeekBarChangeListener(null);
         db.close();
     }
 

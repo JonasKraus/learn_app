@@ -49,10 +49,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_SETTINGS_VIEW_RANDOM_CARDS = "view_random_cards";
     public static final String COLUMN_SETTINGS_VIEW_LAST_DRAWER_CARDS = "view_last_drawer_cards";
     public static final String COLUMN_SETTINGS_NIGHT_MODE = "night_mode";
+    public static final String COLUMN_SETTINGS_TEXTSIZE_QUESTIONS = "textsize_questions";
+    public static final String COLUMN_SETTINGS_TEXTSIZE_ANSWERS = "textsize_answers";
     public static final String COLUMN_SETTINGS_CARDS_ORDER = "cards_order";
 
     private static final String DATABASE_NAME = "learning_cards_db.db";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 11;
 
     // Database creation sql statement
     private static final String QUESTIONS_CREATE = "create table "
@@ -130,6 +132,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + " ineteger DEFAULT 1, "
             + COLUMN_SETTINGS_NIGHT_MODE
             + " integer DEFAULT 0, "
+            + COLUMN_SETTINGS_TEXTSIZE_QUESTIONS
+            + " integer DEFAULT 18, "
+            + COLUMN_SETTINGS_TEXTSIZE_ANSWERS
+            + " integer DEFAULT 14, "
             + COLUMN_SETTINGS_CARDS_ORDER
             + " integer DEFAULT 0"
             + ");";

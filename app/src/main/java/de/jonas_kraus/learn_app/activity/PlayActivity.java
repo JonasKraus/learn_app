@@ -113,7 +113,9 @@ public class PlayActivity extends ActionBarActivity {
         seekBar.setEnabled(false);
         textViewPercent = (TextView) findViewById(R.id.textViewPercent);
         textViewQuestion = (TextView) findViewById(R.id.textViewQuestion);
+        textViewQuestion.setTextSize(db.getTextSizeQuestions());
         textViewAnswer = (TextView) findViewById(R.id.textViewAnswer);
+        textViewAnswer.setTextSize(db.getTextSizeAnswers());
         textViewQuestionCounter = (TextView) findViewById(R.id.textViewQuestionCounter);
         buttonNext = (Button) findViewById(R.id.buttonNext);
         buttonKnown = (Button) findViewById(R.id.buttonKnown);
@@ -345,6 +347,7 @@ public class PlayActivity extends ActionBarActivity {
                 builder.setMessage(cards.get(cardsPosition).getHint()).setTitle("Hint");
                 AlertDialog dialog = builder.create();
                 dialog.setInverseBackgroundForced(isNightMode);
+                /* @TODO set text size to value from db */
                 dialog.show();
                 break;
             case R.id.buttonKnown:
