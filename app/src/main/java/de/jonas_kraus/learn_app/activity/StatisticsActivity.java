@@ -24,7 +24,8 @@ import de.jonas_kraus.learn_app.R;
 
 public class StatisticsActivity extends ActionBarActivity {
 
-    private TextView textViewDrawer0, textViewDrawer1, textViewDrawer2, textViewDrawer3, textViewDrawer4, textViewDrawer5, textViewCountCards, textViewCountCategories;
+    private TextView textViewDrawer0, textViewDrawer1, textViewDrawer2, textViewDrawer3, textViewDrawer4, textViewDrawer5, textViewCountCards, textViewCountCategories,
+    textViewCountPlayedCards, textViewCountKnown, textViewCountNotKnown, textViewOverallTime;
     private ImageView imageViewDrawerBar_0, imageViewDrawerBar_1, imageViewDrawerBar_2, imageViewDrawerBar_3, imageViewDrawerBar_4, imageViewDrawerBar_5;
     private DbManager db;
     private LinearLayout llChart;
@@ -62,6 +63,27 @@ public class StatisticsActivity extends ActionBarActivity {
         textViewDrawer3 = (TextView)findViewById(R.id.textViewDrawerChart_3);
         textViewDrawer4 = (TextView)findViewById(R.id.textViewDrawerChart_4);
         textViewDrawer5 = (TextView)findViewById(R.id.textViewDrawerChart_5);
+
+        textViewCountPlayedCards = (TextView)findViewById(R.id.textViewCountPlayedCards);
+        textViewCountKnown = (TextView)findViewById(R.id.textViewStatsCountKnown);
+        textViewCountNotKnown = (TextView)findViewById(R.id.textViewStatsCountNotKnown);
+        textViewOverallTime = (TextView)findViewById(R.id.textViewStatsCountOverallTime);
+
+        textViewCountPlayedCards.setText(db.getCountCardsStatistics()+" times viewed a card");
+        textViewCountKnown.setText(db.getCountKnownStatistics()+" times known");
+        textViewCountNotKnown.setText(db.getCountNotKnownStatistics()+" times not known");
+
+        int secs = db.getTimeStatistics();
+        int mins = secs / 60;
+        int hours = mins / 60;
+        int days = hours / 24;
+        hours = hours % 24;
+        secs = secs % 60;
+        textViewOverallTime.setText(
+                    days + " Days and "
+                    + String.format("%02d",hours) + ":"
+                    + String.format("%02d",mins%60) + ":"
+                    + String.format("%02d", secs)+" in total time");
 
         buttonBack = (Button) findViewById(R.id.buttonBackHome);
 

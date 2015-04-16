@@ -53,8 +53,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_SETTINGS_TEXTSIZE_ANSWERS = "textsize_answers";
     public static final String COLUMN_SETTINGS_CARDS_ORDER = "cards_order";
 
+    public static final String TABLE_STATISTICS = "statistics";
+    public static final String COLUMN_STATISTICS_ID = "_id";
+    public static final String COLUMN_STATISTICS_NUM_CARDS = "num_cards";
+    public static final String COLUMN_STATISTICS_NUM_KNOWN = "num_known";
+    public static final String COLUMN_STATISTICS_NUM_NOT_KNOWN = "num_not_known";
+    public static final String COLUMN_STATISTICS_NUM_VIEWED = "num_viewed";
+    public static final String COLUMN_STATISTICS_NUM_NOT_VIEWED = "num_not_viewed";
+    public static final String COLUMN_STATISTICS_TIME = "time";
+
     private static final String DATABASE_NAME = "learning_cards_db.db";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
 
     // Database creation sql statement
     private static final String QUESTIONS_CREATE = "create table "
@@ -140,6 +149,25 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + " integer DEFAULT 0"
             + ");";
 
+    // Database creation sql statement
+    private static final String STATISTICS_CREATE = "create table "
+            + TABLE_STATISTICS + "("
+            + COLUMN_STATISTICS_ID
+            + " integer primary key autoincrement, "
+            + COLUMN_STATISTICS_NUM_CARDS
+            + " integer NOT NULL, "
+            + COLUMN_STATISTICS_NUM_KNOWN
+            + " integer DEFAULT 0, "
+            + COLUMN_STATISTICS_NUM_NOT_KNOWN
+            + " integer DEFAULT 0, "
+            + COLUMN_STATISTICS_NUM_VIEWED
+            + " ineteger DEFAULT 0, "
+            + COLUMN_STATISTICS_NUM_NOT_VIEWED
+            + " integer DEFAULT 0, "
+            + COLUMN_STATISTICS_TIME
+            + " integer DEFAULT 0 "
+            + ");";
+
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -150,6 +178,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
         db.execSQL(ANSWERS_CREATE);
         db.execSQL(CATEGORY_CREATE);
         db.execSQL(SETTINGS_CREATE);
+        db.execSQL(STATISTICS_CREATE);
         //db.execSQL(MARKED_CREATE);
     }
 
@@ -163,6 +192,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MARKED);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SETTINGS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_STATISTICS);
         onCreate(db);
     }
 }

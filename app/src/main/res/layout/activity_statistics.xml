@@ -1,186 +1,233 @@
-<ScrollView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="de.jonas_kraus.learn_app.activity.StatisticsActivity"
-    android:orientation="vertical">
+    tools:context="de.jonas_kraus.learn_app.activity.StatisticsActivity">
 
-    <TextView
-        android:text="Categories"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewCountCategories"
-        android:padding="10dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:background="@color/white"
-        android:textColor="@color/blue_3"/>
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:text="Cards"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewCountCards"
-        android:padding="10dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:background="@color/white"
-        android:textColor="@color/blue_3"/>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Drawers"
-        android:background="@color/white"
-        android:layout_marginTop="15dp"
-        android:textColor="@color/blue_3"/>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:text="Drawers"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/blue_3" />
 
-    <LinearLayout
-        android:id="@+id/linearLayoutChart"
-        android:layout_width="fill_parent"
-        android:layout_height="270dp"
-        android:orientation="horizontal"
-        android:gravity="bottom"
-        android:background="@color/white">
+            <LinearLayout
+                android:id="@+id/linearLayoutChart"
+                android:layout_width="fill_parent"
+                android:layout_height="270dp"
+                android:background="@color/white"
+                android:gravity="bottom"
+                android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/border_shape"
-            android:layout_weight="1"
-            android:id="@+id/imageViewDrawerBar_0"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/border_shape"
-            android:layout_weight="1"
-            android:id="@+id/imageViewDrawerBar_1"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/border_shape"
-            android:layout_weight="1"
-            android:id="@+id/imageViewDrawerBar_2"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/border_shape"
-            android:layout_weight="1"
-            android:id="@+id/imageViewDrawerBar_3"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/border_shape"
-            android:layout_weight="1"
-            android:id="@+id/imageViewDrawerBar_4"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/border_shape"
-            android:layout_weight="1"
-            android:id="@+id/imageViewDrawerBar_5"/>
+                <ImageView
+                    android:id="@+id/imageViewDrawerBar_0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_shape"
+                    android:padding="10dp" />
+
+                <ImageView
+                    android:id="@+id/imageViewDrawerBar_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_shape"
+                    android:padding="10dp" />
+
+                <ImageView
+                    android:id="@+id/imageViewDrawerBar_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_shape"
+                    android:padding="10dp" />
+
+                <ImageView
+                    android:id="@+id/imageViewDrawerBar_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_shape"
+                    android:padding="10dp" />
+
+                <ImageView
+                    android:id="@+id/imageViewDrawerBar_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_shape"
+                    android:padding="10dp" />
+
+                <ImageView
+                    android:id="@+id/imageViewDrawerBar_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_shape"
+                    android:padding="10dp" />
 
 
-    </LinearLayout>
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="bottom"
-        android:background="@color/white">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="bottom"
+                android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:id="@+id/textViewDrawerChart_0"
-            android:layout_margin="10dp"
-            android:padding="10dp"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:id="@+id/textViewDrawerChart_1"
-            android:layout_margin="10dp"
-            android:padding="10dp"
-            android:gravity="center_horizontal"
-            android:layout_weight="1"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:id="@+id/textViewDrawerChart_2"
-            android:layout_margin="10dp"
-            android:padding="10dp"
-            android:gravity="center_horizontal"
-            android:layout_weight="1"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:id="@+id/textViewDrawerChart_3"
-            android:layout_margin="10dp"
-            android:padding="10dp"
-            android:gravity="center_horizontal"
-            android:layout_weight="1"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:id="@+id/textViewDrawerChart_4"
-            android:layout_margin="10dp"
-            android:padding="10dp"
-            android:gravity="center_horizontal"
-            android:layout_weight="1"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:id="@+id/textViewDrawerChart_5"
-            android:layout_margin="10dp"
-            android:padding="10dp"
-            android:gravity="center_horizontal"
-            android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/textViewDrawerChart_0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:padding="10dp"
+                    android:text="0" />
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/textViewDrawerChart_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:padding="10dp"
+                    android:text="0" />
 
-    <LinearLayout
-        android:layout_marginTop="10dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="bottom">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="back"
-        android:id="@+id/buttonBackHome"
-        android:layout_weight="1"
-        android:background="@drawable/flat_selector_blue"
-        android:textColor="@color/white"
-        android:onClick="onClick"/>
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/textViewDrawerChart_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:padding="10dp"
+                    android:text="0" />
 
+                <TextView
+                    android:id="@+id/textViewDrawerChart_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:padding="10dp"
+                    android:text="0" />
+
+                <TextView
+                    android:id="@+id/textViewDrawerChart_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:padding="10dp"
+                    android:text="0" />
+
+                <TextView
+                    android:id="@+id/textViewDrawerChart_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:padding="10dp"
+                    android:text="0" />
+
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/textViewCountCategories"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:layout_marginTop="15dp"
+                android:text="Categories"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/blue_3" />
+
+            <TextView
+                android:id="@+id/textViewCountCards"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:text="Cards"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/blue_3" />
+
+            <TextView
+                android:id="@+id/textViewCountPlayedCards"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:text="Viewed Cards:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/blue_3" />
+            <TextView
+                android:id="@+id/textViewStatsCountKnown"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:text="Known:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/blue_3" />
+            <TextView
+                android:id="@+id/textViewStatsCountNotKnown"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:text="Not Known:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/blue_3" />
+            <TextView
+                android:id="@+id/textViewStatsCountOverallTime"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:text="Overall time:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/blue_3" />
+            <Button
+                android:layout_marginTop="15dp"
+                android:id="@+id/buttonBackHome"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/flat_selector_blue"
+                android:onClick="onClick"
+                android:text="back"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
-</ScrollView>

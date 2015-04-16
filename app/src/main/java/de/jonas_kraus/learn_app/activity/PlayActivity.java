@@ -1,5 +1,6 @@
 package de.jonas_kraus.learn_app.activity;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -71,6 +73,7 @@ public class PlayActivity extends ActionBarActivity {
     private Boolean isTodos, isNewest, isOldest, isDrawers = false;
     private String limit;
     private ArrayList<Integer> list;
+    private int milliseconds = 0;
 
     // Settings
     private boolean isShowHint, isShowKnownBar, isChangeMultipleChoiceAnswers, isViewRandomCards, isViewLastDrawer, isNightMode;
@@ -88,7 +91,7 @@ public class PlayActivity extends ActionBarActivity {
             int mins = secs / 60;
             int hours = mins / 60;
             secs = secs % 60;
-            int milliseconds = (int) (updatedTime % 1000);
+            milliseconds = secs;
             if (textViewTimerValue != null) {
                 textViewTimerValue.setText("" + hours + ":"
                         + String.format("%02d",mins%60) + ":"
@@ -343,12 +346,20 @@ public class PlayActivity extends ActionBarActivity {
                 }
                 break;
             case R.id.buttonHint:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(cards.get(cardsPosition).getHint()).setTitle("Hint");
-                AlertDialog dialog = builder.create();
-                dialog.setInverseBackgroundForced(isNightMode);
-                /* @TODO set text size to value from db */
-                dialog.show();
+                TextView title = new TextView(context);
+                title.setText("Hint");
+                title.setTextColor(getResources().getColor(R.color.white));
+                title.setTextSize(db.getTextSizeQuestions());
+                title.setPadding(45, 45, 45, 45);
+                title.setBackgroundDrawable(getResources().getDrawable(R.drawable.flat_selector_blue_actionbar));
+                AlertDialog builder = new AlertDialog.Builder(this).setMessage(cards.get(cardsPosition).getHint()).setCustomTitle(title).show();
+                /* @TODO Nightmode */
+                TextView textView = (TextView) builder.findViewById(android.R.id.message);
+                if (isNightMode) {
+                    textView.setTextColor(getResources().getColor(R.color.white));
+                    textView.setBackgroundColor(getResources().getColor(R.color.black));
+                }
+                textView.setTextSize(db.getTextSizeAnswers());
                 break;
             case R.id.buttonKnown:
                 known = true;
@@ -547,10 +558,12 @@ public class PlayActivity extends ActionBarActivity {
                         Intent myIntent = new Intent(PlayActivity.this, CatalogueActivity.class);
                         myIntent.putExtra("currentCategoryParent", currentCategoryParent);
                         buttonCloseCards.setOnClickListener(null);
+                        db.createStatistic(cards.size(), countKnown, countNotKnown, countViewed, countNotViewd, milliseconds);
                         startActivity(myIntent);
                     } else {
                         Intent intent = new Intent(PlayActivity.this, TodosActivity.class);
                         buttonCloseCards.setOnClickListener(null);
+                        db.createStatistic(cards.size(), countKnown, countNotKnown, countViewed, countNotViewd, milliseconds);
                         startActivity(intent);
                     }
                 }
@@ -642,7 +655,13 @@ public class PlayActivity extends ActionBarActivity {
         alertDialogBuilder.setView(promptView);
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.setIcon(R.drawable.information_black);
-        alertDialog.setTitle("Statistics");
+        TextView title = new TextView(context);
+        title.setText("Statistics");
+        title.setTextColor(getResources().getColor(R.color.white));
+        title.setTextSize(db.getTextSizeQuestions());
+        title.setPadding(45, 45, 45, 45);
+        title.setBackgroundDrawable(getResources().getDrawable(R.drawable.flat_selector_blue_actionbar));
+        alertDialog.setCustomTitle(title);
         alertDialog.show();
 
         return true;

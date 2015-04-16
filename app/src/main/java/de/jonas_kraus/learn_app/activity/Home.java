@@ -38,6 +38,9 @@ public class Home extends ActionBarActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        dbManager.setFirstSettings();
+
     }
 
     public void onClick(View view) {

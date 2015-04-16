@@ -58,8 +58,6 @@ public class SettingsActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
-        db.setFirstSettings();
-
         int checkedRadioIndex = db.getCardsOrderType();
 
         boxShowHint.setChecked(db.isShowHint());
