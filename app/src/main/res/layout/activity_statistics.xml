@@ -218,16 +218,42 @@
                 android:text="Overall time:"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/blue_3" />
-            <Button
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayoutGraph"
+                android:orientation="vertical">
+
+                </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:layout_marginTop="15dp"
+                    android:id="@+id/buttonBackHome"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/flat_selector_blue"
+                    android:onClick="onClick"
+                    android:text="back"
+                    android:textColor="@color/white" />
+                <Button
+                    android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
-                android:id="@+id/buttonBackHome"
+                android:id="@+id/buttonGraph"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/flat_selector_blue"
                 android:onClick="onClick"
-                android:text="back"
+                android:text="graphs"
                 android:textColor="@color/white" />
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

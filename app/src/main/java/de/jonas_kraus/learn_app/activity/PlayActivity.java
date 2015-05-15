@@ -279,6 +279,7 @@ public class PlayActivity extends ActionBarActivity {
                 CheckBox box = new CheckBox(context);
                 box.setButtonDrawable(getResources().getDrawable(R.drawable.checkbox_icon));
                 box.setText(ans.getAnswer());
+                box.setTextSize(db.getTextSizeAnswers());
                 box.setPadding(15, 15, 15, 15);
                 box.setTextColor(BLACK);
                 listCheckBox.add(box);

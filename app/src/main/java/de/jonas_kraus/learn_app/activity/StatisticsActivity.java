@@ -4,23 +4,28 @@ package de.jonas_kraus.learn_app.activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.sql.SQLException;
 
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
+import de.jonas_kraus.learn_app.Util.GraphView;
 
 public class StatisticsActivity extends ActionBarActivity {
 
@@ -38,6 +43,15 @@ public class StatisticsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
+        ///////////////////////////////////
+        float[] values = new float[] { 2.0f,1.5f, 2.5f, 1.0f , 3.0f };
+        String[] verlabels = new String[] { "great", "ok", "bad" };
+        String[] horlabels = new String[] { "today", "tomorrow", "next week", "next month" };
+        GraphView graphView = new GraphView(this, values, "GraphViewDemo",horlabels, verlabels, GraphView.LINE);
+        //////////////////////////////////////////////
+        graphView.setPadding(15,15,15,15);
+        LinearLayout linearLayoutGraph = (LinearLayout)findViewById(R.id.linearLayoutGraph);
+        linearLayoutGraph.addView(graphView);
         db = new DbManager(this);
         try {
             db.open();
@@ -145,7 +159,6 @@ public class StatisticsActivity extends ActionBarActivity {
         //textViewDrawer5.setAnimation(rotate);
         imageViewDrawerBar_5.getLayoutParams().height = distr[5]*(llHeight/maxDrawer);
         imageViewDrawerBar_5.startAnimation(translateAnimation);
-
     }
 
     /**
@@ -166,6 +179,9 @@ public class StatisticsActivity extends ActionBarActivity {
                     startActivity(myIntent);
                 }
                 break;
+            case R.id.buttonGraph:
+                Intent intent = new Intent(StatisticsActivity.this, GraphActivity.class);
+                startActivity(intent);
         }
     }
 

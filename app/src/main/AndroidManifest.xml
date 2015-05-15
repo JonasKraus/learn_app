@@ -40,6 +40,10 @@
             android:name=".activity.TodosActivity"
             android:label="@string/title_activity_todos" >
         </activity>
+        <activity
+            android:name=".activity.GraphActivity"
+            android:label="@string/title_activity_graph" >
+        </activity>
     </application>
 
 </manifest>
