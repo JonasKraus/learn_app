@@ -12,7 +12,7 @@ import java.util.List;
 
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
-import de.jonas_kraus.learn_app.Util.GraphView;
+//import de.jonas_kraus.learn_app.Util.GraphView;
 
 public class GraphActivity extends ActionBarActivity {
 
@@ -42,6 +42,7 @@ public class GraphActivity extends ActionBarActivity {
             //verlabels[i] = (vals.get(i)/60)+"min";
             horlabels[i] = i+"";
         }
+        /* @TODO Kaputt gemacht!!
         GraphView graphView = new GraphView(this, values, "GraphViewDemo",horlabels, verlabels, GraphView.LINE);
         //////////////////////////////////////////////
         graphView.setPadding(15,15,15,15);
@@ -50,6 +51,7 @@ public class GraphActivity extends ActionBarActivity {
         setContentView(relativeLayout);
         Log.d("Test", "" + graphView.getMeasuredWidth());
         Log.d("Test ll", "" + relativeLayout.getWidth());
+        */
     }
 
 
