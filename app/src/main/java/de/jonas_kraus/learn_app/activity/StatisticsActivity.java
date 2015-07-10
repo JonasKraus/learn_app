@@ -20,7 +20,7 @@ import java.sql.SQLException;
 
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
-import de.jonas_kraus.learn_app.Util.GraphView;
+//import de.jonas_kraus.learn_app.Util.GraphView;
 
 public class StatisticsActivity extends ActionBarActivity {
 
@@ -38,6 +38,7 @@ public class StatisticsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
+        /** @TODO kaputt
         ///////////////////////////////////
         float[] values = new float[] { 2.0f,1.5f, 2.5f, 1.0f , 3.0f };
         String[] verlabels = new String[] { "great", "ok", "bad" };
@@ -47,6 +48,7 @@ public class StatisticsActivity extends ActionBarActivity {
         graphView.setPadding(15,15,15,15);
         LinearLayout linearLayoutGraph = (LinearLayout)findViewById(R.id.linearLayoutGraph);
         linearLayoutGraph.addView(graphView);
+        */
         db = new DbManager(this);
         try {
             db.open();

@@ -82,4 +82,12 @@ public class Catalogue implements Parcelable {
         }
     }
 
+    /**
+     * unsets the icon
+     * used for json output
+     */
+    public void unsetIcon() {
+        this.icon = null;
+    }
+
 }

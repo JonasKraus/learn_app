@@ -9,7 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +25,18 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,19 +115,19 @@ public class CatalogueActivity extends ListActivity {
                 //Category curCategory;
                 Card curCard;
 
-                if ( curCatalogue.getCategory() != null ) { // Jump to subcategory
+                if (curCatalogue.getCategory() != null) { // Jump to subcategory
                     curCategory = curCatalogue.getCategory();
                     currentCategoryParent = curCategory.getId();
                     setListViewWithCatalogueByLevel(currentCategoryParent);
 
-                    buttonCategoryBack.setText("../"+curCategory.getName());
+                    buttonCategoryBack.setText("../" + curCategory.getName());
 
-                } else if (curCatalogue.getCard() != null ) { /* @TODO Preview of Card */
+                } else if (curCatalogue.getCard() != null) { /* @TODO Preview of Card */
                     curCard = curCatalogue.getCard();
                     //Toast.makeText(context,"This is a card: "+curCard.getQuestion(), Toast.LENGTH_SHORT).show();
                     Intent myIntent = new Intent(CatalogueActivity.this, cardActivity.class);
-                    myIntent.putExtra("currentCategoryParent",currentCategoryParent);
-                    myIntent.putExtra("card",curCatalogue.getCard());
+                    myIntent.putExtra("currentCategoryParent", currentCategoryParent);
+                    myIntent.putExtra("card", curCatalogue.getCard());
                     startActivity(myIntent);
                 }
 
@@ -125,13 +139,13 @@ public class CatalogueActivity extends ListActivity {
 
                 final Catalogue curCatalogue = (Catalogue) getListAdapter().getItem(position);
 
-                if ( curCatalogue.getCategory() != null ) {
+                if (curCatalogue.getCategory() != null) {
                     curCategory = curCatalogue.getCategory();
 
                     LayoutInflater layoutInflater = LayoutInflater.from(context);
                     promptView = layoutInflater.inflate(R.layout.prompt_add_category, null);
 
-                    EditText name = (EditText)promptView.findViewById(R.id.promptAddCatalogueInput);
+                    EditText name = (EditText) promptView.findViewById(R.id.promptAddCatalogueInput);
 
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                     alertDialogBuilder.setView(promptView);
@@ -139,7 +153,7 @@ public class CatalogueActivity extends ListActivity {
                     alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            EditText name = (EditText)promptView.findViewById(R.id.promptAddCatalogueInput);
+                            EditText name = (EditText) promptView.findViewById(R.id.promptAddCatalogueInput);
                             curCategory.setName(name.getText().toString());
                             db.updateCategory(curCategory);
                             setListViewWithCatalogueByLevel(currentCategoryParent);
@@ -148,30 +162,42 @@ public class CatalogueActivity extends ListActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
                         }
+                    }).setNeutralButton("Export", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int i) {
+                            try {
+                                exportCategory(curCatalogue);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            dialog.cancel();
+                        }
                     });
 
                     AlertDialog alertDialog = alertDialogBuilder.create();
 
 
                     if (curCategory.getName().length() > CHAR_THRESHOLD) {
-                        alertDialog.setTitle("Edit: "+curCategory.getName().substring(0, CHAR_THRESHOLD -2)+"...");
+                        alertDialog.setTitle("Edit: " + curCategory.getName().substring(0, CHAR_THRESHOLD - 2) + "...");
                     } else {
-                        alertDialog.setTitle("Edit: "+curCategory.getName());
+                        alertDialog.setTitle("Edit: " + curCategory.getName());
                     }
                     alertDialog.setIcon(categoryIconScaled);
                     name.setTextKeepState(curCategory.getName());
                     alertDialog.show();
 
-                }  else if (curCatalogue.getCard() != null ) {
+                } else if (curCatalogue.getCard() != null) {
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            switch (which){
+                            switch (which) {
                                 case DialogInterface.BUTTON_POSITIVE:
                                     //Yes button clicked
                                     db.deleteCard(curCatalogue.getCard().getId());
                                     setListViewWithCatalogueByLevel(currentCategoryParent);
-                                    Toast.makeText(context,"Card deleted",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Card deleted", Toast.LENGTH_SHORT).show();
                                     break;
 
                                 case DialogInterface.BUTTON_NEGATIVE:
@@ -186,9 +212,9 @@ public class CatalogueActivity extends ListActivity {
                     builder.setIcon(cardIconScaled);
                     String quest = curCatalogue.getCard().getQuestion();
                     if (quest.length() > CHAR_THRESHOLD) {
-                        builder.setTitle("Delete: "+quest.substring(0, CHAR_THRESHOLD -2)+"...");
+                        builder.setTitle("Delete: " + quest.substring(0, CHAR_THRESHOLD - 2) + "...");
                     } else {
-                        builder.setTitle("Delete: "+quest);
+                        builder.setTitle("Delete: " + quest);
                     }
                     builder.setMessage("Are you sure you want to delete this card?").setPositiveButton("Yes", dialogClickListener)
                             .setNegativeButton("No", dialogClickListener).show();
@@ -196,6 +222,58 @@ public class CatalogueActivity extends ListActivity {
                 return true;
             }
         });
+    }
+
+    private void exportCategory(Catalogue curCatalogue) throws IOException, JSONException {
+        /*@TODO export to json */
+        curCatalogue.unsetIcon();
+        Category category = curCatalogue.getCategory();
+        List<Card> cards =  db.getCards(category);
+        Gson gson = new Gson();
+        Log.d("gson", gson.toJson(curCatalogue)+" category_ "+ gson.toJson(category) + " cards_ " +  gson.toJson(cards)+ " dir "+ context.getFilesDir()+"");
+
+        String filename = "category.json";
+        File file = context.getDir("Exports", Context.MODE_PRIVATE);
+        String string = gson.toJson(category);
+        FileOutputStream outputStream;
+
+        String ret = "";
+        //JSONObject jsonObject = new JSONObject("test");
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(string.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            InputStream inputStream = openFileInput(filename);
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+                //ret = ret.replace("\"", "\\\"");
+                //jsonObject = new JSONObject(ret);
+
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        } /*catch (JSONException e) {
+            e.printStackTrace();
+        }*/
+        Log.d("gson ret", gson.toJson(gson.fromJson(ret, Category.class))+"");
     }
 
     @Deprecated
