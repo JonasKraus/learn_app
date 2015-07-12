@@ -120,6 +120,18 @@ public class DbManager {
     }
 
     /**
+     * Creates cards from a given list
+     * @param cards
+     * @param id
+     */
+    public void createCards(List<Card> cards, int id) {
+        for (Card card : cards) {
+            card.setCategoryId(id);
+            createCard(card);
+        }
+    }
+
+    /**
      * Creating all given answers
      * @param questionId
      * @param answers
@@ -144,7 +156,7 @@ public class DbManager {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_CATEGORY_PARENT, category.getParentId());
         values.put(MySQLiteHelper.COLUMN_CATEGORY_NAME, category.getName());
-        category.setId((int)database.insert(MySQLiteHelper.TABLE_CATEGORIES,null,values));
+        category.setId((int) database.insert(MySQLiteHelper.TABLE_CATEGORIES, null, values));
         return category;
     }
 
@@ -478,7 +490,7 @@ public class DbManager {
 
     private void updateEditAnswer(List<Answer> answers) {
         database.delete(MySQLiteHelper.TABLE_ANSWERS,MySQLiteHelper.COLUMN_ANSWER_QUESTION_ID + "=" + answers.get(0).getQuestionId(),null);
-        createAnswer(answers.get(0).getQuestionId(),answers);
+        createAnswer(answers.get(0).getQuestionId(), answers);
     }
 
     public void deleteCard(int id) {
@@ -521,7 +533,7 @@ public class DbManager {
     }
 
     private Card getCardById(int id) {
-        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS,allQuestionColumns,MySQLiteHelper.COLUMN_QUESTION_ID + " = " + id,null,null,null,null);
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS, allQuestionColumns, MySQLiteHelper.COLUMN_QUESTION_ID + " = " + id, null, null, null, null);
         if (cursor.moveToFirst()) {
             String type = cursor.getString(1);
             String question = cursor.getString(2);
@@ -580,7 +592,7 @@ public class DbManager {
     }
 
     public void deleteAllMarks() {
-        database.delete(MySQLiteHelper.TABLE_MARKED,null,null);
+        database.delete(MySQLiteHelper.TABLE_MARKED, null, null);
         //database.execSQL("Drop Table "+ MySQLiteHelper.TABLE_MARKED+";");
     }
 
@@ -935,7 +947,7 @@ public class DbManager {
         }
 
         Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS,allQuestionColumns ,whereClause, null, null, null, orderBy, limit);
-        Log.d("WHERE", whereClause + " ORDER BY " + orderBy + " LIMIT "+limit);
+        Log.d("WHERE", whereClause + " ORDER BY " + orderBy + " LIMIT " + limit);
         if (cursor.moveToFirst()) {
             do {
                 int _id = cursor.getInt(0);
@@ -963,7 +975,7 @@ public class DbManager {
         values.put(MySQLiteHelper.COLUMN_STATISTICS_NUM_VIEWED, countViewed);
         values.put(MySQLiteHelper.COLUMN_STATISTICS_NUM_NOT_VIEWED, countNotViewed);
         values.put(MySQLiteHelper.COLUMN_STATISTICS_TIME, milliseconds);
-        database.insert(MySQLiteHelper.TABLE_STATISTICS, null,values);
+        database.insert(MySQLiteHelper.TABLE_STATISTICS, null, values);
     }
 
     public int getCountCardsStatistics() {
@@ -1052,4 +1064,6 @@ public class DbManager {
         cursor.close();
         return max;
     }
+
+
 }

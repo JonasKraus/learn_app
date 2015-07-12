@@ -26,6 +26,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -232,35 +234,39 @@ public class CatalogueActivity extends ListActivity {
         Gson gson = new Gson();
         Log.d("gson", gson.toJson(curCatalogue)+" category_ "+ gson.toJson(category) + " cards_ " +  gson.toJson(cards)+ " dir "+ context.getFilesDir()+"");
 
-        String filename = "category.json";
-        File file = context.getDir("Exports", Context.MODE_PRIVATE);
-        String string = gson.toJson(category);
+        String filenameCat = "category.json";
+        String filenameCards = "cards.json";
+        String stringCards = gson.toJson(cards);
+        Log.d("to gson cards ", stringCards);
+        String stringCat = gson.toJson(category);
         FileOutputStream outputStream;
 
-        String ret = "";
+
+
+        String retCat = "";
         //JSONObject jsonObject = new JSONObject("test");
         try {
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write(string.getBytes());
+            outputStream = openFileOutput(filenameCat, Context.MODE_PRIVATE);
+            outputStream.write(stringCat.getBytes());
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
-            InputStream inputStream = openFileInput(filename);
+            InputStream inputStreamCat = openFileInput(filenameCat);
 
-            if ( inputStream != null ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            if ( inputStreamCat != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCat);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
+                String receiveStringCat = "";
                 StringBuilder stringBuilder = new StringBuilder();
 
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append(receiveString);
+                while ( (receiveStringCat = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveStringCat);
                 }
 
-                inputStream.close();
-                ret = stringBuilder.toString();
+                inputStreamCat.close();
+                retCat = stringBuilder.toString();
                 //ret = ret.replace("\"", "\\\"");
                 //jsonObject = new JSONObject(ret);
 
@@ -273,7 +279,54 @@ public class CatalogueActivity extends ListActivity {
         } /*catch (JSONException e) {
             e.printStackTrace();
         }*/
-        Log.d("gson ret", gson.toJson(gson.fromJson(ret, Category.class))+"");
+        Category importedCat = gson.fromJson(retCat, Category.class);
+        importedCat.setName(importedCat.getName()+" *imported*");
+        //importedCat.setParentId(-1); //make sure to bee in root @TODO make choosable
+
+
+        String retCards = "";
+        //JSONObject jsonObject = new JSONObject("test");
+        try {
+            outputStream = openFileOutput(filenameCards, Context.MODE_PRIVATE);
+            outputStream.write(stringCards.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            InputStream inputStreamCards = openFileInput(filenameCards);
+
+            if ( inputStreamCards != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCards);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveStringCards = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveStringCards = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveStringCards);
+                }
+
+                inputStreamCards.close();
+                retCards = stringBuilder.toString();
+                //ret = ret.replace("\"", "\\\"");
+                //jsonObject = new JSONObject(ret);
+
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        } /*catch (JSONException e) {
+            e.printStackTrace();
+        }*/
+        Type listType = new TypeToken<ArrayList<Card>>() {
+        }.getType();
+        List<Card> importedCards = new Gson().fromJson(retCards, listType);
+
+        Category category1 = db.createCategory(importedCat);
+        db.createCards(importedCards, category1.getId());
+        Log.d("gson ret", gson.toJson(gson.fromJson(retCat, Category.class))+" gson cards ret" + retCards + importedCards);
     }
 
     @Deprecated
