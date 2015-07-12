@@ -82,6 +82,16 @@
                 android:id="@+id/buttonCardNew"
                 android:onClick="onClick"
                 android:background="@drawable/flat_selector_blue"
+                android:textColor="@color/light_grey"
+                android:layout_marginRight="10dp"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Import"
+                android:id="@+id/buttonImport"
+                android:onClick="onClick"
+                android:background="@drawable/flat_selector_blue"
                 android:textColor="@color/light_grey"/>
         </LinearLayout>
     </LinearLayout>

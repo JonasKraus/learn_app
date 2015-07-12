@@ -277,7 +277,6 @@ public class CatalogueActivity extends ListActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        importCategory();
     }
 
     private void importCategory() {
@@ -337,13 +336,13 @@ public class CatalogueActivity extends ListActivity {
             Log.e("login activity", "Can not read file: " + e.toString());
         }
         Category importedCat = gson.fromJson(retCat, Category.class);
-        importedCat.setName(importedCat.getName()+" *imported*");
+        importedCat.setName(importedCat.getName() + " *imported*");
         //importedCat.setParentId(-1); //make sure to bee in root @TODO make choosable
         Type listType = new TypeToken<ArrayList<Card>>() {
         }.getType();
         List<Card> importedCards = new Gson().fromJson(retCards, listType);
         db.createCards(importedCards, db.createCategory(importedCat).getId()); // Creates category and cards
-        Log.d("gson ret", gson.toJson(gson.fromJson(retCat, Category.class)) + " gson cards ret" + retCards + importedCards);
+        setListViewWithCatalogueByLevel(currentCategoryParent);
     }
 
     @Deprecated
@@ -458,6 +457,9 @@ public class CatalogueActivity extends ListActivity {
                 myIntentStats.putExtra("currentCategoryParent",currentCategoryParent);
                 startActivity(myIntentStats);
                 break;
+            case R.id.buttonImport: {
+                importCategory();
+            }
         }
     }
 
@@ -506,6 +508,5 @@ public class CatalogueActivity extends ListActivity {
         listViewCatalogue.setOnItemLongClickListener(null);
         System.gc();
     }
-
 
 }
