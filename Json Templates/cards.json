@@ -1,0 +1,33 @@
+[
+    {
+        "answers":
+            [
+                {
+                    "answer": "Anwort einer normalen frage"
+                }
+             ],
+            "hint": "Hinweis zur Frage",
+            "question": "Standart Frage",
+            "type": "NOTECARD"
+    },
+    {
+        "answers":
+            [
+                {
+                    "answer": "falsch",
+                    "correct": false
+                },
+                {
+                    "answer": "richtig",
+                    "correct": true
+                },
+                {
+                    "answer": "richtig",
+                    "correct": true
+                }
+            ],
+            "hint": "Hinweis zur Frage",
+            "question": "Multiple Choice Frage",
+            "type": "MULTIPLECHOICE"
+    }
+]

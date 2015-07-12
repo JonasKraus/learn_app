@@ -240,7 +240,6 @@ public class CatalogueActivity extends ListActivity {
         String filenameCat = "category.json";
         String filenameCards = "cards.json";
         String stringCards = gson.toJson(cards);
-        Log.d("to gson cards ", stringCards);
         String stringCat = gson.toJson(category);
         FileOutputStream outputStream;
 
@@ -257,14 +256,13 @@ public class CatalogueActivity extends ListActivity {
             } else {
                 aBoolean = false;
             }
-            File fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) , "flashcards");
+            File fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) , "/flashcards");
             if (! fileNew.exists()){
                 Log.d("dir ", "file dosent exist");
                 if (! fileNew.mkdirs()){
                     Log.e("dir ", "Directory not created");
                 }
             }
-            Log.d("content res",  " " + fileNew.exists() +  " " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
             outputStream = new FileOutputStream(new File(fileNew.getPath() + File.separator +"category.json"));
             outputStream.write(stringCat.getBytes());
             outputStream.close();
@@ -274,8 +272,11 @@ public class CatalogueActivity extends ListActivity {
             outputStream = openFileOutput(filenameCards, Context.MODE_PRIVATE);
             outputStream.write(stringCards.getBytes());
             outputStream.close();
+
+            Toast.makeText(context,"Exported to " + fileNew.getPath() + File.separator,Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(context,"Something went wrong at export",Toast.LENGTH_LONG).show();
         }
     }
 
