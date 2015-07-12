@@ -2,6 +2,7 @@ package de.jonas_kraus.learn_app.activity;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +35,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -241,19 +244,57 @@ public class CatalogueActivity extends ListActivity {
         String stringCat = gson.toJson(category);
         FileOutputStream outputStream;
 
-
-
-        String retCat = "";
-        //JSONObject jsonObject = new JSONObject("test");
         try {
             outputStream = openFileOutput(filenameCat, Context.MODE_PRIVATE);
+            ContentResolver cr = getContentResolver();
+            File file1 = Environment.getDataDirectory();
+            File file2 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+            String state = Environment.getExternalStorageState();
+            Boolean aBoolean = false;
+            if (Environment.MEDIA_MOUNTED.equals(state)) {
+                aBoolean =  true;
+            } else {
+                aBoolean = false;
+            }
+            File fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) , "flashcards");
+            if (! fileNew.exists()){
+                Log.d("dir ", "file dosent exist");
+                if (! fileNew.mkdirs()){
+                    Log.e("dir ", "Directory not created");
+                }
+            }
+            Log.d("content res",  " " + fileNew.exists() +  " " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+            outputStream = new FileOutputStream(new File(fileNew.getPath() + File.separator +"category.json"));
             outputStream.write(stringCat.getBytes());
+            outputStream.close();
+            outputStream = new FileOutputStream(new File(fileNew.getPath() + File.separator +"cards.json"));
+            outputStream.write(stringCards.getBytes());
+            outputStream.close();
+            outputStream = openFileOutput(filenameCards, Context.MODE_PRIVATE);
+            outputStream.write(stringCards.getBytes());
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        importCategory();
+    }
+
+    private void importCategory() {
+        Gson gson = new Gson();
+
+        String filenameCat = "category.json";
+        String filenameCards = "cards.json";
+        File fileCat = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+File.separator+"flashcards"+File.separator+filenameCat);
+        File fileCards = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+File.separator+"flashcards"+File.separator+filenameCards);
+        String retCat = "";
+        String retCards = "";
+
+        ContentResolver cr = getContentResolver();
+        //InputStream is = cr.openInputStream(imageUri);
+
         try {
-            InputStream inputStreamCat = openFileInput(filenameCat);
+            InputStream inputStreamCat = new FileInputStream(fileCat.getPath());
 
             if ( inputStreamCat != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCat);
@@ -267,8 +308,6 @@ public class CatalogueActivity extends ListActivity {
 
                 inputStreamCat.close();
                 retCat = stringBuilder.toString();
-                //ret = ret.replace("\"", "\\\"");
-                //jsonObject = new JSONObject(ret);
 
             }
         }
@@ -276,57 +315,35 @@ public class CatalogueActivity extends ListActivity {
             Log.e("login activity", "File not found: " + e.toString());
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
-        } /*catch (JSONException e) {
-            e.printStackTrace();
-        }*/
-        Category importedCat = gson.fromJson(retCat, Category.class);
-        importedCat.setName(importedCat.getName()+" *imported*");
-        //importedCat.setParentId(-1); //make sure to bee in root @TODO make choosable
-
-
-        String retCards = "";
-        //JSONObject jsonObject = new JSONObject("test");
-        try {
-            outputStream = openFileOutput(filenameCards, Context.MODE_PRIVATE);
-            outputStream.write(stringCards.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         try {
-            InputStream inputStreamCards = openFileInput(filenameCards);
+            InputStream inputStreamCards = new FileInputStream(fileCards.getPath());
 
             if ( inputStreamCards != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCards);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveStringCards = "";
                 StringBuilder stringBuilder = new StringBuilder();
-
                 while ( (receiveStringCards = bufferedReader.readLine()) != null ) {
                     stringBuilder.append(receiveStringCards);
                 }
-
                 inputStreamCards.close();
                 retCards = stringBuilder.toString();
-                //ret = ret.replace("\"", "\\\"");
-                //jsonObject = new JSONObject(ret);
-
             }
         }
         catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
-        } /*catch (JSONException e) {
-            e.printStackTrace();
-        }*/
+        }
+        Category importedCat = gson.fromJson(retCat, Category.class);
+        importedCat.setName(importedCat.getName()+" *imported*");
+        //importedCat.setParentId(-1); //make sure to bee in root @TODO make choosable
         Type listType = new TypeToken<ArrayList<Card>>() {
         }.getType();
         List<Card> importedCards = new Gson().fromJson(retCards, listType);
-
-        Category category1 = db.createCategory(importedCat);
-        db.createCards(importedCards, category1.getId());
-        Log.d("gson ret", gson.toJson(gson.fromJson(retCat, Category.class))+" gson cards ret" + retCards + importedCards);
+        db.createCards(importedCards, db.createCategory(importedCat).getId()); // Creates category and cards
+        Log.d("gson ret", gson.toJson(gson.fromJson(retCat, Category.class)) + " gson cards ret" + retCards + importedCards);
     }
 
     @Deprecated
