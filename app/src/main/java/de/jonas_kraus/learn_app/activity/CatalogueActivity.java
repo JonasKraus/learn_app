@@ -338,7 +338,7 @@ public class CatalogueActivity extends ListActivity {
         }
         Category importedCat = gson.fromJson(retCat, Category.class);
         importedCat.setName(importedCat.getName() + " *imported*");
-        //importedCat.setParentId(-1); //make sure to bee in root @TODO make choosable
+        importedCat.setParentId(currentCategoryParent); //make sure to bee in root @TODO make choosable
         Type listType = new TypeToken<ArrayList<Card>>() {
         }.getType();
         List<Card> importedCards = new Gson().fromJson(retCards, listType);
