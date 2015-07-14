@@ -1,15 +1,18 @@
 package de.jonas_kraus.learn_app.activity;
 
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.File;
 import java.sql.SQLException;
 
 import de.jonas_kraus.learn_app.Database.DbManager;
@@ -26,6 +29,14 @@ public class Home extends ActionBarActivity {
         setContentView(R.layout.activity_home);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+
+        File fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) , "/flashcards");
+        if (! fileNew.exists()){
+            Log.d("dir ", "file dosent exist");
+            if (! fileNew.mkdirs()){
+                Log.e("dir ", "Directory not created");
+            }
+        }
 
         buttonCatalogue = (Button) findViewById(R.id.buttonCatalogue);
         buttonTodo = (Button) findViewById(R.id.buttonTodos);

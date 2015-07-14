@@ -285,8 +285,8 @@ public class CatalogueActivity extends ListActivity {
 
         String filenameCat = "category.json";
         String filenameCards = "cards.json";
-        File fileCat = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+File.separator+"flashcards"+File.separator+filenameCat);
-        File fileCards = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+File.separator+"flashcards"+File.separator+filenameCards);
+        File fileCat = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards" + File.separator + filenameCat);
+        File fileCards = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards" + File.separator + filenameCards);
         String retCat = "";
         String retCards = "";
 
@@ -313,6 +313,7 @@ public class CatalogueActivity extends ListActivity {
         }
         catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
+            Toast.makeText(context,"copie cards.json and category.json to "+Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+File.separator+"flashcards").toURI(),Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
         }
@@ -337,13 +338,15 @@ public class CatalogueActivity extends ListActivity {
             Log.e("login activity", "Can not read file: " + e.toString());
         }
         Category importedCat = gson.fromJson(retCat, Category.class);
-        importedCat.setName(importedCat.getName() + " *imported*");
-        importedCat.setParentId(currentCategoryParent); //make sure to bee in root @TODO make choosable
         Type listType = new TypeToken<ArrayList<Card>>() {
         }.getType();
         List<Card> importedCards = new Gson().fromJson(retCards, listType);
-        db.createCards(importedCards, db.createCategory(importedCat).getId()); // Creates category and cards
-        setListViewWithCatalogueByLevel(currentCategoryParent);
+        if (importedCat != null && importedCards != null) {
+            importedCat.setName(importedCat.getName());
+            importedCat.setParentId(currentCategoryParent); //make sure to bee in root @TODO make choosable
+            db.createCards(importedCards, db.createCategory(importedCat).getId()); // Creates category and cards
+            setListViewWithCatalogueByLevel(currentCategoryParent);
+        }
     }
 
     @Deprecated
