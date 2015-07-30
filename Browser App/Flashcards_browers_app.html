@@ -23,6 +23,12 @@
                 data.replace(/(?:\r\n|\r|\n)/g,'\n');
                 document.getElementById('feedback').innerHTML = "Number of Cards: " + counter;
                 document.getElementById('downloadCards').href = "";
+
+                document.getElementById('question').value="";
+                document.getElementById('question').focus();
+                //document.getElementById('type').value="";
+                document.getElementById('answer').value="";
+                document.getElementById('hint').value="";
             }
         };
         function onDownload() {
@@ -45,6 +51,14 @@
                 link.setAttribute("href", "data:application/x-resource+json;charset=utf-8;json,"+dataCat);
             }
         }
+        window.onbeforeunload = function(event)
+        {
+            return "Download data! Otherwise all data will be lost";
+        };
+        window.onbeforclose = function(event)
+        {
+            return "Download data! Otherwise all data will be lost";
+        };
     </script>
     <style>
         body {
