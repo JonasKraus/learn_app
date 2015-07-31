@@ -2,7 +2,6 @@ package de.jonas_kraus.learn_app.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -18,7 +17,6 @@ import de.jonas_kraus.learn_app.Data.Card;
 import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.Data.Category;
 import de.jonas_kraus.learn_app.Data.MarkedQuestion;
-import de.jonas_kraus.learn_app.activity.TodosActivity;
 
 /**
  * Created by Jonas on 01.03.2015.
@@ -68,6 +66,7 @@ public class DbManager {
 
     private String[] allStatisticsColumns = {
             MySQLiteHelper.COLUMN_STATISTICS_ID,
+            MySQLiteHelper.COLUMN_STATISTICS_PARENT_ID,
             MySQLiteHelper.COLUMN_STATISTICS_NUM_CARDS,
             MySQLiteHelper.COLUMN_STATISTICS_NUM_KNOWN,
             MySQLiteHelper.COLUMN_STATISTICS_NUM_NOT_KNOWN,
@@ -143,7 +142,7 @@ public class DbManager {
             answer.setQuestionId((int) questionId);
             values.put(MySQLiteHelper.COLUMN_ANSWER_IS_CORRECT, answer.isCorrect());
             values.put(MySQLiteHelper.COLUMN_ANSWER_ANSWER, answer.getAnswer());
-            database.insert(MySQLiteHelper.TABLE_ANSWERS,null,values);
+            database.insert(MySQLiteHelper.TABLE_ANSWERS, null, values);
         }
     }
 
@@ -499,7 +498,7 @@ public class DbManager {
     }
 
     private void deleteAnswers(int questionId) {
-        database.delete(MySQLiteHelper.TABLE_ANSWERS,MySQLiteHelper.COLUMN_ANSWER_QUESTION_ID + "=" + questionId,null);
+        database.delete(MySQLiteHelper.TABLE_ANSWERS, MySQLiteHelper.COLUMN_ANSWER_QUESTION_ID + "=" + questionId, null);
     }
 
     public List<Card> getCardDescendantsFromCatalogues(ArrayList<Catalogue> checkedCatalogue) {
@@ -554,7 +553,7 @@ public class DbManager {
     public int createMark(int id) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_MARKED_QUESTION_ID, id);
-        long insertId = database.insert(MySQLiteHelper.TABLE_MARKED,null,values);
+        long insertId = database.insert(MySQLiteHelper.TABLE_MARKED, null, values);
         return (int)insertId;
     }
     public void createMarks(List<Integer>ids) {
@@ -667,10 +666,13 @@ public class DbManager {
         database.update(MySQLiteHelper.TABLE_CATEGORIES,values, MySQLiteHelper.COLUMN_CATEGORY_ID +"=" + id, null);
     }
     public void markCardOrCategory(Catalogue catalogue) {
-        List<Card> cards;
+        List<Card> cards = new ArrayList<Card>();
         if (catalogue.getCategory() != null) {
-            markCategory(catalogue.getCategory().getId());
-            cards = getCards(catalogue.getCategory());
+            List<Integer> parents = getAllDescendentParentIdsFromCurrentLevel(catalogue.getCategory().getId());
+            for (int parId : parents) {
+                markCategory(parId);
+                cards.addAll(getCards(parId));
+            }
         } else {
             cards = new ArrayList<Card>();
             cards.add(catalogue.getCard());
@@ -680,11 +682,14 @@ public class DbManager {
         }
     }
     public void unmarkCardOrCategory(Catalogue catalogue) {
-        List<Card> cards;
+        List<Card> cards = new ArrayList<Card>();
         if (catalogue.getCategory() != null) {
             //unmarkCard(catalogue.getCategory().getId());
-            unmarkCategory(catalogue.getCategory().getId());
-            cards = getCards(catalogue.getCategory());
+            List<Integer> parents = getAllDescendentParentIdsFromCurrentLevel(catalogue.getCategory().getId());
+            for (int parId : parents) {
+                unmarkCategory(parId);
+                cards.addAll(getCards(parId));
+            }
         } else {
             cards = new ArrayList<Card>();
             cards.add(catalogue.getCard());
@@ -968,7 +973,11 @@ public class DbManager {
     }
 
     public void createStatistic(int countCards, int countKnown, int countNotKnown, int countViewed, int countNotViewed, int milliseconds) {
+        createStatistic(-1, countCards, countKnown, countNotKnown, countViewed, countNotViewed, milliseconds);
+    }
+    public void createStatistic(int parentId, int countCards, int countKnown, int countNotKnown, int countViewed, int countNotViewed, int milliseconds) {
         ContentValues values = new ContentValues();
+        values.put(MySQLiteHelper.COLUMN_STATISTICS_PARENT_ID, parentId);
         values.put(MySQLiteHelper.COLUMN_STATISTICS_NUM_CARDS, countCards);
         values.put(MySQLiteHelper.COLUMN_STATISTICS_NUM_KNOWN, countKnown);
         values.put(MySQLiteHelper.COLUMN_STATISTICS_NUM_NOT_KNOWN, countNotKnown);
@@ -978,7 +987,7 @@ public class DbManager {
         database.insert(MySQLiteHelper.TABLE_STATISTICS, null, values);
     }
 
-    public int getCountCardsStatistics() {
+    public int getCountCardsStatistics(int parentId) {
         Cursor cursor = database.query(MySQLiteHelper.TABLE_STATISTICS, allStatisticsColumns, null, null, null, null, null);
         int num = 0;
         if (cursor.moveToFirst()) {
@@ -989,7 +998,7 @@ public class DbManager {
         cursor.close();
         return num;
     }
-    public int getCountKnownStatistics() {
+    public int getCountKnownStatistics(int parentId) {
         Cursor cursor = database.query(MySQLiteHelper.TABLE_STATISTICS, allStatisticsColumns, null, null, null, null, null);
         int num = 0;
         if (cursor.moveToFirst()) {
@@ -1000,7 +1009,7 @@ public class DbManager {
         cursor.close();
         return num;
     }
-    public int getCountNotKnownStatistics() {
+    public int getCountNotKnownStatistics(int parentId) {
         Cursor cursor = database.query(MySQLiteHelper.TABLE_STATISTICS, allStatisticsColumns, null, null, null, null, null);
         int num = 0;
         if (cursor.moveToFirst()) {
@@ -1011,7 +1020,7 @@ public class DbManager {
         cursor.close();
         return num;
     }
-    public int getCountViewedStatistics() {
+    public int getCountViewedStatistics(int parentId) {
         Cursor cursor = database.query(MySQLiteHelper.TABLE_STATISTICS, allStatisticsColumns, null, null, null, null, null);
         int num = 0;
         if (cursor.moveToFirst()) {
@@ -1022,7 +1031,7 @@ public class DbManager {
         cursor.close();
         return num;
     }
-    public int getCountNotViewedStatistics() {
+    public int getCountNotViewedStatistics(int parentId) {
         Cursor cursor = database.query(MySQLiteHelper.TABLE_STATISTICS, allStatisticsColumns, null, null, null, null, null);
         int num = 0;
         if (cursor.moveToFirst()) {
@@ -1033,7 +1042,7 @@ public class DbManager {
         cursor.close();
         return num;
     }
-    public int getTimeStatistics() {
+    public int getTimeStatistics(int parentId) {
         Cursor cursor = database.query(MySQLiteHelper.TABLE_STATISTICS, allStatisticsColumns, null, null, null, null, null);
         int num = 0;
         if (cursor.moveToFirst()) {
@@ -1044,7 +1053,7 @@ public class DbManager {
         cursor.close();
         return num;
     }
-    public List<Integer> getTimeStatisticsList() {
+    public List<Integer> getTimeStatisticsList(int parentId) {
         Cursor cursor = database.query(MySQLiteHelper.TABLE_STATISTICS, allStatisticsColumns, null, null, null, null, null);
         List<Integer> list = new ArrayList<>();
         if (cursor.moveToFirst()) {
@@ -1055,7 +1064,7 @@ public class DbManager {
         cursor.close();
         return list;
     }
-    public int getMaxTimeStatistics() {
+    public int getMaxTimeStatistics(int parentId) {
         Cursor cursor = database.query(MySQLiteHelper.TABLE_STATISTICS, new String [] {"MAX("+MySQLiteHelper.COLUMN_STATISTICS_TIME+")"}, null, null, null, null, null);
         int max = 0;
         if (cursor.moveToFirst()) {
@@ -1065,5 +1074,31 @@ public class DbManager {
         return max;
     }
 
+    /**
+     * Returns all category ids of current level and their descendants
+     * @param parentId
+     * @return
+     */
+    public List<Integer> getAllDescendentParentIdsFromCurrentLevel(int parentId) {
+        List<Integer> categoryList = new ArrayList<Integer>();
+        categoryList.add(parentId);
+        int countI = 0;
+        int oldSize = 1;
+        do {
+            oldSize = categoryList.size();
+            for (int i = countI; i < categoryList.size(); i++) {
+                Cursor cursorCat = database.query(MySQLiteHelper.TABLE_CATEGORIES, allCategoryColumns, MySQLiteHelper.COLUMN_CATEGORY_PARENT + "=" + categoryList.get(i), null, null, null, null);
+                if (cursorCat.moveToFirst()) {
+                    do {
+                        categoryList.add(cursorCat.getInt(0)); // id of current children
+                    } while (cursorCat.moveToNext());
+                }
+                cursorCat.close();
+                countI = i;
+            }
+        } while(categoryList.size() - oldSize > 0);
+        // Log.d("Categories List", categoryList.toString());
+        return categoryList;
+    }
 
 }

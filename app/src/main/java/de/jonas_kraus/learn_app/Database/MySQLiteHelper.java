@@ -55,6 +55,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 
     public static final String TABLE_STATISTICS = "statistics";
     public static final String COLUMN_STATISTICS_ID = "_id";
+    public static final String COLUMN_STATISTICS_PARENT_ID = "parent_id";
     public static final String COLUMN_STATISTICS_NUM_CARDS = "num_cards";
     public static final String COLUMN_STATISTICS_NUM_KNOWN = "num_known";
     public static final String COLUMN_STATISTICS_NUM_NOT_KNOWN = "num_not_known";
@@ -154,6 +155,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + TABLE_STATISTICS + "("
             + COLUMN_STATISTICS_ID
             + " integer primary key autoincrement, "
+            + COLUMN_STATISTICS_PARENT_ID
+            + " integer DEFAULT -1"
             + COLUMN_STATISTICS_NUM_CARDS
             + " integer NOT NULL, "
             + COLUMN_STATISTICS_NUM_KNOWN

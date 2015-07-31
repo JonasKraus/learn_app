@@ -26,9 +26,9 @@ public class GraphActivity extends ActionBarActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        List<Integer> vals = db.getTimeStatisticsList();
+        List<Integer> vals = db.getTimeStatisticsList(-1);
         float[] values = new float[vals.size()];
-        int max = db.getMaxTimeStatistics();
+        int max = db.getMaxTimeStatistics(-1);
         String[] verlabels = new String[max/10];
         int count = 0;
         while(max % 10  > 10) {

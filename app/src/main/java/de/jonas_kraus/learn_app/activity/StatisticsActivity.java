@@ -80,11 +80,11 @@ public class StatisticsActivity extends ActionBarActivity {
         textViewCountNotKnown = (TextView)findViewById(R.id.textViewStatsCountNotKnown);
         textViewOverallTime = (TextView)findViewById(R.id.textViewStatsCountOverallTime);
 
-        textViewCountPlayedCards.setText(db.getCountViewedStatistics()+" times viewed a card");
-        textViewCountKnown.setText(db.getCountKnownStatistics()+" times known");
-        textViewCountNotKnown.setText(db.getCountNotKnownStatistics()+" times not known");
+        textViewCountPlayedCards.setText(db.getCountViewedStatistics(currentCategoryParent)+" times viewed a card");
+        textViewCountKnown.setText(db.getCountKnownStatistics(currentCategoryParent)+" times known");
+        textViewCountNotKnown.setText(db.getCountNotKnownStatistics(currentCategoryParent)+" times not known");
         /* @TODO: get all data by parent id for the stats */
-        int secs = db.getTimeStatistics();
+        int secs = db.getTimeStatistics(currentCategoryParent);
         int mins = secs / 60;
         int hours = mins / 60;
         int days = hours / 24;
