@@ -242,6 +242,7 @@ public class cardActivity extends ActionBarActivity {
                 Card card = new Card(cardType,editTextQuestion.getText().toString(), answers,false,0,editTextHint.getText().toString(),currentCategoryParent);
                 if (editMode) {
                     card.setId(editCard.getId());
+                    card.setMarked(editCard.isMarked());
                     card.getAnswers().get(0).setQuestionId(editCard.getAnswers().get(0).getQuestionId());
                     db.updateEditCard(card);
                 } else {

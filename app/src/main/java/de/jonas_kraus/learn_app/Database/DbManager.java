@@ -511,7 +511,8 @@ public class DbManager {
         values.put(MySQLiteHelper.COLUMN_QUESTION_CATEGORY_ID, card.getCategoryId());
         values.put(MySQLiteHelper.COLUMN_QUESTION_DRAWER, card.getDrawer());
         values.put(MySQLiteHelper.COLUMN_QUESTION_MARKED, card.isMarked());
-        values.put(MySQLiteHelper.COLUMN_QUESTION_VIEWED, String.valueOf(null));
+        String nullString = null;
+        values.put(MySQLiteHelper.COLUMN_QUESTION_VIEWED, nullString);
         database.update(MySQLiteHelper.TABLE_QUESTIONS, values, MySQLiteHelper.COLUMN_QUESTION_ID + "=" + card.getId(), null);
         updateEditAnswer(card.getAnswers());
         return card;
@@ -1155,7 +1156,7 @@ public class DbManager {
 
     public List<Card> getUnviewedCards() {
         List<Card> cards = new ArrayList<Card>();
-        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS,allQuestionColumns,MySQLiteHelper.COLUMN_QUESTION_VIEWED + " like " + null,null,null,null,null);
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS,allQuestionColumns,MySQLiteHelper.COLUMN_QUESTION_VIEWED + " = " + null,null,null,null,null);
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(0);

@@ -90,4 +90,12 @@ public class Catalogue implements Parcelable {
         this.icon = null;
     }
 
+    public void setMark(Boolean bool) {
+        if (this.card != null) {
+            this.card.setMarked(bool);
+        }
+        if (this.category != null) {
+            this.category.setMarked(bool);
+        }
+    }
 }
