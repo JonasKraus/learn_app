@@ -23,6 +23,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_QUESTION_DRAWER = "drawer";
     public static final String COLUMN_QUESTION_DATE = "date";
     public static final String COLUMN_QUESTION_MARKED = "marked";
+    public static final String COLUMN_QUESTION_VIEWED = "viewed";
 
 
     public static final String TABLE_ANSWERS = "answers";
@@ -64,7 +65,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_STATISTICS_TIME = "time";
 
     private static final String DATABASE_NAME = "learning_cards_db.db";
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 13;
 
     // Database creation sql statement
     private static final String QUESTIONS_CREATE = "create table "
@@ -88,7 +89,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_QUESTION_DATE
             + " datetime DEFAULT now, "
             + COLUMN_QUESTION_MARKED
-            + " ineteger DEFAULT 0 "
+            + " ineteger DEFAULT 0, "
+            + COLUMN_QUESTION_VIEWED
+            + " datetime DEFAULT null "
             + ");";
 
     // Database creation sql statement
@@ -156,7 +159,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_STATISTICS_ID
             + " integer primary key autoincrement, "
             + COLUMN_STATISTICS_PARENT_ID
-            + " integer DEFAULT -1"
+            + " integer DEFAULT -1, "
             + COLUMN_STATISTICS_NUM_CARDS
             + " integer NOT NULL, "
             + COLUMN_STATISTICS_NUM_KNOWN

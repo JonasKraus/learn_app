@@ -3,7 +3,7 @@ package de.jonas_kraus.learn_app.Data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -24,6 +24,7 @@ public class Card implements Parcelable{
     private int categoryId;
     private int drawer;
     private boolean marked;
+    private Timestamp viewed;
 
     @Override
     public int describeContents() {
@@ -42,6 +43,7 @@ public class Card implements Parcelable{
         dest.writeInt(categoryId);
         dest.writeInt(drawer);
         dest.writeByte((byte) (marked ? 1 : 0));
+        dest.writeString(viewed.toString());
     }
 
     public static final Parcelable.Creator<Card> CREATOR = new Parcelable.Creator<Card>() {
@@ -66,9 +68,10 @@ public class Card implements Parcelable{
         this.categoryId = parcel.readInt();
         this.drawer = parcel.readInt();
         this.marked = parcel.readByte() != 0;
+        this.viewed = Timestamp.valueOf(parcel.readString());
     }
 
-    public Card(int id, CardType type, String question, List<Answer> answers, boolean known, int rating, String hint, int categoryId, int drawer, boolean marked) {
+    public Card(int id, CardType type, String question, List<Answer> answers, boolean known, int rating, String hint, int categoryId, int drawer, boolean marked, Timestamp timestamp) {
         this.id = id;
         this.type = type;
         this.question = question;
@@ -79,7 +82,9 @@ public class Card implements Parcelable{
         this.categoryId = categoryId;
         this.drawer = drawer;
         this.marked = marked;
+        this.viewed = timestamp;
     }
+
     public Card(CardType type, String question, List<Answer> answers, boolean known, int rating, String hint, int categoryId) {
         this.type = type;
         this.question = question;
@@ -90,6 +95,7 @@ public class Card implements Parcelable{
         this.categoryId = categoryId;
         this.drawer = 0;
         this.marked = false;
+        this.viewed = null;
     }
 
     public int getCategoryId() {
@@ -170,6 +176,14 @@ public class Card implements Parcelable{
 
     public void setMarked(boolean marked) {
         this.marked = marked;
+    }
+
+    public Timestamp getViewed() {
+        return viewed;
+    }
+
+    public void setViewed(Timestamp viewed) {
+        this.viewed = viewed;
     }
 
     @Override
