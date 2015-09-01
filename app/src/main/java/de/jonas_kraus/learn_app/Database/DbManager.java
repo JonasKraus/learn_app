@@ -7,9 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -26,15 +28,17 @@ public class DbManager {
     private SQLiteDatabase database;
     private MySQLiteHelper dbHelper;
     private String[] allQuestionColumns = {
-            MySQLiteHelper.COLUMN_QUESTION_ID,
-            MySQLiteHelper.COLUMN_QUESTION_TYPE,
-            MySQLiteHelper.COLUMN_QUESTION_QUESTION,
-            MySQLiteHelper.COLUMN_QUESTION_KNOWN,
-            MySQLiteHelper.COLUMN_QUESTION_RATING,
-            MySQLiteHelper.COLUMN_QUESTION_HINT,
-            MySQLiteHelper.COLUMN_QUESTION_DRAWER,
-            MySQLiteHelper.COLUMN_QUESTION_MARKED,
-            MySQLiteHelper.COLUMN_QUESTION_VIEWED
+            MySQLiteHelper.COLUMN_QUESTION_ID,          //0
+            MySQLiteHelper.COLUMN_QUESTION_TYPE,        //1
+            MySQLiteHelper.COLUMN_QUESTION_QUESTION,    //2
+            MySQLiteHelper.COLUMN_QUESTION_KNOWN,       //3
+            MySQLiteHelper.COLUMN_QUESTION_RATING,      //4
+            MySQLiteHelper.COLUMN_QUESTION_HINT,        //5
+            MySQLiteHelper.COLUMN_QUESTION_CATEGORY_ID, //6
+            MySQLiteHelper.COLUMN_QUESTION_DRAWER,      //7
+            MySQLiteHelper.COLUMN_QUESTION_MARKED,      //8
+            MySQLiteHelper.COLUMN_QUESTION_DATE,        //9
+            MySQLiteHelper.COLUMN_QUESTION_VIEWED       //10
     };
     private String[] allAnswerColumns = {
             MySQLiteHelper.COLUMN_ANSWER_ID,
@@ -89,6 +93,8 @@ public class DbManager {
         dbHelper.close();
     }
 
+    Date date = new java.util.Date();
+
     /**
      * Creating a card with answers
      * @param card
@@ -115,7 +121,7 @@ public class DbManager {
                         + card.getRating() + " )"
         );
         */
-        createAnswer(insertId,card.getAnswers());
+        createAnswer(insertId, card.getAnswers());
         card.setId((int)insertId);
         return card;
     }
@@ -168,7 +174,7 @@ public class DbManager {
      */
     public List<Card> getCards(Category category) {
         List<Card> cards = new ArrayList<Card>();
-        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS,allQuestionColumns,MySQLiteHelper.COLUMN_QUESTION_CATEGORY_ID + " = " + category.getId(),null,null,null,null);
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS, allQuestionColumns, MySQLiteHelper.COLUMN_QUESTION_CATEGORY_ID + " = " + category.getId(), null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(0);
@@ -177,15 +183,16 @@ public class DbManager {
                 Boolean known = cursor.getInt(3)>0;
                 int rating = cursor.getInt(4);
                 String hint = cursor.getString(5);
-                int drawer = cursor.getInt(6);
-                boolean marked = cursor.getInt(7)>0;
+                int categoryId = cursor.getInt(6);
+                int drawer = cursor.getInt(7);
+                boolean marked = cursor.getInt(8)>0;
+                Timestamp date = Timestamp.valueOf(cursor.getString(9));
                 Timestamp viewed = null;
-                if (cursor.getString(8) != null) {
-                    viewed = Timestamp.valueOf(cursor.getString(8));
+                if (!cursor.isNull(10)) {
+                    viewed = Timestamp.valueOf(cursor.getString(10));
                 }
-                //int categoryId = cursor.getInt(6);
                 List<Answer> answers = getAnswers(id);
-                cards.add(new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, category.getId(), drawer, marked, viewed));
+                cards.add(new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, category.getId(), drawer, marked, date, viewed));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -209,13 +216,15 @@ public class DbManager {
                 int rating = cursor.getInt(4);
                 String hint = cursor.getString(5);
                 List<Answer> answers = getAnswers(id);
-                int drawer = cursor.getInt(6);
-                //int categoryId = cursor.getInt(6);
-                boolean marked = cursor.getInt(7)>0; /* @TODO check if right index - may be 7 */Timestamp viewed = null;
-                if (cursor.getString(8) != null) {
-                    viewed = Timestamp.valueOf(cursor.getString(8));
+                int categoryId = cursor.getInt(6);
+                int drawer = cursor.getInt(7);
+                boolean marked = cursor.getInt(8)>0;
+                Timestamp date = Timestamp.valueOf(cursor.getString(9));
+                Timestamp viewed = null;
+                if (!cursor.isNull(10)) {
+                    viewed = Timestamp.valueOf(cursor.getString(10));
                 }
-                cards.add(new Card(_id, Card.CardType.valueOf(type), question, answers, known, rating, hint, id, drawer, marked, viewed));
+                cards.add(new Card(_id, Card.CardType.valueOf(type), question, answers, known, rating, hint, id, drawer, marked, date, viewed));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -242,15 +251,16 @@ public class DbManager {
                 Boolean known = cursor.getInt(3)>0;
                 int rating = cursor.getInt(4);
                 String hint = cursor.getString(5);
-                //int categoryId = cursor.getInt(6);
-                boolean marked = cursor.getInt(7)>0; /* @TODO check if right index - might be 7 */
                 List<Answer> answers = getAnswers(_id);
-                int drawer = cursor.getInt(6);
+                int categoryId = cursor.getInt(6);
+                int drawer = cursor.getInt(7);
+                boolean marked = cursor.getInt(8)>0;
+                Timestamp date = Timestamp.valueOf(cursor.getString(9));
                 Timestamp viewed = null;
-                if (cursor.getString(8) != null) {
-                    viewed = Timestamp.valueOf(cursor.getString(8));
+                if (!cursor.isNull(10)) {
+                    viewed = Timestamp.valueOf(cursor.getString(10));
                 }
-                cards.add(new Card(_id, Card.CardType.valueOf(type), question, answers, known, rating, hint, _id, drawer, marked, viewed));
+                cards.add(new Card(_id, Card.CardType.valueOf(type), question, answers, known, rating, hint, _id, drawer, marked, date, viewed));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -442,16 +452,18 @@ public class DbManager {
                 String question = cursor.getString(2);
                 Boolean known = cursor.getInt(3)>0;
                 int rating = cursor.getInt(4);
-                String hint = cursor.getString(5);
-                int drawer = cursor.getInt(6);
-                boolean marked = cursor.getInt(7)>0;
-                //int categoryId = cursor.getInt(6);
                 List<Answer> answers = getAnswers(id);
+                String hint = cursor.getString(5);
+                int categoryId = cursor.getInt(6);
+                int drawer = cursor.getInt(7);
+                boolean marked = cursor.getInt(8)>0;
+                Timestamp date = Timestamp.valueOf(cursor.getString(9));
                 Timestamp viewed = null;
-                if (cursor.getString(8) != null) {
-                    viewed = Timestamp.valueOf(cursor.getString(8));
+                if (!cursor.isNull(10)) {
+                    viewed = Timestamp.valueOf(cursor.getString(10));
                 }
-                cards.add(new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, level, drawer, marked, viewed));
+                cards.add(new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, level, drawer, marked, date, viewed));
+                Log.d("by level ", cards.get(cards.size()-1).toString());
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -506,12 +518,12 @@ public class DbManager {
     }
 
     private void updateEditAnswer(List<Answer> answers) {
-        database.delete(MySQLiteHelper.TABLE_ANSWERS,MySQLiteHelper.COLUMN_ANSWER_QUESTION_ID + "=" + answers.get(0).getQuestionId(),null);
+        database.delete(MySQLiteHelper.TABLE_ANSWERS, MySQLiteHelper.COLUMN_ANSWER_QUESTION_ID + "=" + answers.get(0).getQuestionId(), null);
         createAnswer(answers.get(0).getQuestionId(), answers);
     }
 
     public void deleteCard(int id) {
-        database.delete(MySQLiteHelper.TABLE_QUESTIONS,MySQLiteHelper.COLUMN_QUESTION_ID + "=" + id,null);
+        database.delete(MySQLiteHelper.TABLE_QUESTIONS, MySQLiteHelper.COLUMN_QUESTION_ID + "=" + id, null);
         deleteAnswers(id);
     }
 
@@ -536,8 +548,8 @@ public class DbManager {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_QUESTION_KNOWN, known);
         values.put(MySQLiteHelper.COLUMN_QUESTION_RATING, rating);
-        //values.put(MySQLiteHelper.COLUMN_QUESTION_DATE, "now");
-        values.put(MySQLiteHelper.COLUMN_QUESTION_VIEWED, "now");
+        //values.put(MySQLiteHelper.COLUMN_QUESTION_DATE, "DATETIME(now)");
+        values.put(MySQLiteHelper.COLUMN_QUESTION_VIEWED, new Timestamp(date.getTime()).toString());
         database.update(MySQLiteHelper.TABLE_QUESTIONS, values, MySQLiteHelper.COLUMN_QUESTION_ID + "=" + id, null);
         values.clear();
         if (known) {
@@ -558,15 +570,16 @@ public class DbManager {
             Boolean known = cursor.getInt(3)>0;
             int rating = cursor.getInt(4);
             String hint = cursor.getString(5);
-            int drawer = cursor.getInt(6);
-            boolean marked = cursor.getInt(7)>0;
-            int categoryId = cursor.getInt(6);
             List<Answer> answers = getAnswers(id);
+            int categoryId = cursor.getInt(6);
+            int drawer = cursor.getInt(7);
+            boolean marked = cursor.getInt(8)>0;
+            Timestamp date = Timestamp.valueOf(cursor.getString(9));
             Timestamp viewed = null;
-            if (cursor.getString(8) != null) {
-                viewed = Timestamp.valueOf(cursor.getString(8));
+            if (!cursor.isNull(10)) {
+                viewed = Timestamp.valueOf(cursor.getString(10));
             }
-            Card card = new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, categoryId, drawer, marked, viewed);
+            Card card = new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, categoryId, drawer, marked, date, viewed);
             cursor.close();
             return card;
         }
@@ -597,7 +610,7 @@ public class DbManager {
         }
     }
     public void deleteMark(int id) {
-        database.delete(MySQLiteHelper.TABLE_MARKED, MySQLiteHelper.COLUMN_MARKED_QUESTION_ID + "=" + id,null);
+        database.delete(MySQLiteHelper.TABLE_MARKED, MySQLiteHelper.COLUMN_MARKED_QUESTION_ID + "=" + id, null);
     }
 
     public void deleteMark(Catalogue catalogue) {
@@ -646,15 +659,16 @@ public class DbManager {
                     Boolean known = cursor.getInt(3)>0;
                     int rating = cursor.getInt(4);
                     String hint = cursor.getString(5);
-                    //int categoryId = cursor.getInt(6);
-                    int drawer = cursor.getInt(6);
-                    boolean marked = cursor.getInt(7) > 0;
                     List<Answer> answers = getAnswers(id);
+                    int categoryId = cursor.getInt(6);
+                    int drawer = cursor.getInt(7);
+                    boolean marked = cursor.getInt(8)>0;
+                    Timestamp date = Timestamp.valueOf(cursor.getString(9));
                     Timestamp viewed = null;
-                    if (cursor.getString(8) != null) {
-                        viewed = Timestamp.valueOf(cursor.getString(8));
+                    if (!cursor.isNull(10)) {
+                        viewed = Timestamp.valueOf(cursor.getString(10));
                     }
-                    cards.add(new Card(_id, Card.CardType.valueOf(type), question, answers, known, rating, hint, id, drawer, marked, viewed));
+                    cards.add(new Card(_id, Card.CardType.valueOf(type), question, answers, known, rating, hint, id, drawer, marked, date, viewed));
                 } while (cursor.moveToNext());
             }
             cursor.close();
@@ -665,7 +679,7 @@ public class DbManager {
     public void markCard(Card card) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_QUESTION_MARKED,true);
-        database.update(MySQLiteHelper.TABLE_QUESTIONS,values, MySQLiteHelper.COLUMN_QUESTION_ID +"=" + card.getId(), null);
+        database.update(MySQLiteHelper.TABLE_QUESTIONS, values, MySQLiteHelper.COLUMN_QUESTION_ID + "=" + card.getId(), null);
     }
     public void markCard(int id) {
         ContentValues values = new ContentValues();
@@ -690,7 +704,7 @@ public class DbManager {
     public void unmarkCategory(int id) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_CATEGORY_MARKED,false);
-        database.update(MySQLiteHelper.TABLE_CATEGORIES,values, MySQLiteHelper.COLUMN_CATEGORY_ID +"=" + id, null);
+        database.update(MySQLiteHelper.TABLE_CATEGORIES, values, MySQLiteHelper.COLUMN_CATEGORY_ID + "=" + id, null);
     }
     public void markCardOrCategory(Catalogue catalogue) {
         List<Card> cards = new ArrayList<Card>();
@@ -757,15 +771,17 @@ public class DbManager {
                 Boolean known = cursor.getInt(3)>0;
                 int rating = cursor.getInt(4);
                 String hint = cursor.getString(5);
-                int drawer = cursor.getInt(6);
-                boolean marked = cursor.getInt(7)>0;
-                int categoryId = cursor.getInt(6);
                 List<Answer> answers = getAnswers(id);
+                int categoryId = cursor.getInt(6);
+                int drawer = cursor.getInt(7);
+                boolean marked = cursor.getInt(8)>0;
+                Timestamp date = Timestamp.valueOf(cursor.getString(9));
                 Timestamp viewed = null;
-                if (cursor.getString(8) != null) {
-                    viewed = Timestamp.valueOf(cursor.getString(8));
+                if (!cursor.isNull(10)) {
+                    viewed = Timestamp.valueOf(cursor.getString(10));
                 }
-                cards.add(new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, categoryId, drawer, marked, viewed));
+                cards.add(new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, categoryId, drawer, marked, date, viewed));
+                Log.d("by mark", cards.get(cards.size()-1).toString());
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -992,15 +1008,16 @@ public class DbManager {
                 Boolean known = cursor.getInt(3)>0;
                 int rating = cursor.getInt(4);
                 String hint = cursor.getString(5);
-                //int categoryId = cursor.getInt(6);
-                boolean marked = cursor.getInt(6)>0; /* @TODO check if right index - might be 7 */
                 List<Answer> answers = getAnswers(_id);
-                int drawer = cursor.getInt(6);
+                int categoryId = cursor.getInt(6);
+                int drawer = cursor.getInt(7);
+                boolean marked = cursor.getInt(8)>0;
+                Timestamp date = Timestamp.valueOf(cursor.getString(9));
                 Timestamp viewed = null;
-                if (cursor.getString(8) != null) {
-                    viewed = Timestamp.valueOf(cursor.getString(8));
+                if (!cursor.isNull(10)) {
+                    viewed = Timestamp.valueOf(cursor.getString(10));
                 }
-                cards.add(new Card(_id, Card.CardType.valueOf(type), question, answers, known, rating, hint, _id, drawer, marked, viewed));
+                cards.add(new Card(_id, Card.CardType.valueOf(type), question, answers, known, rating, hint, _id, drawer, marked, date, viewed));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -1134,6 +1151,35 @@ public class DbManager {
         } while(categoryList.size() - oldSize > 0);
         // Log.d("Categories List", categoryList.toString());
         return categoryList;
+    }
+
+    public List<Card> getUnviewedCards() {
+        List<Card> cards = new ArrayList<Card>();
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS,allQuestionColumns,MySQLiteHelper.COLUMN_QUESTION_VIEWED + " like " + null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                String type = cursor.getString(1);
+                String question = cursor.getString(2);
+                Boolean known = cursor.getInt(3)>0;
+                int rating = cursor.getInt(4);
+                String hint = cursor.getString(5);
+                int categoryId = cursor.getInt(6);
+                int drawer = cursor.getInt(7);
+                boolean marked = cursor.getInt(8)>0;
+                Timestamp date = Timestamp.valueOf(cursor.getString(9));
+                Timestamp viewed = null;
+                if (!cursor.isNull(10)) {
+                    viewed = Timestamp.valueOf(cursor.getString(10));
+                }
+                List<Answer> answers = getAnswers(id);
+                Card newCard = new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, categoryId, drawer, marked, date, viewed);
+                Log.d("unviewed Card: ", newCard.getViewed().toString());
+                cards.add(newCard);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return cards;
     }
 
 }

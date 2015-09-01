@@ -25,7 +25,7 @@ import de.jonas_kraus.learn_app.R;
 public class StatisticsActivity extends ActionBarActivity {
 
     private TextView textViewDrawer0, textViewDrawer1, textViewDrawer2, textViewDrawer3, textViewDrawer4, textViewDrawer5, textViewCountCards, textViewCountCategories,
-    textViewCountPlayedCards, textViewCountKnown, textViewCountNotKnown, textViewOverallTime;
+    textViewCountPlayedCards, textViewCountUnviewedCards, textViewCountKnown, textViewCountNotKnown, textViewOverallTime;
     private ImageView imageViewDrawerBar_0, imageViewDrawerBar_1, imageViewDrawerBar_2, imageViewDrawerBar_3, imageViewDrawerBar_4, imageViewDrawerBar_5;
     private DbManager db;
     private LinearLayout llChart;
@@ -76,11 +76,13 @@ public class StatisticsActivity extends ActionBarActivity {
         textViewDrawer5 = (TextView)findViewById(R.id.textViewDrawerChart_5);
 
         textViewCountPlayedCards = (TextView)findViewById(R.id.textViewCountPlayedCards);
+        textViewCountUnviewedCards = (TextView)findViewById(R.id.textViewCountUnviewedCards);
         textViewCountKnown = (TextView)findViewById(R.id.textViewStatsCountKnown);
         textViewCountNotKnown = (TextView)findViewById(R.id.textViewStatsCountNotKnown);
         textViewOverallTime = (TextView)findViewById(R.id.textViewStatsCountOverallTime);
 
         textViewCountPlayedCards.setText(db.getCountViewedStatistics(currentCategoryParent)+" times viewed a card");
+        textViewCountUnviewedCards.setText(db.getUnviewedCards().size()+" unviewed cards");
         textViewCountKnown.setText(db.getCountKnownStatistics(currentCategoryParent)+" times known");
         textViewCountNotKnown.setText(db.getCountNotKnownStatistics(currentCategoryParent)+" times not known");
         /* @TODO: get all data by parent id for the stats */

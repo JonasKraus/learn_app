@@ -191,6 +191,17 @@
                 android:text="Viewed Cards:"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/blue_3" />
+
+            <TextView
+                android:id="@+id/textViewCountUnviewedCards"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:text="Unviewed Cards:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/blue_3" />
+
             <TextView
                 android:id="@+id/textViewStatsCountKnown"
                 android:layout_width="fill_parent"

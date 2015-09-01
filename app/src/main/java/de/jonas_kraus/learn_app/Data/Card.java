@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,7 +25,10 @@ public class Card implements Parcelable{
     private int categoryId;
     private int drawer;
     private boolean marked;
+    private Timestamp date;
     private Timestamp viewed;
+
+    private Date dateCur = new java.util.Date();
 
     @Override
     public int describeContents() {
@@ -43,7 +47,12 @@ public class Card implements Parcelable{
         dest.writeInt(categoryId);
         dest.writeInt(drawer);
         dest.writeByte((byte) (marked ? 1 : 0));
-        dest.writeString(viewed.toString());
+        dest.writeString(new Timestamp(dateCur.getTime()).toString());
+        if (viewed != null) {
+            dest.writeString(viewed.toString());
+        } else {
+            dest.writeString(new Timestamp(dateCur.getTime()).toString());
+        }
     }
 
     public static final Parcelable.Creator<Card> CREATOR = new Parcelable.Creator<Card>() {
@@ -68,10 +77,11 @@ public class Card implements Parcelable{
         this.categoryId = parcel.readInt();
         this.drawer = parcel.readInt();
         this.marked = parcel.readByte() != 0;
+        this.date = Timestamp.valueOf(parcel.readString());
         this.viewed = Timestamp.valueOf(parcel.readString());
     }
 
-    public Card(int id, CardType type, String question, List<Answer> answers, boolean known, int rating, String hint, int categoryId, int drawer, boolean marked, Timestamp timestamp) {
+    public Card(int id, CardType type, String question, List<Answer> answers, boolean known, int rating, String hint, int categoryId, int drawer, boolean marked,Timestamp date, Timestamp timestamp) {
         this.id = id;
         this.type = type;
         this.question = question;
@@ -82,6 +92,7 @@ public class Card implements Parcelable{
         this.categoryId = categoryId;
         this.drawer = drawer;
         this.marked = marked;
+        this.date = date;
         this.viewed = timestamp;
     }
 
@@ -95,6 +106,7 @@ public class Card implements Parcelable{
         this.categoryId = categoryId;
         this.drawer = 0;
         this.marked = false;
+        this.date = new Timestamp(dateCur.getTime());
         this.viewed = null;
     }
 
@@ -186,6 +198,7 @@ public class Card implements Parcelable{
         this.viewed = viewed;
     }
 
+
     @Override
     public String toString() {
         return "Card{" +
@@ -199,6 +212,8 @@ public class Card implements Parcelable{
                 ", categoryId=" + categoryId +
                 ", drawer=" + drawer +
                 ", marked=" + marked +
+                ", viewed=" + viewed +
+                ", date=" + date +
                 '}';
     }
 }
