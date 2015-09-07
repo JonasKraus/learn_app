@@ -463,7 +463,7 @@ public class DbManager {
                     viewed = Timestamp.valueOf(cursor.getString(10));
                 }
                 cards.add(new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, level, drawer, marked, date, viewed));
-                Log.d("by level ", cards.get(cards.size()-1).toString());
+                //Log.d("by level ", cards.get(cards.size()-1).toString());
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -782,7 +782,7 @@ public class DbManager {
                     viewed = Timestamp.valueOf(cursor.getString(10));
                 }
                 cards.add(new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, categoryId, drawer, marked, date, viewed));
-                Log.d("by mark", cards.get(cards.size()-1).toString());
+                //Log.d("by mark", cards.get(cards.size()-1).toString());
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -1000,7 +1000,7 @@ public class DbManager {
         }
 
         Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS,allQuestionColumns ,whereClause, null, null, null, orderBy, limit);
-        Log.d("WHERE", whereClause + " ORDER BY " + orderBy + " LIMIT " + limit);
+        //("WHERE", whereClause + " ORDER BY " + orderBy + " LIMIT " + limit);
         if (cursor.moveToFirst()) {
             do {
                 int _id = cursor.getInt(0);
@@ -1175,7 +1175,7 @@ public class DbManager {
                 }
                 List<Answer> answers = getAnswers(id);
                 Card newCard = new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, categoryId, drawer, marked, date, viewed);
-                Log.d("unviewed Card: ", newCard.getViewed().toString());
+                //Log.d("unviewed Card: ", newCard.getViewed().toString());
                 cards.add(newCard);
             } while (cursor.moveToNext());
         }

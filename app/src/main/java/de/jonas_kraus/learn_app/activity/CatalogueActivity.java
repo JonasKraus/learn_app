@@ -70,6 +70,8 @@ public class CatalogueActivity extends ListActivity {
     private ArrayList<Catalogue>checkedList;
     private int MARKED_THRESHOLD = 1;
 
+    private List<Card> importedCards;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -235,7 +237,7 @@ public class CatalogueActivity extends ListActivity {
         Category category = curCatalogue.getCategory();
         List<Card> cards =  db.getCards(category);
         Gson gson = new Gson();
-        Log.d("gson", gson.toJson(curCatalogue)+" category_ "+ gson.toJson(category) + " cards_ " +  gson.toJson(cards)+ " dir "+ context.getFilesDir()+"");
+        //Log.d("gson", gson.toJson(curCatalogue)+" category_ "+ gson.toJson(category) + " cards_ " +  gson.toJson(cards)+ " dir "+ context.getFilesDir()+"");
 
         String filenameCat = "category.json";
         String filenameCards = "cards.json";
@@ -290,62 +292,93 @@ public class CatalogueActivity extends ListActivity {
         String retCat = "";
         String retCards = "";
 
-        ContentResolver cr = getContentResolver();
-        //InputStream is = cr.openInputStream(imageUri);
+        if(!fileCards.exists()) {
+            Toast.makeText(context,"No Cards file to import!", Toast.LENGTH_LONG).show();
+            return;
 
-        try {
-            InputStream inputStreamCat = new FileInputStream(fileCat.getPath());
+        } else  {
 
-            if ( inputStreamCat != null ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCat);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveStringCat = "";
-                StringBuilder stringBuilder = new StringBuilder();
+            try {
+                InputStream inputStreamCards = new FileInputStream(fileCards.getPath());
 
-                while ( (receiveStringCat = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append(receiveStringCat);
-                }
-
-                inputStreamCat.close();
-                retCat = stringBuilder.toString();
-
-            }
-        }
-        catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-            Toast.makeText(context,"copie cards.json and category.json to "+Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+File.separator+"flashcards").toURI(),Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        }
-        try {
-            InputStream inputStreamCards = new FileInputStream(fileCards.getPath());
-
-            if ( inputStreamCards != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCards);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveStringCards = "";
                 StringBuilder stringBuilder = new StringBuilder();
-                while ( (receiveStringCards = bufferedReader.readLine()) != null ) {
+                while ((receiveStringCards = bufferedReader.readLine()) != null) {
                     stringBuilder.append(receiveStringCards);
                 }
                 inputStreamCards.close();
                 retCards = stringBuilder.toString();
+
+            } catch (FileNotFoundException e) {
+                Log.e("login activity", "File not found: " + e.toString());
+            } catch (IOException e) {
+                Log.e("login activity", "Can not read file: " + e.toString());
             }
+            Type listType = new TypeToken<ArrayList<Card>>() {
+            }.getType();
+            importedCards = new Gson().fromJson(retCards, listType);
+
         }
-        catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        }
-        Category importedCat = gson.fromJson(retCat, Category.class);
-        Type listType = new TypeToken<ArrayList<Card>>() {
-        }.getType();
-        List<Card> importedCards = new Gson().fromJson(retCards, listType);
-        if (importedCat != null && importedCards != null) {
-            importedCat.setName(importedCat.getName());
-            importedCat.setParentId(currentCategoryParent); //make sure to bee in root @TODO make choosable
-            db.createCards(importedCards, db.createCategory(importedCat).getId()); // Creates category and cards
-            setListViewWithCatalogueByLevel(currentCategoryParent);
+        if(!fileCat.exists() && fileCards.exists()) {
+
+            //Toast.makeText(context, "Category file dosen't exists", Toast.LENGTH_LONG).show();
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setCancelable(true).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    db.createCards(importedCards, currentCategoryParent);
+                    setListViewWithCatalogueByLevel(currentCategoryParent);
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.setIcon(categoryIconScaled);
+            alertDialog.setTitle("Can't find Category!");
+            if (curCategory != null) {
+                alertDialog.setMessage("Proceed and import cards to current Category '"+curCategory.getName()+"'?");
+            } else {
+                alertDialog.setMessage("Proceed and import cards to current Category?");
+            }
+
+            alertDialog.show();
+
+        } else if (fileCards.exists() && fileCat.exists()) {
+
+            try {
+                InputStream inputStreamCat = new FileInputStream(fileCat.getPath());
+
+                if (inputStreamCat != null) {
+                    InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCat);
+                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                    String receiveStringCat = "";
+                    StringBuilder stringBuilder = new StringBuilder();
+
+                    while ((receiveStringCat = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(receiveStringCat);
+                    }
+
+                    inputStreamCat.close();
+                    retCat = stringBuilder.toString();
+
+                }
+            } catch (FileNotFoundException e) {
+                Log.e("login activity", "File not found: " + e.toString());
+                Toast.makeText(context, "copie cards.json and category.json to " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards").toURI(), Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                Log.e("login activity", "Can not read file: " + e.toString());
+            }
+            Category importedCat = gson.fromJson(retCat, Category.class);
+            if (importedCards != null) {
+                importedCat.setName(importedCat.getName());
+                importedCat.setParentId(currentCategoryParent); //make sure to bee in root @TODO make choosable
+                db.createCards(importedCards, db.createCategory(importedCat).getId()); // Creates category and cards
+                setListViewWithCatalogueByLevel(currentCategoryParent);
+            }
         }
     }
 
