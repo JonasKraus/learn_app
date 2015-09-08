@@ -92,6 +92,11 @@ public class Category implements Parcelable{
 
     @Override
     public String toString() {
-        return "Category: \n\t" + name;
+        return "Category{" +
+                "id=" + id +
+                ", parentId=" + parentId +
+                ", name='" + name + '\'' +
+                ", marked=" + marked +
+                '}';
     }
 }

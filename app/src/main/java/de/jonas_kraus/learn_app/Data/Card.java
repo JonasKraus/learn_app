@@ -38,16 +38,16 @@ public class Card implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeString(type.toString());
+        if (type != null) dest.writeString(type.toString());
         dest.writeString(question);
-        dest.writeList(answers);
+        if (answers != null) dest.writeList(answers);
         dest.writeByte((byte) (known ? 1 : 0));
         dest.writeInt(rating);
-        dest.writeString(hint);
+        if (hint != null) dest.writeString(hint);
         dest.writeInt(categoryId);
         dest.writeInt(drawer);
         dest.writeByte((byte) (marked ? 1 : 0));
-        dest.writeString(new Timestamp(dateCur.getTime()).toString());
+        if (dateCur != null) dest.writeString(new Timestamp(dateCur.getTime()).toString());
         if (viewed != null) {
             dest.writeString(viewed.toString());
         } else {
@@ -108,6 +108,20 @@ public class Card implements Parcelable{
         this.marked = false;
         this.date = new Timestamp(dateCur.getTime());
         this.viewed = null;
+    }
+
+    /**
+     * Only for loading in list view
+     * @param id
+     * @param question
+     * @param marked
+     * @param categoryId
+     */
+    public Card(int id, String question, boolean marked, int categoryId) {
+        this.id = id;
+        this.question = question;
+        this.marked = marked;
+        this.categoryId = categoryId;
     }
 
     public int getCategoryId() {

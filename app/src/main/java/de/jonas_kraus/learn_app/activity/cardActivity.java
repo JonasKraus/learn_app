@@ -81,6 +81,12 @@ public class cardActivity extends ActionBarActivity {
 
         db = new DbManager(this);
 
+        try {
+            db.open();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         Bundle extras;
         if (savedInstanceState == null) {
             extras = getIntent().getExtras();
@@ -88,17 +94,15 @@ public class cardActivity extends ActionBarActivity {
                 currentCategoryParent = -1;
             } else {
                 currentCategoryParent = extras.getInt("currentCategoryParent");
+                editCard = db.getCardById(extras.getInt("cardId"));
+                editMode = true;
+                /*
                 editCard = extras.getParcelable("card");
                 if (editCard != null) {
                     editMode = true;
                 }
+                */
             }
-        }
-
-        try {
-            db.open();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
     }

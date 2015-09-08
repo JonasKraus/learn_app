@@ -93,7 +93,8 @@ public class CustomList extends ArrayAdapter<Catalogue> {
                 ImageView box = (ImageView) v.findViewById(R.id.checkBox);
                 int position = Integer.parseInt(box.getTag().toString());
                 Category category = catalogue.get(position).getCategory();
-                Card card = catalogue.get(position).getCard();
+                //Card card = catalogue.get(position).getCard();
+                Card card = db.getCardById(catalogue.get(position).getCard().getId());
                 //checked = Boolean.parseBoolean(box.getTag().toString());
                 //box.setTag(checked);
                 Drawable drawable = box.getBackground();

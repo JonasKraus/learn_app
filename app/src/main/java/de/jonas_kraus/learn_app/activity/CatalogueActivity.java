@@ -119,22 +119,27 @@ public class CatalogueActivity extends ListActivity {
                 //Log.d("Adapter", getListAdapter()+"");
                 Catalogue curCatalogue = (Catalogue) getListAdapter().getItem(position);
                 //Log.d("View Item",curCat+"");
-                //Category curCategory;
-                Card curCard;
+                Category curCategory;
+                //Card curCard;
 
                 if (curCatalogue.getCategory() != null) { // Jump to subcategory
                     curCategory = curCatalogue.getCategory();
                     currentCategoryParent = curCategory.getId();
-                    setListViewWithCatalogueByLevel(currentCategoryParent);
 
+                    Log.d("click on cat", "cat: " + curCatalogue.getCategory() + " ---- ");
+                    //if (curCategory)
+                    setListViewWithCatalogueByLevel(currentCategoryParent);
                     buttonCategoryBack.setText("../" + curCategory.getName());
 
+
+
                 } else if (curCatalogue.getCard() != null) { /* @TODO Preview of Card */
-                    curCard = curCatalogue.getCard();
+                    //curCard = curCatalogue.getCard();
                     //Toast.makeText(context,"This is a card: "+curCard.getQuestion(), Toast.LENGTH_SHORT).show();
                     Intent myIntent = new Intent(CatalogueActivity.this, cardActivity.class);
                     myIntent.putExtra("currentCategoryParent", currentCategoryParent);
-                    myIntent.putExtra("card", curCatalogue.getCard());
+                    myIntent.putExtra("cardId", curCatalogue.getCard().getId());
+                    //myIntent.putExtra("card", curCatalogue.getCard());
                     startActivity(myIntent);
                 }
 
@@ -425,7 +430,7 @@ public class CatalogueActivity extends ListActivity {
 
     private void setListViewWithCatalogueByLevel(int level) {
         List<Category> categories = db.getCategoriesByLevel(level);
-        List<Card> cards = db.getCardsByLevel(level);
+        List<Card> cards = db.getCardsByLevelForListView(level);
         List<Catalogue> catalogue = new ArrayList<Catalogue>();
 
         for (Category cat : categories) {
@@ -437,6 +442,7 @@ public class CatalogueActivity extends ListActivity {
 
         if (categories != null && categories.size() > 0) {
             curCategory = db.getParentCategory(categories.get(0).getParentId());
+            Log.d("curCat",""+curCategory);
         } else if (cards != null && cards.size() > 0) {
             curCategory = db.getParentCategory(cards.get(0).getCategoryId());
         }
@@ -459,7 +465,7 @@ public class CatalogueActivity extends ListActivity {
                 if (curCategory != null) {
                     setListViewWithCatalogueByLevel(curCategory.getParentId());
                     if (curCategory == null) {
-                        buttonCategoryBack.setText("back to home");
+                        buttonCategoryBack.setText("back");
                     } else {
                         buttonCategoryBack.setText("../"+curCategory.getName());
                     }
