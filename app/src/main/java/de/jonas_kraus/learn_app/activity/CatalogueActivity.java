@@ -477,6 +477,7 @@ public class CatalogueActivity extends ListActivity {
             case R.id.buttonCardNew:
                 Intent myIntent = new Intent(CatalogueActivity.this, cardActivity.class);
                 myIntent.putExtra("currentCategoryParent",currentCategoryParent);
+                myIntent.putExtra("addNewCard",true);
                 startActivity(myIntent);
                 //makePromptAddCard();
                 break;

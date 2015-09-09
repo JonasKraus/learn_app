@@ -111,7 +111,7 @@ public class Card implements Parcelable{
     }
 
     /**
-     * Only for loading in list view
+     * Only for loading in list view to load faster
      * @param id
      * @param question
      * @param marked
@@ -122,6 +122,19 @@ public class Card implements Parcelable{
         this.question = question;
         this.marked = marked;
         this.categoryId = categoryId;
+    }
+
+    /**
+     * Only for Play activity, to load faster
+     * @param id
+     * @param known
+     * @param rating
+     */
+    public Card(int id, boolean known, int rating, int drawer) {
+        this.id = id;
+        this.known = known;
+        this.rating = rating;
+        this.drawer = drawer;
     }
 
     public int getCategoryId() {

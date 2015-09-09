@@ -807,6 +807,43 @@ public class DbManager {
         return cards;
     }
 
+    public List<Card> getMarkedCardsToLoadInPlay() {
+        List<Card> cards = new ArrayList<Card>();
+        String orderType;
+        switch(getCardsOrderType()) {
+            case 0:
+                orderType = MySQLiteHelper.COLUMN_QUESTION_DRAWER + " ASC";
+                break;
+            case 1:
+                orderType = MySQLiteHelper.COLUMN_QUESTION_RATING + " ASC";
+                break;
+            case 2:
+                orderType = MySQLiteHelper.COLUMN_QUESTION_ID + " ASC";
+                break;
+            default:
+                orderType = null;
+                break;
+        }
+        String lastDrawerQuery = "";
+        if (isViewCardsOfLastDrawer()) {
+        } else {
+            lastDrawerQuery = " AND " + MySQLiteHelper.COLUMN_QUESTION_DRAWER + " < " +5;
+        }
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS, allQuestionColumns, MySQLiteHelper.COLUMN_QUESTION_MARKED + " = " + 1 + lastDrawerQuery, null, null, null, orderType);
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                Boolean known = cursor.getInt(3)>0;
+                int rating = cursor.getInt(4);
+                int drawer = cursor.getInt(7);
+                cards.add(new Card(id, known, rating, drawer));
+                //Log.d("by mark", cards.get(cards.size()-1).toString());
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return cards;
+    }
+
     public int[] getDrawerDistribution() {
         int[] distr = new int[]{0,0,0,0,0,0};
         for (int i = 0; i < distr.length; i++) {

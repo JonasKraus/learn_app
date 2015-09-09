@@ -92,7 +92,12 @@ public class cardActivity extends ActionBarActivity {
             extras = getIntent().getExtras();
             if(extras == null) {
                 currentCategoryParent = -1;
-            } else {
+                editMode = false;
+            } else if (extras.getBoolean("addNewCard")) {
+                currentCategoryParent = extras.getInt("currentCategoryParent");
+                editMode = false;
+            }
+            else {
                 currentCategoryParent = extras.getInt("currentCategoryParent");
                 editCard = db.getCardById(extras.getInt("cardId"));
                 editMode = true;
