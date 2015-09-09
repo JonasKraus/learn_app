@@ -53,6 +53,11 @@ public class DbManager {
             MySQLiteHelper.COLUMN_CATEGORY_MARKED
     };
 
+    // for better performance
+    private String[] categoryIdColumn = {
+            MySQLiteHelper.COLUMN_CATEGORY_ID
+    };
+
     private String[] allMarkColumns = {
             MySQLiteHelper.COLUMN_MARKED_ID,
             MySQLiteHelper.COLUMN_QUESTION_ID
@@ -1192,18 +1197,19 @@ public class DbManager {
         categoryList.add(parentId);
         int countI = 0;
         int oldSize = 1;
+        Cursor cursorCat = null;
         do {
             oldSize = categoryList.size();
             for (int i = countI; i < categoryList.size(); i++) {
-                Cursor cursorCat = database.query(MySQLiteHelper.TABLE_CATEGORIES, allCategoryColumns, MySQLiteHelper.COLUMN_CATEGORY_PARENT + "=" + categoryList.get(i), null, null, null, null);
+                cursorCat = database.query(MySQLiteHelper.TABLE_CATEGORIES, categoryIdColumn, MySQLiteHelper.COLUMN_CATEGORY_PARENT + "=" + categoryList.get(i), null, null, null, null);
                 if (cursorCat.moveToFirst()) {
                     do {
                         categoryList.add(cursorCat.getInt(0)); // id of current children
                     } while (cursorCat.moveToNext());
                 }
-                cursorCat.close();
                 countI = i;
             }
+            cursorCat.close();
         } while(categoryList.size() - oldSize > 0);
         // Log.d("Categories List", categoryList.toString());
         return categoryList;

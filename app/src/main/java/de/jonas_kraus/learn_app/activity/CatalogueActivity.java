@@ -98,7 +98,7 @@ public class CatalogueActivity extends ListActivity {
                 currentCategoryParent= extras.getInt("currentCategoryParent");
             }
         }
-        setListViewWithCatalogueByLevel(currentCategoryParent);
+        //setListViewWithCatalogueByLevel(currentCategoryParent);
         checkedList = new ArrayList<>();
     }
 
