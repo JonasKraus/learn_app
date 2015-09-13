@@ -238,7 +238,7 @@ public class PlayActivity extends ActionBarActivity {
         currentDrawer = curPlayedCard.getDrawer();
         textViewQuestion.setText(curPlayedCard.getQuestion());
         seekBar.setProgress(curPlayedCard.getRating());
-        textViewQuestionCounter.setText("1/"+cards.size()+"\t\t\t"+cards.size()/100*1+"%");
+        textViewQuestionCounter.setText("1/"+cards.size()+"\t\t\t"+100/cards.size()*1+"%");
         prepareAnswers();
     }
 

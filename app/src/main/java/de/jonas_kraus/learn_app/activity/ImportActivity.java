@@ -1,5 +1,6 @@
 package de.jonas_kraus.learn_app.activity;
 
+import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,10 +18,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,7 +48,8 @@ import de.jonas_kraus.learn_app.Util.CustomList;
 public class ImportActivity extends ListActivity {
 
     private ListView listViewCatalogue;
-    private Button buttonCancel, buttonImport;
+    private Button buttonCancel, buttonImport, buttonMarkAll;
+    private TextView textViewNumCat, textViewNumCards;
     private Context context;
     private int currentCategoryParent = -1;
     private CustomList customListAdapter;
@@ -51,6 +57,8 @@ public class ImportActivity extends ListActivity {
     private List<Card> importedCards;
     private Gson gson;
     private DbManager db;
+    private Boolean markAll = false;
+    private int numCats, numCards = 0;
 
     private Bitmap categoryIcon, cardIcon;
     private Drawable categoryIconScaled, cardIconScaled;
@@ -65,6 +73,13 @@ public class ImportActivity extends ListActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        catalogue = getPopulationForListView(currentCategoryParent);
+        customListAdapter = new CustomList(ImportActivity.this, catalogue);
+        setListAdapter(customListAdapter);
+        listViewCatalogue = getListView();
+        addClickListenersToListView();
+        textViewNumCat.setText(numCats+"");
+        textViewNumCards.setText(numCards+"");
     }
 
     private void addClickListenersToListView() {
@@ -124,6 +139,7 @@ public class ImportActivity extends ListActivity {
                     importedCat.setMarked(true);
                     catalogueList.add(new Catalogue(importedCat, categoryIcon));
                     isCategory = true;
+                    numCats++;
                 } catch (Exception e) {
                     isCategory = false;
                 }
@@ -153,6 +169,7 @@ public class ImportActivity extends ListActivity {
                     for (Card card : importedCards) {
                         card.setMarked(true);
                         catalogueList.add(new Catalogue(card, cardIcon));
+                        numCards++;
                     }
                 }
             }
@@ -165,7 +182,10 @@ public class ImportActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import);
 
-        buttonImport = (Button)findViewById(R.id.buttonImportImport);
+        //buttonImport = (Button)findViewById(R.id.buttonImportImport);
+        buttonMarkAll = (Button)findViewById(R.id.buttonImportMarkAll);
+        textViewNumCat = (TextView)findViewById(R.id.textViewNumCat);
+        textViewNumCards = (TextView)findViewById(R.id.textViewNumCards);
 
         Bundle extras;
         if (savedInstanceState == null) {
@@ -183,11 +203,6 @@ public class ImportActivity extends ListActivity {
         categoryIcon = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.categoryicon, options);
         categoryIconScaled = new BitmapDrawable(getApplicationContext().getResources(), Bitmap.createScaledBitmap(categoryIcon, 50, 50, true));
         //cardIconScaled = new BitmapDrawable(getApplicationContext().getResources(), Bitmap.createScaledBitmap(cardIcon, 50, 50, true));
-        catalogue = getPopulationForListView(currentCategoryParent);
-        customListAdapter = new CustomList(ImportActivity.this, catalogue);
-        setListAdapter(customListAdapter);
-        listViewCatalogue = getListView();
-        addClickListenersToListView();
     }
 
     public void onClick(View view) {
@@ -216,6 +231,21 @@ public class ImportActivity extends ListActivity {
                 Intent myIntentImported = new Intent(ImportActivity.this, CatalogueActivity.class);
                 myIntentImported.putExtra("currentCategoryParent", currentCategoryParent);
                 startActivity(myIntentImported);
+                break;
+            case R.id.buttonImportMarkAll:
+                for(Catalogue c : catalogue) {
+                    c.setMark(markAll);
+                }
+                customListAdapter = new CustomList(ImportActivity.this, catalogue, db);
+                setListAdapter(customListAdapter);
+                listViewCatalogue=getListView();
+                listViewCatalogue.setAdapter(customListAdapter);
+                if (markAll) {
+                    buttonMarkAll.setText("Unmark all");
+                } else {
+                    buttonMarkAll.setText("Mark all");
+                }
+                markAll = !markAll;
                 break;
         }
     }
