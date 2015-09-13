@@ -76,9 +76,9 @@ public class Catalogue implements Parcelable {
     @Override
     public String toString() {
         if (card == null) {
-            return icon.toString() + category.toString();
+            return category.toString();
         } else {
-            return icon.toString() + card.toString();
+            return card.toString();
         }
     }
 

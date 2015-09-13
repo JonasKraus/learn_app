@@ -126,11 +126,10 @@ public class CatalogueActivity extends ListActivity {
                     curCategory = curCatalogue.getCategory();
                     currentCategoryParent = curCategory.getId();
 
-                    Log.d("click on cat", "cat: " + curCatalogue.getCategory() + " ---- ");
+                    //Log.d("click on cat", "cat: " + curCatalogue.getCategory() + " ---- ");
                     //if (curCategory)
                     setListViewWithCatalogueByLevel(currentCategoryParent);
                     buttonCategoryBack.setText("../" + curCategory.getName());
-
 
 
                 } else if (curCatalogue.getCard() != null) { /* @TODO Preview of Card */
@@ -288,6 +287,12 @@ public class CatalogueActivity extends ListActivity {
     }
 
     private void importCategory() {
+
+        Intent myIntent = new Intent(CatalogueActivity.this, ImportActivity.class);
+        myIntent.putExtra("currentCategoryParent", currentCategoryParent);
+        //myIntent.putExtra("card", curCatalogue.getCard());
+        startActivity(myIntent);
+
         Gson gson = new Gson();
 
         String filenameCat = "category.json";
@@ -296,6 +301,15 @@ public class CatalogueActivity extends ListActivity {
         File fileCards = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards" + File.separator + filenameCards);
         String retCat = "";
         String retCards = "";
+
+        File sdCardRoot = Environment.getExternalStorageDirectory();
+        File yourDir = new File(sdCardRoot, Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards");
+        for (File f : yourDir.listFiles()) {
+            if (f.isFile()) {
+                String name = f.getName();
+                Log.d("file name: ", name);
+            }
+        }
 
         if(!fileCards.exists()) {
             Toast.makeText(context,"No Cards file to import!", Toast.LENGTH_LONG).show();

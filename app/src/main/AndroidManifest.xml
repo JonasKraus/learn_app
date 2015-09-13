@@ -49,6 +49,10 @@
             android:name=".activity.GraphActivity"
             android:label="@string/title_activity_graph" >
         </activity>
+        <activity
+            android:name=".activity.ImportActivity"
+            android:label="@string/title_activity_import" >
+        </activity>
     </application>
 
 </manifest>

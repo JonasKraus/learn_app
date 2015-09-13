@@ -50,6 +50,18 @@ public class CustomList extends ArrayAdapter<Catalogue> {
         uncheck = context.getResources().getDrawable(R.drawable.checkmark_shadow);
     }
 
+    public CustomList(Activity context,List<Catalogue> catalogue) {
+        super(context, R.layout.list_single, catalogue);
+        this.db = db;
+        this.context = context;
+        this.catalogue = catalogue;
+        this.checkedList = new ArrayList<Catalogue>();
+        //this.marksFromDb = db.getMarks();
+        this.checkedListPos = new ArrayList<Integer>();
+        check = context.getResources().getDrawable( R.drawable.checkmark );
+        uncheck = context.getResources().getDrawable(R.drawable.checkmark_shadow);
+    }
+
     @Override
     public View getView(final int position, View view, final ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
@@ -103,14 +115,18 @@ public class CustomList extends ArrayAdapter<Catalogue> {
                     checkedList.add(catalogue.get(position));
                     checkedListPos.add(position);
                     //db.createMarks(catalogue.get(position));
-                    db.markCardOrCategory(catalogue.get(position));
+                    if (db != null) {
+                        db.markCardOrCategory(catalogue.get(position));
+                    }
                     catalogue.get(position).setMark(true);
                 } else {
                     box.setBackgroundDrawable(uncheck);
                     checkedList.remove(catalogue.get(position));
                     checkedListPos.remove((Integer)position);
                     //db.deleteMark(catalogue.get(position));
-                    db.unmarkCardOrCategory(catalogue.get(position));
+                    if (db != null) {
+                        db.unmarkCardOrCategory(catalogue.get(position));
+                    }
                     catalogue.get(position).setMark(false);
                 }
                 //Log.d("Click",card +" "+ category + " equals? " + (drawable +" ," + check+" ," + uncheck));

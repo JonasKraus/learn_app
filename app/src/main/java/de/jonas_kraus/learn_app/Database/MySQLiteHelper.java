@@ -65,7 +65,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_STATISTICS_TIME = "time";
 
     private static final String DATABASE_NAME = "learning_cards_db.db";
-    private static final int DATABASE_VERSION = 18;
+    private static final int DATABASE_VERSION = 19;
 
     // Database creation sql statement
     private static final String QUESTIONS_CREATE = "create table "
