@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Cancel"
-            android:id="@+id/buttonCancel"
+            android:id="@+id/buttonImportCancel"
             android:onClick="onClick"
             android:background="@drawable/flat_selector_blue"
             android:textColor="@color/light_grey"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Import"
-            android:id="@+id/buttonImport"
+            android:id="@+id/buttonImportImport"
             android:onClick="onClick"
             android:background="@drawable/flat_selector_blue"
             android:textColor="@color/light_grey"/>

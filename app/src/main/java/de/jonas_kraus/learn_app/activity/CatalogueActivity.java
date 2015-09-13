@@ -10,13 +10,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,20 +25,12 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,16 +108,16 @@ public class CatalogueActivity extends ListActivity {
                 //Log.d("Adapter", getListAdapter()+"");
                 Catalogue curCatalogue = (Catalogue) getListAdapter().getItem(position);
                 //Log.d("View Item",curCat+"");
-                Category curCategory;
+
                 //Card curCard;
 
                 if (curCatalogue.getCategory() != null) { // Jump to subcategory
                     curCategory = curCatalogue.getCategory();
                     currentCategoryParent = curCategory.getId();
-
-                    //Log.d("click on cat", "cat: " + curCatalogue.getCategory() + " ---- ");
-                    //if (curCategory)
-                    setListViewWithCatalogueByLevel(currentCategoryParent);
+                    Log.d("parent", currentCategoryParent+"" );
+                            //Log.d("click on cat", "cat: " + curCatalogue.getCategory() + " ---- ");
+                            //if (curCategory)
+                            setListViewWithCatalogueByLevel(currentCategoryParent);
                     buttonCategoryBack.setText("../" + curCategory.getName());
 
 
@@ -288,11 +277,13 @@ public class CatalogueActivity extends ListActivity {
 
     private void importCategory() {
 
+
         Intent myIntent = new Intent(CatalogueActivity.this, ImportActivity.class);
         myIntent.putExtra("currentCategoryParent", currentCategoryParent);
         //myIntent.putExtra("card", curCatalogue.getCard());
         startActivity(myIntent);
-
+        /*
+         * is now in own activity
         Gson gson = new Gson();
 
         String filenameCat = "category.json";
@@ -399,6 +390,7 @@ public class CatalogueActivity extends ListActivity {
                 setListViewWithCatalogueByLevel(currentCategoryParent);
             }
         }
+         */
     }
 
     @Deprecated
@@ -515,7 +507,7 @@ public class CatalogueActivity extends ListActivity {
                 myIntentStats.putExtra("currentCategoryParent",currentCategoryParent);
                 startActivity(myIntentStats);
                 break;
-            case R.id.buttonImport: {
+            case R.id.buttonImportImport: {
                 importCategory();
             }
         }

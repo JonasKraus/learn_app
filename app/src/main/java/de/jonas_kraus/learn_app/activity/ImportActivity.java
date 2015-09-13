@@ -165,7 +165,7 @@ public class ImportActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import);
 
-        buttonImport = (Button)findViewById(R.id.buttonImport);
+        buttonImport = (Button)findViewById(R.id.buttonImportImport);
 
         Bundle extras;
         if (savedInstanceState == null) {
@@ -193,12 +193,12 @@ public class ImportActivity extends ListActivity {
     public void onClick(View view) {
 
         switch (view.getId()) {
-            case R.id.buttonCancel:
+            case R.id.buttonImportCancel:
                 Intent myIntent = new Intent(ImportActivity.this, CatalogueActivity.class);
                 myIntent.putExtra("currentCategoryParent", currentCategoryParent);
                 startActivity(myIntent);
                 break;
-            case R.id.buttonImport:
+            case R.id.buttonImportImport:
                 for(Catalogue c : catalogue) {
                     if (c.getCategory() != null) {
                         if (c.getCategory().isMarked()) {

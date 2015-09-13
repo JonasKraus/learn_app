@@ -2,7 +2,6 @@ package de.jonas_kraus.learn_app.activity;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.SQLException;
@@ -71,7 +69,7 @@ public class cardActivity extends ActionBarActivity {
         radioGroupType = (RadioGroup)findViewById(R.id.radioGroupType);
         buttonAddAnswer = (Button)findViewById(R.id.buttonAddAnswerField);
         buttonDeleteAnswer = (Button)findViewById(R.id.buttonDeleteAnswerField);
-        buttonCancel = (Button)findViewById(R.id.buttonCancel);
+        buttonCancel = (Button)findViewById(R.id.buttonImportCancel);
         buttonSave = (Button)findViewById(R.id.buttonSave);
         radioSingle = (RadioButton)findViewById(R.id.radioSingle);
         radioMulti = (RadioButton)findViewById(R.id.radioMultiplechoice);
@@ -231,7 +229,7 @@ public class cardActivity extends ActionBarActivity {
                     Toast.makeText(getApplicationContext(), "At least two answers must be set!", Toast.LENGTH_LONG);
                 }
                 break;
-            case R.id.buttonCancel:
+            case R.id.buttonImportCancel:
                 Intent myIntent = new Intent(cardActivity.this, CatalogueActivity.class);
                 myIntent.putExtra("currentCategoryParent", currentCategoryParent);
                 startActivity(myIntent);
