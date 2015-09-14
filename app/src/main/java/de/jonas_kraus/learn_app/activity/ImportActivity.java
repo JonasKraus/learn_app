@@ -51,7 +51,7 @@ public class ImportActivity extends ListActivity {
     private Button buttonCancel, buttonImport, buttonMarkAll;
     private TextView textViewNumCat, textViewNumCards;
     private Context context;
-    private int currentCategoryParent = -1;
+    private int currentCategoryParent;
     private CustomList customListAdapter;
     private ArrayList<Catalogue> catalogue;
     private List<Card> importedCards;
@@ -63,17 +63,30 @@ public class ImportActivity extends ListActivity {
     private Bitmap categoryIcon, cardIcon;
     private Drawable categoryIconScaled, cardIconScaled;
 
+    private String path;
+
     @Override
     protected void onResume() {
         super.onResume();
         context = this;
+
+        if (getIntent().hasExtra("path")) {
+            path = getIntent().getStringExtra("path");
+        }
+        if (getIntent().hasExtra("currentCategoryParent")) {
+            currentCategoryParent = getIntent().getExtras().getInt("currentCategoryParent");
+        } else {
+            currentCategoryParent = -1;
+        }
+        setTitle(path);
+
         db = new DbManager(this);
         try {
             db.open();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        catalogue = getPopulationForListView(currentCategoryParent);
+        catalogue = getPopulationForListView();
         customListAdapter = new CustomList(ImportActivity.this, catalogue);
         setListAdapter(customListAdapter);
         listViewCatalogue = getListView();
@@ -86,7 +99,6 @@ public class ImportActivity extends ListActivity {
         listViewCatalogue.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("klcik ", "hier "+ i+" "+catalogue.get(i));
             }
         });
         listViewCatalogue.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -98,80 +110,72 @@ public class ImportActivity extends ListActivity {
         });
     }
 
-    private ArrayList<Catalogue> getPopulationForListView(int currentCategoryParent) {
-        File sdCardRoot = Environment.getExternalStorageDirectory();
-        File yourDir = new File(sdCardRoot, Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards");
+    private ArrayList<Catalogue> getPopulationForListView() {
         ArrayList<Catalogue> catalogueList = new ArrayList<Catalogue>();
-        for (File f : yourDir.listFiles()) {
-            if (f.isFile()) {
-                String name = f.getName();
-                //Log.d("file name: ", name);
-                File fileCat = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards" + File.separator + name);
-                File fileCards = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards" + File.separator + name);
-                String retCat = "";
-                String retCards = "";
-                boolean isCategory = false;
+        //File fileCat = new File(path);
+        //File fileCards = new File(path);
+        String retCat = "";
+        String retCards = "";
+        boolean isCategory = false;
 
-                try {
-                    InputStream inputStreamCat = new FileInputStream(fileCat.getPath());
+        try {
+            InputStream inputStreamCat = new FileInputStream(path);
 
-                    if (inputStreamCat != null) {
-                        InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCat);
-                        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                        String receiveStringCat = "";
-                        StringBuilder stringBuilder = new StringBuilder();
+            if (inputStreamCat != null) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCat);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveStringCat = "";
+                StringBuilder stringBuilder = new StringBuilder();
 
-                        while ((receiveStringCat = bufferedReader.readLine()) != null) {
-                            stringBuilder.append(receiveStringCat);
-                        }
-                        inputStreamCat.close();
-                        retCat = stringBuilder.toString();
-                    }
-                } catch (FileNotFoundException e) {
-                    Log.e("login activity", "File not found: " + e.toString());
-                    Toast.makeText(context, "copie cards.json and category.json to " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards").toURI(), Toast.LENGTH_LONG).show();
-                } catch (IOException e) {
-                    Log.e("login activity", "Can not read file: " + e.toString());
+                while ((receiveStringCat = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(receiveStringCat);
                 }
-                try {
-                    Gson gson = new Gson();
-                    Category importedCat = gson.fromJson(retCat, Category.class);
-                    importedCat.setMarked(true);
-                    catalogueList.add(new Catalogue(importedCat, categoryIcon));
-                    isCategory = true;
-                    numCats++;
-                } catch (Exception e) {
-                    isCategory = false;
+                inputStreamCat.close();
+                retCat = stringBuilder.toString();
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+            Toast.makeText(context, "copie cards.json and category.json to " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards").toURI(), Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+        try {
+            Gson gson = new Gson();
+            Category importedCat = gson.fromJson(retCat, Category.class);
+            importedCat.setMarked(true);
+            catalogueList.add(new Catalogue(importedCat, categoryIcon));
+            isCategory = true;
+            numCats++;
+        } catch (Exception e) {
+            isCategory = false;
+        }
+
+        if (!isCategory) {
+            try {
+                InputStream inputStreamCards = new FileInputStream(path);
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCards);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveStringCards = "";
+                StringBuilder stringBuilder = new StringBuilder();
+                while ((receiveStringCards = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(receiveStringCards);
                 }
+                inputStreamCards.close();
+                retCards = stringBuilder.toString();
 
-                if (!isCategory) {
-                    try {
-                        InputStream inputStreamCards = new FileInputStream(fileCards.getPath());
-
-                        InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCards);
-                        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                        String receiveStringCards = "";
-                        StringBuilder stringBuilder = new StringBuilder();
-                        while ((receiveStringCards = bufferedReader.readLine()) != null) {
-                            stringBuilder.append(receiveStringCards);
-                        }
-                        inputStreamCards.close();
-                        retCards = stringBuilder.toString();
-
-                    } catch (FileNotFoundException e) {
-                        Log.e("login activity", "File not found: " + e.toString());
-                    } catch (IOException e) {
-                        Log.e("login activity", "Can not read file: " + e.toString());
-                    }
-                    Type listType = new TypeToken<ArrayList<Card>>() {
-                    }.getType();
-                    importedCards = new Gson().fromJson(retCards, listType);
-                    for (Card card : importedCards) {
-                        card.setMarked(true);
-                        catalogueList.add(new Catalogue(card, cardIcon));
-                        numCards++;
-                    }
-                }
+            } catch (FileNotFoundException e) {
+                Log.e("login activity", "File not found: " + e.toString());
+            } catch (IOException e) {
+                Log.e("login activity", "Can not read file: " + e.toString());
+            }
+            Type listType = new TypeToken<ArrayList<Card>>() {
+            }.getType();
+            importedCards = new Gson().fromJson(retCards, listType);
+            for (Card card : importedCards) {
+                card.setMarked(true);
+                catalogueList.add(new Catalogue(card, cardIcon));
+                numCards++;
             }
         }
         return catalogueList;

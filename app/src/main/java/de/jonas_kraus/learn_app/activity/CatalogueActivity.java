@@ -114,7 +114,6 @@ public class CatalogueActivity extends ListActivity {
                 if (curCatalogue.getCategory() != null) { // Jump to subcategory
                     curCategory = curCatalogue.getCategory();
                     currentCategoryParent = curCategory.getId();
-                    Log.d("parent", currentCategoryParent+"" );
                             //Log.d("click on cat", "cat: " + curCatalogue.getCategory() + " ---- ");
                             //if (curCategory)
                             setListViewWithCatalogueByLevel(currentCategoryParent);
@@ -277,11 +276,10 @@ public class CatalogueActivity extends ListActivity {
 
     private void importCategory() {
 
+        Intent myIntentFiles = new Intent(CatalogueActivity.this, ListFileActivity.class);
+        myIntentFiles.putExtra("currentCategoryParent", currentCategoryParent);
+        startActivity(myIntentFiles);
 
-        Intent myIntent = new Intent(CatalogueActivity.this, ImportActivity.class);
-        myIntent.putExtra("currentCategoryParent", currentCategoryParent);
-        //myIntent.putExtra("card", curCatalogue.getCard());
-        startActivity(myIntent);
         /*
          * is now in own activity
         Gson gson = new Gson();
@@ -448,7 +446,6 @@ public class CatalogueActivity extends ListActivity {
 
         if (categories != null && categories.size() > 0) {
             curCategory = db.getParentCategory(categories.get(0).getParentId());
-            Log.d("curCat",""+curCategory);
         } else if (cards != null && cards.size() > 0) {
             curCategory = db.getParentCategory(cards.get(0).getCategoryId());
         }

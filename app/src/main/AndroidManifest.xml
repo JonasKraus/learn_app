@@ -53,6 +53,10 @@
             android:name=".activity.ImportActivity"
             android:label="@string/title_activity_import" >
         </activity>
+        <activity
+            android:name=".activity.ListFileActivity"
+            android:label="@string/title_activity_list_file" >
+        </activity>
     </application>
 
 </manifest>
