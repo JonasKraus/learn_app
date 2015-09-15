@@ -116,8 +116,14 @@ public class CatalogueActivity extends ListActivity {
                     currentCategoryParent = curCategory.getId();
                             //Log.d("click on cat", "cat: " + curCatalogue.getCategory() + " ---- ");
                             //if (curCategory)
-                            setListViewWithCatalogueByLevel(currentCategoryParent);
-                    buttonCategoryBack.setText("../" + curCategory.getName());
+                    buttonCategoryBack.setText("◀ " + curCategory.getName());
+                    /**
+                     * Alternative to start next view
+                    Intent myIntent = new Intent(CatalogueActivity.this, CatalogueActivity.class);
+                    myIntent.putExtra("currentCategoryParent", currentCategoryParent);
+                    startActivity(myIntent);
+                    */
+                    setListViewWithCatalogueByLevel(currentCategoryParent);
 
 
                 } else if (curCatalogue.getCard() != null) { /* @TODO Preview of Card */
@@ -468,9 +474,9 @@ public class CatalogueActivity extends ListActivity {
                 if (curCategory != null) {
                     setListViewWithCatalogueByLevel(curCategory.getParentId());
                     if (curCategory == null) {
-                        buttonCategoryBack.setText("back");
+                        buttonCategoryBack.setText("◀ back");
                     } else {
-                        buttonCategoryBack.setText("../"+curCategory.getName());
+                        buttonCategoryBack.setText("◀ "+curCategory.getName());
                     }
                 } else {
                     Intent myIntent = new Intent(CatalogueActivity.this, Home.class);

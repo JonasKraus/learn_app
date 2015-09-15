@@ -1,111 +1,97 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="de.jonas_kraus.learn_app.activity.CatalogueActivity">
+    tools:context="de.jonas_kraus.learn_app.activity.CatalogueActivity"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/llButtons">
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:text="back"
-            android:id="@+id/buttonCategoryBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/buttonCategoryNew"
+            android:text="✚ Category"
             android:onClick="onClick"
             android:background="@drawable/flat_selector_blue"
             android:textColor="@color/light_grey"
-            android:layout_weight="1"/>
+            android:layout_marginRight="10dp"/>
 
-        <LinearLayout
-            android:layout_width="fill_parent"
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/statistics"
-                android:text="Statistics"
-                android:onClick="onClick"
-                android:background="@drawable/flat_selector_blue"
-                android:textColor="@color/light_grey"
-                android:layout_marginRight="10dp"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Start"
-                android:id="@+id/startCards"
-                android:onClick="onClick"
-                android:layout_weight="1"
-                android:background="@drawable/flat_selector_blue"
-                android:textColor="@color/light_grey"/>
-        </LinearLayout>
-        <TextView
-            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:text="✚ Card"
+            android:id="@+id/buttonCardNew"
+            android:onClick="onClick"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"
+            android:layout_marginRight="10dp"/>
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add:"
-            android:layout_marginTop="10dp"
-            android:background="@color/blue_0"
-            android:textColor="@color/white"
-            android:gravity="center"/>
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/buttonCategoryNew"
-                android:text="Category"
-                android:onClick="onClick"
-                android:background="@drawable/flat_selector_blue"
-                android:textColor="@color/light_grey"
-                android:layout_marginRight="10dp"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Card"
-                android:id="@+id/buttonCardNew"
-                android:onClick="onClick"
-                android:background="@drawable/flat_selector_blue"
-                android:textColor="@color/light_grey"
-                android:layout_marginRight="10dp"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Import"
-                android:id="@+id/buttonImportImport"
-                android:onClick="onClick"
-                android:background="@drawable/flat_selector_blue"
-                android:textColor="@color/light_grey"/>
-        </LinearLayout>
+            android:layout_weight="1"
+            android:text="✚ Import"
+            android:id="@+id/buttonImportImport"
+            android:onClick="onClick"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"/>
     </LinearLayout>
-
-
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@android:id/list"
-        android:layout_below="@+id/llButtons"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
         android:longClickable="true"
         android:clickable="true"
-        android:animateLayoutChanges="false"/>
+        android:animateLayoutChanges="false"
+        android:layout_weight="1"/>
+    <LinearLayout
+        android:id="@+id/llButtonsBottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/statistics"
+            android:text="ᖼ Statistics"
+            android:onClick="onClick"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"
+            android:layout_marginRight="10dp"/>
 
-</RelativeLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="➤ Start"
+            android:id="@+id/startCards"
+            android:onClick="onClick"
+            android:layout_weight="1"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"
+            android:layout_marginRight="10dp"/>
+
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="◀ back"
+            android:id="@+id/buttonCategoryBack"
+            android:onClick="onClick"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:lines="1"
+            android:layout_weight="1"/>
+    </LinearLayout>
+</LinearLayout>
+

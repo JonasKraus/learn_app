@@ -31,7 +31,7 @@ public class CustomListFileBrowser extends ArrayAdapter<List> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.list_single, parent, false);
+        View rowView = inflater.inflate(R.layout.list_single, null, false);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         ImageView box = (ImageView) rowView.findViewById(R.id.checkBox);
@@ -43,7 +43,6 @@ public class CustomListFileBrowser extends ArrayAdapter<List> {
         } else {
             imageView.setImageResource(R.drawable.android_folder);
         }
-
         return rowView;
     }
 }
