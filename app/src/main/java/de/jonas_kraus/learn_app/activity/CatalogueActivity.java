@@ -276,7 +276,7 @@ public class CatalogueActivity extends ListActivity {
 
     private void importCategory() {
 
-        Intent myIntentFiles = new Intent(CatalogueActivity.this, ListFileActivity.class);
+        Intent myIntentFiles = new Intent(CatalogueActivity.this, FileBrowserActivity.class);
         myIntentFiles.putExtra("currentCategoryParent", currentCategoryParent);
         startActivity(myIntentFiles);
 
