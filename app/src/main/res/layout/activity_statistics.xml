@@ -243,6 +243,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <Button
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:id="@+id/buttonGraph"
+                    android:enabled="false"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/flat_selector_blue"
+                    android:onClick="onClick"
+                    android:text="ᖼ Graphs"
+                    android:textColor="@color/white" />
+                <Button
                     android:layout_marginTop="15dp"
                     android:id="@+id/buttonBackHome"
                     android:layout_width="fill_parent"
@@ -250,20 +262,8 @@
                     android:layout_weight="1"
                     android:background="@drawable/flat_selector_blue"
                     android:onClick="onClick"
-                    android:text="back"
+                    android:text="◀ Back"
                     android:textColor="@color/white" />
-                <Button
-                    android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:id="@+id/buttonGraph"
-                    android:enabled="false"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/flat_selector_blue"
-                android:onClick="onClick"
-                android:text="graphs"
-                android:textColor="@color/white" />
             </LinearLayout>
 
         </LinearLayout>

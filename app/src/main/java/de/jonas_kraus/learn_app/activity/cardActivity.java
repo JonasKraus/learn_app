@@ -5,9 +5,12 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -28,9 +31,9 @@ import de.jonas_kraus.learn_app.Data.Card;
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
 
-public class cardActivity extends ActionBarActivity {
+public class cardActivity extends ActionBarActivity implements TextWatcher {
 
-    private EditText editTextQuestion, editTextAnswer, editTextHint;
+    private EditText editTextQuestion, editTextAnswer, editTextHint, editTextFocus;
     private RadioGroup radioGroupType;
     private Button buttonAddAnswer, buttonDeleteAnswer, buttonCancel, buttonSave;
     private RadioButton radioSingle, radioMulti;
@@ -38,6 +41,8 @@ public class cardActivity extends ActionBarActivity {
     private Card.CardType cardType = Card.CardType.NOTECARD;
     private DbManager db;
     private LinearLayout LLEnterText;
+
+    private CheckBox buttonQuestionBullet, checkboxFocus;
 
     private int _intMyLineCount =0;
     private Card editCard;
@@ -49,6 +54,9 @@ public class cardActivity extends ActionBarActivity {
     private boolean checkModeChanged = false;
     private byte checkModeChangedCount = 0;
     private int white;
+
+    private int lineNumber = 0;
+    private String indent = "\t";
 
     private Drawable uncheckmark, checkmark;
 
@@ -73,9 +81,39 @@ public class cardActivity extends ActionBarActivity {
         buttonSave = (Button)findViewById(R.id.buttonSave);
         radioSingle = (RadioButton)findViewById(R.id.radioSingle);
         radioMulti = (RadioButton)findViewById(R.id.radioMultiplechoice);
-        
+        buttonQuestionBullet = (CheckBox)findViewById(R.id.buttonEditorBullet);
+        checkboxFocus = buttonQuestionBullet;
+        editTextFocus = editTextQuestion;
+
         LLEnterText=(LinearLayout) findViewById(R.id.LlTitle);
         LLEnterText.setOrientation(LinearLayout.VERTICAL);
+
+        editTextQuestion.setOnTouchListener(new View.OnTouchListener(){
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                editTextFocus = editTextQuestion;
+                return false;
+            }
+        });
+
+        editTextAnswer.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                editTextFocus = editTextAnswer;
+                return false;
+            }
+        });
+
+        editTextHint.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                editTextFocus = editTextHint;
+                return false;
+            }
+        });
 
         db = new DbManager(this);
 
@@ -147,8 +185,8 @@ public class cardActivity extends ActionBarActivity {
                     LLEnterText.removeAllViews();
                     //textViewAnswer.setVisibility(View.VISIBLE);
                 } else {
-                    checkModeChangedCount ++;
-                    if (checkModeChangedCount > 1 ) {
+                    checkModeChangedCount++;
+                    if (checkModeChangedCount > 1) {
                         checkModeChanged = true;
                     }
                     buttonAddAnswer.setVisibility(View.VISIBLE);
@@ -163,7 +201,7 @@ public class cardActivity extends ActionBarActivity {
                         }
                     } else if (checkModeChanged || (editCard.getType() == Card.CardType.NOTECARD)) { /* @TODO Mode changed set right checkmark*/
                         checkBoxList.removeAll(checkBoxList);
-                        for(int i = 0; i< editCard.getAnswers().size(); i++) {
+                        for (int i = 0; i < editCard.getAnswers().size(); i++) {
                             LLEnterText.addView(linearlayout(_intMyLineCount));
                             _intMyLineCount++;
                             checkBoxList.get(i).setButtonDrawable(R.drawable.checkbox_icon);
@@ -171,7 +209,7 @@ public class cardActivity extends ActionBarActivity {
                             checkBoxList.get(i).setChecked(editCard.getAnswers().get(i).isCorrect());
 
 
-                            Log.d("check list", checkBoxList.get(i).isChecked()+""+checkBoxList.get(i));
+                            Log.d("check list", checkBoxList.get(i).isChecked() + "" + checkBoxList.get(i));
                             /*
                             if (!checkBoxList.get(i).isChecked()) {
                                 checkBoxList.get(i).setButtonDrawable(uncheckmark);
@@ -181,7 +219,7 @@ public class cardActivity extends ActionBarActivity {
                             */
                         }
 
-                        Log.d("editMode","geladen"+ editCard.getAnswers());
+                        Log.d("editMode", "geladen" + editCard.getAnswers());
                         if (editCard.getAnswers().size() == 1) {
                             LLEnterText.addView(linearlayout(_intMyLineCount));
                             _intMyLineCount++;
@@ -195,6 +233,9 @@ public class cardActivity extends ActionBarActivity {
                 }
             }
         });
+        editTextQuestion.addTextChangedListener(this);
+        editTextAnswer.addTextChangedListener(this);
+        editTextHint.addTextChangedListener(this);
         try {
             db.open();
         } catch (SQLException e) {
@@ -208,6 +249,9 @@ public class cardActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        editTextQuestion.addTextChangedListener(null);
+        editTextAnswer.addTextChangedListener(null);
+        editTextHint.addTextChangedListener(null);
         db.close();
     }
 
@@ -259,8 +303,25 @@ public class cardActivity extends ActionBarActivity {
                 myIntent2.putExtra("currentCategoryParent", currentCategoryParent);
                 startActivity(myIntent2);
                 break;
-
+            case R.id.buttonEditorBullet:
+                if (!buttonQuestionBullet.isChecked()) {
+                    indent = "\t";
+                }
+                break;
+            case R.id.buttonEditorFlag:
+                setUnicode("⚑");
+                break;
+            case R.id.buttonEditorFinger:
+                setUnicode("☞");
+                break;
+            case R.id.buttonEditorCheck:
+                setUnicode("✔");
+                break;
+            case R.id.buttonEditorCross:
+                setUnicode("✘");
+                break;
         }
+
     }
 
     @Override
@@ -288,7 +349,8 @@ public class cardActivity extends ActionBarActivity {
     private EditText editText(int _intID) {
         EditText editText = new EditText(this);
         editText.setId(_intID);
-        editText.setHeight(100);
+        editText.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+        editText.setMinHeight(150);
         editText.setHint("Answer");
         //editText.setHint("Answer");
         //editText.setWidth(Layout.match_parent);
@@ -337,7 +399,41 @@ public class cardActivity extends ActionBarActivity {
         LLMain.setBackgroundColor(white);
         LLMain.addView(editText(_intID));
         LLMain.setOrientation(LinearLayout.VERTICAL);
+        LLMain.setMinimumHeight(150);
         linearlayoutList.add(LLMain);
         return LLMain;
+    }
+
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+        if (s.length()>0 && s.subSequence(s.length()-1, s.length()).toString().equalsIgnoreCase("\n")) {
+            if (checkboxFocus.isChecked()) {
+                editTextFocus.setText(editTextFocus.getText()+indent+"•");
+                editTextFocus.setSelection(editTextFocus.getText().length());
+            }
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+    }
+
+    public void setUnicode(String unicode) {
+        int pos = editTextFocus.getSelectionEnd();
+        String txt = editTextFocus.getText().toString();
+        int length = txt.length();
+        if (txt.length()>0 && pos < length) {
+            Log.d("sub1", txt.substring(0,pos) +" "+pos+ " " +txt.length() +" " + txt.substring(pos, length));
+            editTextFocus.setText(txt.substring(0,pos) + unicode + txt.substring(pos, length));
+        } else {
+            editTextFocus.setText(txt+unicode);
+        }
+        editTextFocus.setSelection(pos+1);
     }
 }

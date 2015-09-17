@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/statistics"
-            android:text="ᖼ Statistics"
+            android:text="ᖼ Stats"
             android:onClick="onClick"
             android:background="@drawable/flat_selector_blue"
             android:textColor="@color/light_grey"
@@ -81,7 +81,7 @@
             android:layout_marginRight="10dp"/>
 
         <Button
-            android:layout_width="120dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:text="◀ back"
             android:id="@+id/buttonCategoryBack"

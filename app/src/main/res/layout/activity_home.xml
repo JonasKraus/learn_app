@@ -23,7 +23,7 @@
             android:layout_marginTop="5dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="My Catalogue"
+            android:text="☰ My Catalogue"
             android:id="@+id/buttonCatalogue"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
@@ -43,7 +43,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="\u2699 Settings"
                 android:id="@+id/buttonSettings"
                 android:onClick="onClick"
                 android:background="@drawable/flat_selector_blue"
@@ -54,7 +54,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Statistics"
+                android:text="ᖼ Statistics"
                 android:id="@+id/buttonStats"
                 android:onClick="onClick"
                 android:background="@drawable/flat_selector_blue"
@@ -65,7 +65,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Todos"
+                android:text="\u2691 Todos"
                 android:id="@+id/buttonTodos"
                 android:onClick="onClick"
                 android:background="@drawable/flat_selector_blue"
