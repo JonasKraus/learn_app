@@ -2,6 +2,7 @@ package de.jonas_kraus.learn_app.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,7 +17,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.TimePicker;
 
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -30,7 +31,7 @@ public class SettingsActivity extends ActionBarActivity {
     private CheckBox boxShowHint, boxShowKnownBar, boxOrderMultiplechoiceAnswers, boxViewRandomCards, boxViewLastDrawer, boxNightMode, boxDailyReminder;
     private RadioButton radioOrderByKnowledge, radioOrderByDrawer, radioOrderByDate;
     private RadioGroup radioGroupOrder;
-    private TextView textViewTextSizeQuestions, textViewTextSizeAnswers;
+    private TextView textViewTextSizeQuestions, textViewTextSizeAnswers,textViewDailyReminderTime;
     private SeekBar seekBarTextSizeQuestions, seekBarTextSizeAnswers;
     private DbManager db;
 
@@ -52,6 +53,7 @@ public class SettingsActivity extends ActionBarActivity {
         radioGroupOrder = (RadioGroup) findViewById(R.id.settings_radiogroupOrder);
         textViewTextSizeAnswers = (TextView)findViewById(R.id.textViewSettingsTextSizeAnswers);
         textViewTextSizeQuestions = (TextView)findViewById(R.id.textViewSettingsTextSizeQuestions);
+        textViewDailyReminderTime = (TextView)findViewById(R.id.settings_dailyReminder_time);
         seekBarTextSizeAnswers = (SeekBar)findViewById(R.id.seekBarSettingsTextSizeAnswers);
         seekBarTextSizeQuestions = (SeekBar)findViewById(R.id.seekBarSettingsTextSizeQuestions);
 
@@ -68,7 +70,14 @@ public class SettingsActivity extends ActionBarActivity {
 
         int checkedRadioIndex = db.getCardsOrderType();
 
-        boxDailyReminder.setChecked(db.isDailyReminder());
+        if (db.getDailyReminderTimeDate() != null) {
+            boxDailyReminder.setChecked(true);
+            textViewDailyReminderTime.setText(db.getDailyReminderTimeString());
+        } else {
+            boxDailyReminder.setChecked(false);
+            textViewDailyReminderTime.setText(null);
+        }
+
         boxShowHint.setChecked(db.isShowHint());
         boxShowKnownBar.setChecked(db.isShowBar());
         boxOrderMultiplechoiceAnswers.setChecked(db.isOrderMultipleChoiceAnswers());
@@ -167,11 +176,14 @@ public class SettingsActivity extends ActionBarActivity {
             case R.id.settings_checkbox_dailyReminder:
                 if (!boxDailyReminder.isChecked()) {
                     disableBroadcastReceivers();
+                    db.setDailyReminder(null);
+                    textViewDailyReminderTime.setText(null);
                 } else {
                     enableBroadcastReceivers();
                     startDailyNotificationService();
+                    promptTime();
                 }
-                db.setDailyReminder(boxDailyReminder.isChecked());
+                db.setDailyReminder(textViewDailyReminderTime.getText().toString());
             case R.id.settings_checkbox_showHint:
                 db.setShowHint(boxShowHint.isChecked());
                 break;
@@ -191,6 +203,24 @@ public class SettingsActivity extends ActionBarActivity {
                 db.setNightMode(boxNightMode.isChecked());
                 break;
         }
+    }
+
+    private void promptTime() {
+        Calendar mcurrentTime = Calendar.getInstance();
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = mcurrentTime.get(Calendar.MINUTE);
+        TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                TextView textClock = (TextView)findViewById(R.id.settings_dailyReminder_time);
+                String time = selectedHour + ":" + selectedMinute;
+                textClock.setText(time);
+                db.setDailyReminder(time);
+            }
+        }, hour, minute, true);//Yes 24 hour time
+        mTimePicker.setTitle("Select Time");
+        mTimePicker.show();
     }
 
     protected void onPause() {
@@ -258,15 +288,23 @@ public class SettingsActivity extends ActionBarActivity {
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.AM_PM, Calendar.AM);
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        String timeString = db.getDailyReminderTimeString();
+        if (timeString.length() == 0) {
+            timeString = "16:00";
+        }
+        String[] time = timeString.split(":");
 
-        Log.d("daily service", "started");
+        Calendar cur_cal = Calendar.getInstance();
+        cur_cal.setTimeInMillis(System.currentTimeMillis());//set the current time and date for this calendar
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 10000, 60000, pendingIntent);
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, cur_cal.get(Calendar.DAY_OF_YEAR));
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time[0]));
+        cal.set(Calendar.MINUTE, Integer.parseInt(time[1]));
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.DATE, cur_cal.get(Calendar.DATE));
+        cal.set(Calendar.MONTH, cur_cal.get(Calendar.MONTH));
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000*60*60, pendingIntent);
     }
 }

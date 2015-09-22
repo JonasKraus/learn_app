@@ -23,7 +23,6 @@ import java.util.Calendar;
 import de.jonas_kraus.learn_app.Broadcast.DailyNotificationReceiver;
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
-import de.jonas_kraus.learn_app.Service.DailyNotifyService;
 
 
 public class Home extends ActionBarActivity {
@@ -59,7 +58,7 @@ public class Home extends ActionBarActivity {
 
         dbManager.setFirstSettings();
         // Start broadcast alarm for daily reminder
-        if (dbManager.isDailyReminder()) {
+        if (dbManager.getDailyReminderTimeDate() != null) {
             enableBroadcastReceivers();
             startDailyNotificationService();
         }
@@ -131,14 +130,20 @@ public class Home extends ActionBarActivity {
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.AM_PM, Calendar.AM);
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        String[] time = dbManager.getDailyReminderTimeString().split(":");
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 10000, 60000, pendingIntent);
+        Calendar cur_cal = Calendar.getInstance();
+        cur_cal.setTimeInMillis(System.currentTimeMillis());//set the current time and date for this calendar
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, cur_cal.get(Calendar.DAY_OF_YEAR));
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time[0]));
+        cal.set(Calendar.MINUTE, Integer.parseInt(time[1]));
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.DATE, cur_cal.get(Calendar.DATE));
+        cal.set(Calendar.MONTH, cur_cal.get(Calendar.MONTH));
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000*60*60, pendingIntent);
     }
     public void enableBroadcastReceivers() {
 

@@ -66,7 +66,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_STATISTICS_TIME = "time";
 
     private static final String DATABASE_NAME = "learning_cards_db.db";
-    private static final int DATABASE_VERSION = 21;
+    private static final int DATABASE_VERSION = 22;
 
     // Database creation sql statement
     private static final String QUESTIONS_CREATE = "create table "
@@ -153,7 +153,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_SETTINGS_CARDS_ORDER
             + " integer DEFAULT 0, "
             + COLUMN_SETTINGS_DAILY_REMINDER
-            + " integer DEFAULT 1"
+            + " text DEFAULT '16:00'"
             + ");";
 
     // Database creation sql statement

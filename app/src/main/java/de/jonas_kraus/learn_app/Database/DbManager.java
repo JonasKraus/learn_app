@@ -9,6 +9,8 @@ import android.util.Log;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -898,18 +900,33 @@ public class DbManager {
         return c;
     }
 
-    public void setDailyReminder(boolean bool) {
+    public void setDailyReminder(String time) {
         ContentValues values = new ContentValues();
-        values.put(MySQLiteHelper.COLUMN_SETTINGS_DAILY_REMINDER, bool);
+        values.put(MySQLiteHelper.COLUMN_SETTINGS_DAILY_REMINDER, time);
         database.update(MySQLiteHelper.TABLE_SETTINGS, values, null, null);
     }
 
-    public boolean isDailyReminder() {
+    public Date getDailyReminderTimeDate() {
         Cursor cursor = database.query(MySQLiteHelper.TABLE_SETTINGS, allSettingsColumns, null, null, null, null, null);
         cursor.moveToFirst();
-        boolean bool = cursor.getInt(9)>0;
+        String time = cursor.getString(9);
         cursor.close();
-        return bool;
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+        java.util.Date date = null;
+        try {
+            date = sdf.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public String getDailyReminderTimeString() {
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_SETTINGS, allSettingsColumns, null, null, null, null, null);
+        cursor.moveToFirst();
+        String time = cursor.getString(9);
+        cursor.close();
+        return time;
     }
 
     public void setShowHint(boolean bool) {
