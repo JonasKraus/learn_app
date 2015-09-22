@@ -47,6 +47,8 @@ public class DailyNotifyService extends IntentService {
         }
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, myIntent, 0);
         notification.setLatestEventInfo(this, label, text, contentIntent);
+        // Cancel the notification after its selected
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
         mNM.notify(0, notification);
         dbManager.close();
     }
