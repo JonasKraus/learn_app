@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@color/white"
+        android:layout_weight="1"
         android:padding="10dp">
 
 
@@ -29,13 +30,14 @@
                 android:id="@+id/buttonTodosNewestMinus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="50dp"
+                android:maxWidth="40dp"
                 android:layout_weight="1"
                 android:background="@drawable/flat_selector_blue"
                 android:text="-"
                 android:layout_marginLeft="5dp"
                 android:textColor="@color/white"
-                android:onClick="onMinus"/>
+                android:onClick="onMinus"
+                android:textSize="25sp"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -49,7 +51,7 @@
                 android:textStyle="bold"/>
 
             <Button
-                android:maxWidth="50dp"
+                android:maxWidth="40dp"
                 android:id="@+id/buttonTodosNewestPlus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,7 +59,8 @@
                 android:background="@drawable/flat_selector_blue"
                 android:textColor="@color/white"
                 android:text="+"
-                android:onClick="onPlus"/>
+                android:onClick="onPlus"
+                android:textSize="25sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -72,7 +75,7 @@
                 android:text="View the newest Cards"/>
 
             <Button
-                android:maxWidth="50dp"
+                android:maxWidth="40dp"
                 android:id="@+id/buttonTodosOldestMinus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +84,8 @@
                 android:text="-"
                 android:layout_marginLeft="5dp"
                 android:textColor="@color/white"
-                android:onClick="onMinus"/>
+                android:onClick="onMinus"
+                android:textSize="25sp"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -95,7 +99,7 @@
                 android:textStyle="bold"/>
 
             <Button
-                android:maxWidth="50dp"
+                android:maxWidth="40dp"
                 android:id="@+id/buttonTodosOldestPlus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -103,7 +107,8 @@
                 android:background="@drawable/flat_selector_blue"
                 android:textColor="@color/white"
                 android:onClick="onPlus"
-                android:text="+"/>
+                android:text="+"
+                android:textSize="25sp"/>
         </LinearLayout>
 
         <CheckBox
@@ -160,27 +165,26 @@
        android:layout_width="fill_parent"
        android:layout_height="wrap_content"
        android:orientation="horizontal">
+       <Button
+           android:id="@+id/buttonTodosStart"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:background="@drawable/flat_selector_blue"
+           android:layout_marginTop="10dp"
+           android:text="➤ Start"
+           android:layout_weight="1"
+           android:textColor="@color/white"
+           android:onClick="onStartCards"/>
         <Button
+            android:layout_marginLeft="10dp"
             android:id="@+id/buttonTodosBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/flat_selector_blue"
             android:layout_marginTop="10dp"
-            android:text="Back"
+            android:text="◀ Back"
             android:layout_weight="1"
             android:textColor="@color/white"
             android:onClick="onBackClick"/>
-        <Button
-            android:id="@+id/buttonTodosStart"
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/flat_selector_blue"
-            android:layout_marginTop="10dp"
-            android:text="Start"
-            android:layout_weight="1"
-            android:textColor="@color/white"
-            android:onClick="onStartCards"/>
-       
    </LinearLayout>
 </LinearLayout>

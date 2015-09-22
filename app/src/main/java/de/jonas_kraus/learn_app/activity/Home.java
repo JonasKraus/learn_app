@@ -1,6 +1,10 @@
 package de.jonas_kraus.learn_app.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -14,9 +18,12 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Calendar;
 
+import de.jonas_kraus.learn_app.Broadcast.DailyNotificationReceiver;
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
+import de.jonas_kraus.learn_app.Service.DailyNotifyService;
 
 
 public class Home extends ActionBarActivity {
@@ -51,6 +58,11 @@ public class Home extends ActionBarActivity {
         }
 
         dbManager.setFirstSettings();
+        // Start broadcast alarm for daily reminder
+        if (dbManager.isDailyReminder()) {
+            enableBroadcastReceivers();
+            startDailyNotificationService();
+        }
 
     }
 
@@ -106,11 +118,36 @@ public class Home extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        //disableBroadcastReceivers();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    protected void startDailyNotificationService() {
+        Intent myIntent = new Intent(this , DailyNotificationReceiver.class);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.AM_PM, Calendar.AM);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 10000, 60000, pendingIntent);
+    }
+    public void enableBroadcastReceivers() {
+
+        ComponentName receiverDaily = new ComponentName(this, DailyNotificationReceiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiverDaily,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
     }
 
 }

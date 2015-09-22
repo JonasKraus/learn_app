@@ -58,7 +58,7 @@ public class PlayActivity extends ActionBarActivity {
 
     private int WHITE, BLACK, RED, GREEN;
 
-    private int countKnown, countNotKnown, countNotViewed, countViewed = 0;
+    private int countKnown = 0, countNotKnown = 0, countNotViewed = 0, countViewed = 0;
     private List<Integer> uniqueCardIds;
 
     private long startTime = 0L;
@@ -68,7 +68,7 @@ public class PlayActivity extends ActionBarActivity {
     long updatedTime = 0L;
     private Runnable runnable;
 
-    private Boolean isTodos, isNewest, isOldest, isDrawers = false;
+    private Boolean isTodos = false, isNewest = false, isOldest = false, isDrawers = false;
     private String limit;
     private ArrayList<Integer> list;
     private int milliseconds = 0;
@@ -220,6 +220,7 @@ public class PlayActivity extends ActionBarActivity {
         setSeekBarChangeListener();
         openDb();
         //cards = db.getCardsFromMarked();
+        Log.d("play"," "+isTodos);
         if (isTodos) {
             cards = db.getTodosCards(isNewest, isOldest, limit, isDrawers, list);
             Log.d("cards", cards.size() + " -> " +  cards.toString());

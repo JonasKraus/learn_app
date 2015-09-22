@@ -57,7 +57,7 @@ public class CatalogueActivity extends ListActivity {
     private Drawable categoryIconScaled, cardIconScaled;
     private CustomList customListAdapter;
     private ArrayList<Catalogue>checkedList;
-    private int MARKED_THRESHOLD = 1;
+    private static int CARDS_THRESHOLD = Catalogue.CARDS_THRASHOLD;;
 
     private List<Card> importedCards;
 
@@ -494,15 +494,15 @@ public class CatalogueActivity extends ListActivity {
                 checkedList = customListAdapter.getCheckedList();
                 /* @TODO new threshold */
                 if (db.isViewRandomCards()) {
-                    MARKED_THRESHOLD = 0;
+                    CARDS_THRESHOLD = 0;
                 }
-                if (db.getMarkedCards().size() >= MARKED_THRESHOLD) {
+                if (db.getMarkedCards().size() >= CARDS_THRESHOLD) {
                     Intent myIntentPlay = new Intent(CatalogueActivity.this, PlayActivity.class);
                     myIntentPlay.putExtra("currentCategoryParent", currentCategoryParent);
                     //myIntentPlay.putParcelableArrayListExtra("catalogue", checkedList);
                     startActivity(myIntentPlay);
                 } else {
-                    Toast.makeText(context,"You have to choose at least "+MARKED_THRESHOLD+" cards!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,"You have to choose at least "+ CARDS_THRESHOLD +" cards!", Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.statistics:
@@ -561,5 +561,4 @@ public class CatalogueActivity extends ListActivity {
         listViewCatalogue.setOnItemLongClickListener(null);
         System.gc();
     }
-
 }

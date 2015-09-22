@@ -16,6 +16,8 @@ public class Catalogue implements Parcelable {
     private Category category;
     private Bitmap icon;
 
+    public static final int CARDS_THRASHOLD = 1;
+
     @Override
     public int describeContents() {
         return 0;

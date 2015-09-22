@@ -16,6 +16,14 @@
         <CheckBox
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:text="daily reminder"
+            android:checked="true"
+            android:id="@+id/settings_checkbox_dailyReminder"
+            android:layout_marginBottom="10dp"
+            android:onClick="onCheckedChange"/>
+        <CheckBox
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:text="show hint"
             android:checked="true"
             android:id="@+id/settings_checkbox_showHint"
@@ -144,7 +152,7 @@
         android:layout_marginTop="10dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Back"
+        android:text="◀ Back"
         android:id="@+id/settings_back"
         android:background="@drawable/flat_selector_blue"
         android:textColor="@color/white"

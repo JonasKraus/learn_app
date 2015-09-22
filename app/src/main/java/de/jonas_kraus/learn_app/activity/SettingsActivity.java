@@ -1,6 +1,10 @@
 package de.jonas_kraus.learn_app.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,15 +16,18 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 
+import de.jonas_kraus.learn_app.Broadcast.DailyNotificationReceiver;
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
 
 public class SettingsActivity extends ActionBarActivity {
 
-    private CheckBox boxShowHint, boxShowKnownBar, boxOrderMultiplechoiceAnswers, boxViewRandomCards, boxViewLastDrawer, boxNightMode;
+    private CheckBox boxShowHint, boxShowKnownBar, boxOrderMultiplechoiceAnswers, boxViewRandomCards, boxViewLastDrawer, boxNightMode, boxDailyReminder;
     private RadioButton radioOrderByKnowledge, radioOrderByDrawer, radioOrderByDate;
     private RadioGroup radioGroupOrder;
     private TextView textViewTextSizeQuestions, textViewTextSizeAnswers;
@@ -33,6 +40,7 @@ public class SettingsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_settings);
 
         boxShowHint = (CheckBox) findViewById(R.id.settings_checkbox_showHint);
+        boxDailyReminder = (CheckBox) findViewById(R.id.settings_checkbox_dailyReminder);
         boxShowKnownBar = (CheckBox) findViewById(R.id.settings_checkbox_showKnownBar);
         boxOrderMultiplechoiceAnswers = (CheckBox) findViewById(R.id.settings_checkbox_multiplechoiceOrder);
         boxViewRandomCards = (CheckBox) findViewById(R.id.settings_checkbox_viewRandomCards);
@@ -60,6 +68,7 @@ public class SettingsActivity extends ActionBarActivity {
 
         int checkedRadioIndex = db.getCardsOrderType();
 
+        boxDailyReminder.setChecked(db.isDailyReminder());
         boxShowHint.setChecked(db.isShowHint());
         boxShowKnownBar.setChecked(db.isShowBar());
         boxOrderMultiplechoiceAnswers.setChecked(db.isOrderMultipleChoiceAnswers());
@@ -99,7 +108,7 @@ public class SettingsActivity extends ActionBarActivity {
                 //seekBar.setProgress(progress+10);
                 textViewTextSizeQuestions.setText(progress + 10 + "Pt");
                 textViewTextSizeQuestions.setTextSize(progress + 10);
-                db.setTextSizeQuestions(progress+10);
+                db.setTextSizeQuestions(progress + 10);
             }
 
             @Override
@@ -117,7 +126,7 @@ public class SettingsActivity extends ActionBarActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 textViewTextSizeAnswers.setText(progress + 10 + "Pt");
                 textViewTextSizeAnswers.setTextSize(progress + 10);
-                db.setTextSizeAnswers(progress+10);
+                db.setTextSizeAnswers(progress + 10);
             }
 
             @Override
@@ -136,8 +145,8 @@ public class SettingsActivity extends ActionBarActivity {
         radioGroupOrder.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                Log.d("radio", "checked " +checkedId);
-                switch(checkedId) {
+                Log.d("radio", "checked " + checkedId);
+                switch (checkedId) {
                     case R.id.settings_radio_drawer:
                         db.setOrderCards(0);
                         break;
@@ -155,6 +164,14 @@ public class SettingsActivity extends ActionBarActivity {
     public void onCheckedChange(View view) {
         int id = view.getId();
         switch (id) {
+            case R.id.settings_checkbox_dailyReminder:
+                if (!boxDailyReminder.isChecked()) {
+                    disableBroadcastReceivers();
+                } else {
+                    enableBroadcastReceivers();
+                    startDailyNotificationService();
+                }
+                db.setDailyReminder(boxDailyReminder.isChecked());
             case R.id.settings_checkbox_showHint:
                 db.setShowHint(boxShowHint.isChecked());
                 break;
@@ -214,5 +231,42 @@ public class SettingsActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void disableBroadcastReceivers() {
+
+        ComponentName receiverDaily = new ComponentName(this, DailyNotificationReceiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiverDaily,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+    }
+
+    public void enableBroadcastReceivers() {
+
+        ComponentName receiverDaily = new ComponentName(this, DailyNotificationReceiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiverDaily,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+    }
+
+    protected void startDailyNotificationService() {
+        Intent myIntent = new Intent(this , DailyNotificationReceiver.class);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.AM_PM, Calendar.AM);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        Log.d("daily service", "started");
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 10000, 60000, pendingIntent);
     }
 }

@@ -53,6 +53,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_SETTINGS_TEXTSIZE_QUESTIONS = "textsize_questions";
     public static final String COLUMN_SETTINGS_TEXTSIZE_ANSWERS = "textsize_answers";
     public static final String COLUMN_SETTINGS_CARDS_ORDER = "cards_order";
+    public static final String COLUMN_SETTINGS_DAILY_REMINDER = "daily_reminder";
 
     public static final String TABLE_STATISTICS = "statistics";
     public static final String COLUMN_STATISTICS_ID = "_id";
@@ -65,7 +66,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
     public static final String COLUMN_STATISTICS_TIME = "time";
 
     private static final String DATABASE_NAME = "learning_cards_db.db";
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 21;
 
     // Database creation sql statement
     private static final String QUESTIONS_CREATE = "create table "
@@ -150,7 +151,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
             + COLUMN_SETTINGS_TEXTSIZE_ANSWERS
             + " integer DEFAULT 14, "
             + COLUMN_SETTINGS_CARDS_ORDER
-            + " integer DEFAULT 0"
+            + " integer DEFAULT 0, "
+            + COLUMN_SETTINGS_DAILY_REMINDER
+            + " integer DEFAULT 1"
             + ");";
 
     // Database creation sql statement

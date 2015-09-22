@@ -64,15 +64,16 @@ public class DbManager {
     };
 
     private String[] allSettingsColumns = {
-            MySQLiteHelper.COLUMN_SETTINGS_SHOW_HINT,
-            MySQLiteHelper.COLUMN_SETTINGS_SHOW_BAR,
-            MySQLiteHelper.COLUMN_SETTINGS_MULTIPLECHOICE_CHANGE_ANSWER_ORDER,
-            MySQLiteHelper.COLUMN_SETTINGS_VIEW_RANDOM_CARDS,
-            MySQLiteHelper.COLUMN_SETTINGS_VIEW_LAST_DRAWER_CARDS,
-            MySQLiteHelper.COLUMN_SETTINGS_NIGHT_MODE,
-            MySQLiteHelper.COLUMN_SETTINGS_TEXTSIZE_QUESTIONS,
-            MySQLiteHelper.COLUMN_SETTINGS_TEXTSIZE_ANSWERS,
-            MySQLiteHelper.COLUMN_SETTINGS_CARDS_ORDER,
+            MySQLiteHelper.COLUMN_SETTINGS_SHOW_HINT,                               //0
+            MySQLiteHelper.COLUMN_SETTINGS_SHOW_BAR,                                //1
+            MySQLiteHelper.COLUMN_SETTINGS_MULTIPLECHOICE_CHANGE_ANSWER_ORDER,      //2
+            MySQLiteHelper.COLUMN_SETTINGS_VIEW_RANDOM_CARDS,                       //3
+            MySQLiteHelper.COLUMN_SETTINGS_VIEW_LAST_DRAWER_CARDS,                  //4
+            MySQLiteHelper.COLUMN_SETTINGS_NIGHT_MODE,                              //5
+            MySQLiteHelper.COLUMN_SETTINGS_TEXTSIZE_QUESTIONS,                      //6
+            MySQLiteHelper.COLUMN_SETTINGS_TEXTSIZE_ANSWERS,                        //7
+            MySQLiteHelper.COLUMN_SETTINGS_CARDS_ORDER,                             //8
+            MySQLiteHelper.COLUMN_SETTINGS_DAILY_REMINDER                           //9
     };
 
     private String[] allStatisticsColumns = {
@@ -897,17 +898,24 @@ public class DbManager {
         return c;
     }
 
+    public void setDailyReminder(boolean bool) {
+        ContentValues values = new ContentValues();
+        values.put(MySQLiteHelper.COLUMN_SETTINGS_DAILY_REMINDER, bool);
+        database.update(MySQLiteHelper.TABLE_SETTINGS, values, null, null);
+    }
+
+    public boolean isDailyReminder() {
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_SETTINGS, allSettingsColumns, null, null, null, null, null);
+        cursor.moveToFirst();
+        boolean bool = cursor.getInt(9)>0;
+        cursor.close();
+        return bool;
+    }
+
     public void setShowHint(boolean bool) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_SETTINGS_SHOW_HINT, bool);
         database.update(MySQLiteHelper.TABLE_SETTINGS, values, null, null);
-    }
-
-    public void setFirstSettings() {
-        database.insert(MySQLiteHelper.TABLE_SETTINGS, MySQLiteHelper.COLUMN_SETTINGS_CARDS_ORDER, null);
-        if (database.query(MySQLiteHelper.TABLE_SETTINGS,allSettingsColumns,null,null,null,null,null).getCount() == 0) {
-            database.insert(MySQLiteHelper.TABLE_SETTINGS, MySQLiteHelper.COLUMN_SETTINGS_CARDS_ORDER, null);
-        }
     }
 
     public boolean isShowHint() {
@@ -916,6 +924,13 @@ public class DbManager {
         boolean bool = cursor.getInt(0)>0;
         cursor.close();
         return bool;
+    }
+
+    public void setFirstSettings() {
+        database.insert(MySQLiteHelper.TABLE_SETTINGS, MySQLiteHelper.COLUMN_SETTINGS_CARDS_ORDER, null);
+        if (database.query(MySQLiteHelper.TABLE_SETTINGS,allSettingsColumns,null,null,null,null,null).getCount() == 0) {
+            database.insert(MySQLiteHelper.TABLE_SETTINGS, MySQLiteHelper.COLUMN_SETTINGS_CARDS_ORDER, null);
+        }
     }
 
     public void setShowBar(boolean bool) {
