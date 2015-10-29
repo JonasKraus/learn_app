@@ -50,6 +50,6 @@ public class DailyNotifyService extends IntentService {
         // Cancel the notification after its selected
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         mNM.notify(0, notification);
-        dbManager.close();
+        //dbManager.close();
     }
 }

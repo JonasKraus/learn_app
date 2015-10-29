@@ -2,6 +2,7 @@ package de.jonas_kraus.learn_app.activity;
 
 import android.app.ActionBar;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -38,6 +39,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jonas_kraus.learn_app.Backgroud.AsyncImport;
 import de.jonas_kraus.learn_app.Data.Card;
 import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.Data.Category;
@@ -218,19 +220,8 @@ public class ImportActivity extends ListActivity {
                 startActivity(myIntent);
                 break;
             case R.id.buttonImportImport:
-                for(Catalogue c : catalogue) {
-                    if (c.getCategory() != null) {
-                        if (c.getCategory().isMarked()) {
-                            c.getCategory().setParentId(currentCategoryParent);
-                            db.createCategory(c.getCategory());
-                        }
-                    } else {
-                        if (c.getCard().isMarked()) {
-                            c.getCard().setCategoryId(currentCategoryParent);
-                            db.createCard(c.getCard());
-                        }
-                    }
-                }
+                AsyncImport asyncImport = new AsyncImport(ImportActivity.this, catalogue, db, currentCategoryParent);
+                asyncImport.execute();
 
                 Intent myIntentImported = new Intent(ImportActivity.this, CatalogueActivity.class);
                 myIntentImported.putExtra("currentCategoryParent", currentCategoryParent);

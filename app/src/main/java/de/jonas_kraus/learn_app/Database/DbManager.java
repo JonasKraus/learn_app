@@ -1,5 +1,6 @@
 package de.jonas_kraus.learn_app.Database;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -18,6 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import de.jonas_kraus.learn_app.Backgroud.AsyncDbManager;
+import de.jonas_kraus.learn_app.Backgroud.AsyncImport;
 import de.jonas_kraus.learn_app.Data.Answer;
 import de.jonas_kraus.learn_app.Data.Card;
 import de.jonas_kraus.learn_app.Data.Catalogue;
@@ -90,16 +93,20 @@ public class DbManager {
             MySQLiteHelper.COLUMN_STATISTICS_TIME
     };
 
+    private Context context;
+
     public DbManager(Context context) {
+        this.context = context;
         dbHelper = new MySQLiteHelper(context);
     }
 
     public void open() throws SQLException {
-        database = dbHelper.getWritableDatabase();
+        this.database = dbHelper.getWritableDatabase();
     }
 
     public void close() {
         dbHelper.close();
+        Log.d("import db" , "closed");
     }
 
     Date date = new java.util.Date();
@@ -108,31 +115,35 @@ public class DbManager {
      * Creating a card with answers
      * @param card
      */
-    public Card createCard(Card card) {
+    public void createCard(Card card) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_QUESTION_QUESTION, card.getQuestion());
-        values.put(MySQLiteHelper.COLUMN_QUESTION_TYPE, card.getType()+"");
+        values.put(MySQLiteHelper.COLUMN_QUESTION_TYPE, card.getType() + "");
         values.put(MySQLiteHelper.COLUMN_QUESTION_KNOWN, card.isKnown());
         values.put(MySQLiteHelper.COLUMN_QUESTION_RATING, card.getRating());
         values.put(MySQLiteHelper.COLUMN_QUESTION_HINT, card.getHint());
         values.put(MySQLiteHelper.COLUMN_QUESTION_CATEGORY_ID, card.getCategoryId());
-        long insertId = database.insert(MySQLiteHelper.TABLE_QUESTIONS,null,values);
-        /*
-        database.execSQL("INSERT INTO " + MySQLiteHelper.TABLE_QUESTIONS + " ("
-                        + MySQLiteHelper.COLUMN_QUESTION_TYPE + ", "
-                        + MySQLiteHelper.COLUMN_QUESTION_QUESTION + " ,"
-                        + MySQLiteHelper.COLUMN_QUESTION_KNOWN + " ,"
-                        + MySQLiteHelper.COLUMN_QUESTION_RATING + " ) "
-                        + "VALUES("
-                        + card.getType() + ", "
-                        + card.getQuestion() + ", "
-                        + card.isKnown() + " ,"
-                        + card.getRating() + " )"
-        );
-        */
-        createAnswer(insertId, card.getAnswers());
-        card.setId((int)insertId);
-        return card;
+        AsyncDbManager asyncDbManager = new AsyncDbManager(database,values, card.getAnswers(), context);
+        asyncDbManager.execute(MySQLiteHelper.TABLE_QUESTIONS);
+        //createAnswer(insertId, card.getAnswers());
+    }
+
+    public boolean importCatalogue(List<Catalogue> catalogue, int currentCategoryParent) {
+
+        for(Catalogue c : catalogue) {
+            if (c.getCategory() != null) {
+                if (c.getCategory().isMarked()) {
+                    c.getCategory().setParentId(currentCategoryParent);
+                    createCategory(c.getCategory());
+                }
+            } else {
+                if (c.getCard().isMarked()) {
+                    c.getCard().setCategoryId(currentCategoryParent);
+                    createCard(c.getCard());
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -168,12 +179,12 @@ public class DbManager {
      * @param category
      * @return category
      */
-    public Category createCategory(Category category) {
+    public void createCategory(Category category) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_CATEGORY_PARENT, category.getParentId());
         values.put(MySQLiteHelper.COLUMN_CATEGORY_NAME, category.getName());
-        category.setId((int) database.insert(MySQLiteHelper.TABLE_CATEGORIES, null, values));
-        return category;
+        AsyncDbManager asyncDbManager = new AsyncDbManager(database, values, null, context);
+        asyncDbManager.execute(MySQLiteHelper.TABLE_CATEGORIES);
     }
 
     /**

@@ -421,6 +421,7 @@ public class CatalogueActivity extends ListActivity {
          */
     }
 
+    /*
     @Deprecated
     private void makePromptAddCard() {
 
@@ -446,7 +447,7 @@ public class CatalogueActivity extends ListActivity {
                     cardType = Card.CardType.NOTECARD;
                     answers.add(new Answer(inputAnswer.getText().toString()));
                 } else {
-                            /* @TODO */
+
                 }
 
                 Card card = db.createCard(new Card(cardType, inputQuestion.getText().toString(), answers, false, 0, inputHint.getText().toString(), currentCategoryParent));
@@ -461,6 +462,7 @@ public class CatalogueActivity extends ListActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+    */
 
     private void setListViewWithCatalogueByLevel(int level) {
         List<Category> categories = db.getCategoriesByLevel(level);
@@ -551,7 +553,8 @@ public class CatalogueActivity extends ListActivity {
 
         alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Category category = db.createCategory(new Category(currentCategoryParent,input.getText().toString()));
+                db.createCategory(new Category(currentCategoryParent,input.getText().toString()));
+                setListViewWithCatalogueByLevel(currentCategoryParent); // has to be reset to be correctly sorted
                 setListViewWithCatalogueByLevel(currentCategoryParent); // has to be reset to be correctly sorted
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
