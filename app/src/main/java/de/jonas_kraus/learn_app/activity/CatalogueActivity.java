@@ -114,15 +114,15 @@ public class CatalogueActivity extends ListActivity {
                 if (curCatalogue.getCategory() != null) { // Jump to subcategory
                     curCategory = curCatalogue.getCategory();
                     currentCategoryParent = curCategory.getId();
-                            //Log.d("click on cat", "cat: " + curCatalogue.getCategory() + " ---- ");
-                            //if (curCategory)
+                    //Log.d("click on cat", "cat: " + curCatalogue.getCategory() + " ---- ");
+                    //if (curCategory)
                     buttonCategoryBack.setText("◀ " + curCategory.getName());
                     /**
                      * Alternative to start next view
-                    Intent myIntent = new Intent(CatalogueActivity.this, CatalogueActivity.class);
-                    myIntent.putExtra("currentCategoryParent", currentCategoryParent);
-                    startActivity(myIntent);
-                    */
+                     Intent myIntent = new Intent(CatalogueActivity.this, CatalogueActivity.class);
+                     myIntent.putExtra("currentCategoryParent", currentCategoryParent);
+                     startActivity(myIntent);
+                     */
                     setListViewWithCatalogueByLevel(currentCategoryParent);
 
 
@@ -282,9 +282,33 @@ public class CatalogueActivity extends ListActivity {
 
     private void importCategory() {
 
-        Intent myIntentFiles = new Intent(CatalogueActivity.this, FileBrowserActivity.class);
-        myIntentFiles.putExtra("currentCategoryParent", currentCategoryParent);
-        startActivity(myIntentFiles);
+        new AlertDialog.Builder(context)
+                .setTitle("Import")
+                .setMessage("Do you want to import from local storage or online?")
+                .setPositiveButton("local", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent myIntentFiles = new Intent(CatalogueActivity.this, FileBrowserActivity.class);
+                        myIntentFiles.putExtra("currentCategoryParent", currentCategoryParent);
+                        myIntentFiles.putExtra("isLocal", true);
+                        startActivity(myIntentFiles);
+                    }
+                })
+                .setNegativeButton("online", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent myIntentFiles = new Intent(CatalogueActivity.this, FileBrowserActivity.class);
+                        myIntentFiles.putExtra("currentCategoryParent", currentCategoryParent);
+                        myIntentFiles.putExtra("isLocal", false);
+                        startActivity(myIntentFiles);
+                    }
+                })
+                .setNeutralButton("cancle", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setIcon(R.drawable.android_download)
+                .show();
+
 
         /*
          * is now in own activity

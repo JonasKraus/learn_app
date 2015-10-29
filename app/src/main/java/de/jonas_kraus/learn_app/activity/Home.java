@@ -62,7 +62,6 @@ public class Home extends ActionBarActivity {
             enableBroadcastReceivers();
             startDailyNotificationService();
         }
-
     }
 
     public void onClick(View view) {

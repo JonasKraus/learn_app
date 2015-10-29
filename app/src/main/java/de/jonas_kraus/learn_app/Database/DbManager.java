@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -201,6 +202,50 @@ public class DbManager {
                 }
                 List<Answer> answers = getAnswers(id);
                 cards.add(new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, category.getId(), drawer, marked, date, viewed));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return cards;
+    }
+
+    public List<Card> getCardsForDailyReminder() {
+
+        Calendar cur_cal = Calendar.getInstance();
+        cur_cal.setTimeInMillis(System.currentTimeMillis());//set the current time and date for this calendar
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_YEAR, -2);
+        cal.set(Calendar.HOUR_OF_DAY, cur_cal.HOUR_OF_DAY);
+        cal.set(Calendar.MINUTE, cur_cal.MINUTE);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.DATE, cur_cal.get(Calendar.DATE));
+        cal.set(Calendar.MONTH, cur_cal.get(Calendar.MONTH));
+
+        Log.d("date before",cal.getTime().toString());
+
+        List<Card> cards = new ArrayList<Card>();
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS, allQuestionColumns,
+                MySQLiteHelper.COLUMN_QUESTION_DRAWER +"=1 OR "+
+                MySQLiteHelper.COLUMN_QUESTION_DRAWER +"=2 AND "+MySQLiteHelper.COLUMN_QUESTION_VIEWED +" < '"+cal.getTime()+"' ", null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                String type = cursor.getString(1);
+                String question = cursor.getString(2);
+                Boolean known = cursor.getInt(3)>0;
+                int rating = cursor.getInt(4);
+                String hint = cursor.getString(5);
+                int categoryId = cursor.getInt(6);
+                int drawer = cursor.getInt(7);
+                boolean marked = cursor.getInt(8)>0;
+                Timestamp date = Timestamp.valueOf(cursor.getString(9));
+                Timestamp viewed = null;
+                if (!cursor.isNull(10)) {
+                    viewed = Timestamp.valueOf(cursor.getString(10));
+                }
+                List<Answer> answers = getAnswers(id);
+                cards.add(new Card(id, Card.CardType.valueOf(type), question, answers, known, rating, hint, categoryId, drawer, marked, date, viewed));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -925,6 +970,7 @@ public class DbManager {
         Cursor cursor = database.query(MySQLiteHelper.TABLE_SETTINGS, allSettingsColumns, null, null, null, null, null);
         cursor.moveToFirst();
         String time = cursor.getString(9);
+        // Log.d("string",  " " + time);
         cursor.close();
         return time;
     }

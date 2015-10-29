@@ -23,4 +23,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile files('libs/gson-2.3.1.jar')
+    compile files('libs/ksoap2-android-assembly-3.1.1-jar-with-dependencies.jar')
 }

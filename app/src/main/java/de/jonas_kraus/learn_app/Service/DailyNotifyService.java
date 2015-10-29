@@ -39,7 +39,7 @@ public class DailyNotifyService extends IntentService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if (dbManager.getCardsCount() >= Catalogue.CARDS_THRASHOLD) {
+        if (dbManager.getCardsForDailyReminder().size() >= Catalogue.CARDS_THRASHOLD) {
             myIntent = new Intent(this , PlayActivity.class);
         } else {
             myIntent = new Intent(this, Home.class);

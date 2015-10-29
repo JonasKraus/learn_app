@@ -103,11 +103,10 @@ public class SettingsActivity extends ActionBarActivity {
         setSeekBarTextSizeListener();
         int textSizeQuestions = db.getTextSizeQuestions();
         int textSizeAnswers = db.getTextSizeAnswers();
-        Log.d("fontsize", textSizeAnswers + " " + textSizeQuestions);
         textViewTextSizeAnswers.setTextSize(textSizeAnswers);
         textViewTextSizeQuestions.setTextSize(textSizeQuestions);
         seekBarTextSizeAnswers.setProgress(textSizeAnswers - 10); /* @TODO  form db*/
-        seekBarTextSizeQuestions.setProgress(textSizeQuestions-10); /* @TODO  form db*/
+        seekBarTextSizeQuestions.setProgress(textSizeQuestions - 10); /* @TODO  form db*/
     }
 
     private void setSeekBarTextSizeListener() {
@@ -154,7 +153,6 @@ public class SettingsActivity extends ActionBarActivity {
         radioGroupOrder.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                Log.d("radio", "checked " + checkedId);
                 switch (checkedId) {
                     case R.id.settings_radio_drawer:
                         db.setOrderCards(0);
@@ -179,9 +177,9 @@ public class SettingsActivity extends ActionBarActivity {
                     db.setDailyReminder(null);
                     textViewDailyReminderTime.setText(null);
                 } else {
-                    enableBroadcastReceivers();
-                    startDailyNotificationService();
                     promptTime();
+                    startDailyNotificationService();
+                    enableBroadcastReceivers();
                 }
                 db.setDailyReminder(textViewDailyReminderTime.getText().toString());
             case R.id.settings_checkbox_showHint:
@@ -214,7 +212,11 @@ public class SettingsActivity extends ActionBarActivity {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 TextView textClock = (TextView)findViewById(R.id.settings_dailyReminder_time);
-                String time = selectedHour + ":" + selectedMinute;
+                String addNull = "";
+                if (selectedMinute<10) {
+                    addNull = "0";
+                }
+                String time = selectedHour + ":" + addNull + selectedMinute;
                 textClock.setText(time);
                 db.setDailyReminder(time);
             }
@@ -298,13 +300,13 @@ public class SettingsActivity extends ActionBarActivity {
         cur_cal.setTimeInMillis(System.currentTimeMillis());//set the current time and date for this calendar
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, cur_cal.get(Calendar.DAY_OF_YEAR));
         cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time[0]));
         cal.set(Calendar.MINUTE, Integer.parseInt(time[1]));
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.DATE, cur_cal.get(Calendar.DATE));
         cal.set(Calendar.MONTH, cur_cal.get(Calendar.MONTH));
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000*60*60, pendingIntent);
+        //Log.d("start alarm", cal.getTimeInMillis() +""+ cal.getTime());
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000, pendingIntent);
     }
 }
