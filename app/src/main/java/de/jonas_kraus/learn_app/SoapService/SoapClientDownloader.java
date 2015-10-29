@@ -2,8 +2,10 @@ package de.jonas_kraus.learn_app.SoapService;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -33,7 +35,7 @@ import de.jonas_kraus.learn_app.activity.ImportActivity;
 /**
  * Created by Jonas on 28.10.2015.
  */
-public class SoapClientDownloader extends AsyncTask<String, String, String> {
+public class SoapClientDownloader extends AsyncTask<String, Integer, String> {
 
     String SOAP_ACTION = "http://www.jonas-kraus.de/flashcards/service/";
     String NAMESPACE = "http://www.jonas-kraus.de/flashcards/service/soapServer.php";
@@ -43,9 +45,24 @@ public class SoapClientDownloader extends AsyncTask<String, String, String> {
     private String path = "";
     private FileBrowserActivity fileBrowserActivity;
     private int currentCategoryParent = -1;
+    private ProgressDialog mProgressDialog;
 
     public SoapClientDownloader(FileBrowserActivity fileBrowserActivity) {
         this.fileBrowserActivity = fileBrowserActivity;
+        mProgressDialog = new ProgressDialog(fileBrowserActivity);
+        mProgressDialog.setMessage("Downloading Cards");
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setMax(100);
+        mProgressDialog.setCancelable(true);
+
+        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                mProgressDialog.dismiss();
+                return;
+            }
+        });
     }
 
     public void downloadJson(String file, int currentCategoryParent) {
@@ -72,9 +89,11 @@ public class SoapClientDownloader extends AsyncTask<String, String, String> {
         Log.d("soap path", path);
         soapObject.addProperty("subdir", path);
         soapEnv.setOutputSoapObject(soapObject);
-
+        mProgressDialog.setMessage("Downloading...");
+        publishProgress(50);
         try {
             http.call(SOAP_ACTION, soapEnv);
+            publishProgress(75);
             //SoapPrimitive response = (SoapPrimitive) soapEnv.getResponse();
             results = soapEnv.bodyIn.toString();
 
@@ -83,10 +102,10 @@ public class SoapClientDownloader extends AsyncTask<String, String, String> {
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         }
-
+        //mProgressDialog.setMessage("Downloaded Cards");
         if(results != null)
             resultData = results;
-
+        publishProgress(100);
         return results;
     }
     private final HttpTransportSE getHttpTransportSE() {
@@ -97,12 +116,12 @@ public class SoapClientDownloader extends AsyncTask<String, String, String> {
     }
 
     protected void onPostExecute(String result) {
+
         result = result.replace("downloadJsonResponse{result=return; return=", "");
         result = result.substring(0,result.length()-3);
         if (result.startsWith("[")) {
             //result = result.substring(1,result.length()-1);
         }
-        Log.d("soap Download card", result);
         FileOutputStream outputStream;
         try {
 
@@ -121,7 +140,8 @@ public class SoapClientDownloader extends AsyncTask<String, String, String> {
             //outputStream.close();
             Intent myIntent = new Intent(fileBrowserActivity, ImportActivity.class);
             myIntent.putExtra("currentCategoryParent", currentCategoryParent);
-            myIntent.putExtra("path", fileNew.getPath() + File.separator+"Download.json");
+            myIntent.putExtra("path", fileNew.getPath() + File.separator + "Download.json");
+            mProgressDialog.setOnCancelListener(null);
             fileBrowserActivity.startActivity(myIntent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,5 +149,15 @@ public class SoapClientDownloader extends AsyncTask<String, String, String> {
         }
         // save file
         //listAdapter.set(adapter);
+    }
+
+    protected void onPreExecute() {
+        mProgressDialog.setMessage("Download start");
+        mProgressDialog.setProgress(25);
+        mProgressDialog.show();
+    }
+
+    protected void onProgressUpdate(final Integer... progress) {
+        mProgressDialog.setProgress(progress[0]);
     }
 }

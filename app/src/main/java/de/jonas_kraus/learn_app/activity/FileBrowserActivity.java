@@ -99,23 +99,8 @@ public class FileBrowserActivity extends ListActivity {
             pathOnline += "/"+filename;
             if (filename.endsWith(".json")) {
 
-                ProgressDialog mProgressDialog;
-
-                mProgressDialog = new ProgressDialog(FileBrowserActivity.this);
-                mProgressDialog.setMessage("Downloading Cards for preview");
-                mProgressDialog.setIndeterminate(true);
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                mProgressDialog.setCancelable(true);
-                mProgressDialog.show();
-
                 final SoapClientDownloader client = new SoapClientDownloader(FileBrowserActivity.this);
                 client.downloadJson(pathOnline, currentCategoryParent);
-                mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        client.cancel(true);
-                    }
-                });
 
             } else {
                 ProgressDialog mProgressDialog;
