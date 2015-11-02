@@ -29,7 +29,7 @@ import de.jonas_kraus.learn_app.activity.CatalogueActivity;
 
 public class CustomList extends ArrayAdapter<Catalogue> {
     private final Activity context;
-    private final List<Catalogue> catalogue;
+    private List<Catalogue> catalogue;
     private final int imgCat = R.drawable.categoryicon;
     private final int imgCard = R.drawable.cardicon;
     private boolean checked;
@@ -143,4 +143,7 @@ public class CustomList extends ArrayAdapter<Catalogue> {
         return checkedListPos;
     }
 
+    public void setCatalogue(List<Catalogue> catalogue) {
+        this.catalogue = catalogue;
+    }
 }

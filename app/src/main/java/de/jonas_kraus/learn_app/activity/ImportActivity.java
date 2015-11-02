@@ -1,6 +1,5 @@
 package de.jonas_kraus.learn_app.activity;
 
-import android.app.ActionBar;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,8 +22,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -65,6 +61,8 @@ public class ImportActivity extends ListActivity {
     private Bitmap categoryIcon, cardIcon;
     private Drawable categoryIconScaled, cardIconScaled;
 
+    private ProgressDialog mProgressDialog;
+
     private String path;
 
     @Override
@@ -88,13 +86,21 @@ public class ImportActivity extends ListActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        mProgressDialog = new ProgressDialog(ImportActivity.this);
+        mProgressDialog.setMessage("Importing Cards");
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setMax(100);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
         catalogue = getPopulationForListView();
+        mProgressDialog.dismiss();
         customListAdapter = new CustomList(ImportActivity.this, catalogue);
         setListAdapter(customListAdapter);
         listViewCatalogue = getListView();
         addClickListenersToListView();
-        textViewNumCat.setText(numCats+"");
-        textViewNumCards.setText(numCards+"");
+        textViewNumCat.setText(numCats + "");
+        textViewNumCards.setText(numCards + "");
     }
 
     private void addClickListenersToListView() {
