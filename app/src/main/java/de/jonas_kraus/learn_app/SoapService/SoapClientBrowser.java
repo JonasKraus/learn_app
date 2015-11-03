@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ListAdapter;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -28,6 +29,7 @@ import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
 import de.jonas_kraus.learn_app.Data.Card;
+import de.jonas_kraus.learn_app.R;
 import de.jonas_kraus.learn_app.Util.CustomListFileBrowser;
 import de.jonas_kraus.learn_app.activity.FileBrowserActivity;
 import de.jonas_kraus.learn_app.activity.ImportActivity;
@@ -45,6 +47,7 @@ public class SoapClientBrowser extends AsyncTask<String,  List<String>, List<Str
     private Context context;
     private ListActivity listActivity;
     private String path = "";
+    private TextView textViewDir;
 
     public SoapClientBrowser(Context context, ListActivity listActivity) {
         this.context = context;
@@ -71,8 +74,11 @@ public class SoapClientBrowser extends AsyncTask<String,  List<String>, List<Str
 
         SoapObject soapObject = new SoapObject(null,METHOD_NAME);
 
-        path += "/"+strings[1];
-        Log.d("soap path", path);
+        if (strings[1].length()>0) {
+            path += strings[1];
+        }
+
+        Log.d("soap path on add", path);
         soapObject.addProperty("subdir", path);
         soapEnv.setOutputSoapObject(soapObject);
 
@@ -81,7 +87,7 @@ public class SoapClientBrowser extends AsyncTask<String,  List<String>, List<Str
             //SoapPrimitive response = (SoapPrimitive) soapEnv.getResponse();
             results = soapEnv.bodyIn.toString();
             Vector<String> response = (Vector)soapEnv.getResponse();
-            Log.d("soap response", results);
+            //Log.d("soap response", results);
             Object[] arr = response.toArray();
             Vector vec2 = (Vector)arr[1];
             Object[] arr2 = vec2.toArray();
@@ -91,18 +97,18 @@ public class SoapClientBrowser extends AsyncTask<String,  List<String>, List<Str
                 if (!obj.toString().equals(".") && !obj.toString().equals(".."))
                 fileList.add(obj.toString());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XmlPullParserException e) {
+        } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         }
 
         if(results != null)
             resultData = results;
 
+        /*
         for (String obj:fileList) {
-            Log.d("List file:", obj.toString());
+            Log.d("List file:", obj);
         }
+        */
         resultList = fileList;
         return fileList;
     }

@@ -1,6 +1,95 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-    <ListView android:id="@android:id/list" android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Category: "
+            android:layout_marginLeft="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/textViewDir"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_margin="10dp"
+        android:id="@+id/linearLayoutAdd"
+        android:visibility="gone">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/buttonExportHere"
+            android:text="✚ Export"
+            android:layout_marginRight="10dp"
+            android:onClick="onClick"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/buttonFolderNew"
+            android:text="✚ Category"
+            android:onClick="onClick"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"/>
+        </LinearLayout>
+
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    <LinearLayout
+        android:id="@+id/llButtonsBottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cancel"
+            android:id="@+id/buttonExportCancel"
+            android:onClick="onClick"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:lines="1"
+            android:layout_weight="1"
+            android:layout_marginRight="10dp"/>
+        <Button
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="◀ back"
+            android:id="@+id/buttonExportBack"
+            android:onClick="onClick"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:lines="1"
+            android:layout_weight="1"/>
+    </LinearLayout>
 </LinearLayout>
 

@@ -2,6 +2,7 @@ package de.jonas_kraus.learn_app.activity;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,6 +36,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jonas_kraus.learn_app.Backgroud.AsyncExport;
 import de.jonas_kraus.learn_app.Data.Answer;
 import de.jonas_kraus.learn_app.Data.Card;
 import de.jonas_kraus.learn_app.Data.Catalogue;
@@ -170,13 +172,39 @@ public class CatalogueActivity extends ListActivity {
                     }).setNeutralButton("Export", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int i) {
-                            try {
-                                exportCategory(curCatalogue);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+
+                            //AsyncExport asyncExport = new AsyncExport();
+                            //asyncExport.doExport(curCatalogue, db, CatalogueActivity.this);
+
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Export")
+                                    .setMessage("Do you want to export to local storage or online?")
+                                    .setPositiveButton("local", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            try {
+                                                exportCategory(curCatalogue);
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton("online", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent myIntentFiles = new Intent(CatalogueActivity.this, FileBrowserActivity.class);
+                                            myIntentFiles.putExtra("currentCategoryParent", currentCategoryParent);
+                                            myIntentFiles.putExtra("isLocal", false);
+                                            startActivity(myIntentFiles);
+                                        }
+                                    })
+                                    .setNeutralButton("cancle", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    })
+                                    .setIcon(R.drawable.android_download)
+                                    .show();
                             dialog.cancel();
                         }
                     });
@@ -189,7 +217,7 @@ public class CatalogueActivity extends ListActivity {
                     } else {
                         alertDialog.setTitle("Edit: " + curCategory.getName());
                     }
-                    alertDialog.setIcon(categoryIconScaled);
+                    alertDialog.setIcon(R.drawable.categoryicon);
                     name.setTextKeepState(curCategory.getName());
                     alertDialog.show();
 
@@ -214,7 +242,7 @@ public class CatalogueActivity extends ListActivity {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setTitle("Delete: ");
-                    builder.setIcon(cardIconScaled);
+                    builder.setIcon(R.drawable.cardicon);
                     String quest = curCatalogue.getCard().getQuestion();
                     if (quest.length() > CHAR_THRESHOLD) {
                         builder.setTitle("Delete: " + quest.substring(0, CHAR_THRESHOLD - 2) + "...");
@@ -231,53 +259,66 @@ public class CatalogueActivity extends ListActivity {
 
     private void exportCategory(Catalogue curCatalogue) throws IOException, JSONException {
         /*@TODO export to json */
+        final Catalogue catalogue = curCatalogue;
         curCatalogue.unsetIcon();
         Category category = curCatalogue.getCategory();
         List<Card> cards =  db.getCards(category);
         Gson gson = new Gson();
         //Log.d("gson", gson.toJson(curCatalogue)+" category_ "+ gson.toJson(category) + " cards_ " +  gson.toJson(cards)+ " dir "+ context.getFilesDir()+"");
 
-        String filenameCat = "category.json";
-        String filenameCards = "cards.json";
-        String stringCards = gson.toJson(cards);
-        String stringCat = gson.toJson(category);
-        FileOutputStream outputStream;
+        final ProgressDialog mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setMessage("Exporting Cards");
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setMax(100);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
 
-        try {
-            outputStream = openFileOutput(filenameCat, Context.MODE_PRIVATE);
-            ContentResolver cr = getContentResolver();
-            File file1 = Environment.getDataDirectory();
-            File file2 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
-            String state = Environment.getExternalStorageState();
-            Boolean aBoolean = false;
-            if (Environment.MEDIA_MOUNTED.equals(state)) {
-                aBoolean =  true;
-            } else {
-                aBoolean = false;
-            }
-            File fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) , "/flashcards");
-            if (! fileNew.exists()){
-                Log.d("dir ", "file dosent exist");
-                if (! fileNew.mkdirs()){
-                    Log.e("dir ", "Directory not created");
+        Thread mThread = new Thread() {
+            @Override
+            public void run() {
+
+                catalogue.unsetIcon();
+                Category category = catalogue.getCategory();
+                List<Card> cards =  db.getCards(category);
+                mProgressDialog.setProgress(25);
+                Gson gson = new Gson();
+                //Log.d("gson", gson.toJson(curCatalogue)+" category_ "+ gson.toJson(category) + " cards_ " +  gson.toJson(cards)+ " dir "+ context.getFilesDir()+"");
+
+                String filenameCat = "category.json";
+                String filenameCards = "cards.json";
+                String stringCards = gson.toJson(cards);
+                String stringCat = gson.toJson(category);
+                FileOutputStream outputStream;
+                mProgressDialog.setProgress(50);
+                try {
+
+                    File fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) , "/flashcards");
+                    if (! fileNew.exists()){
+                        Log.d("dir ", "file dosent exist");
+                        if (! fileNew.mkdirs()){
+                            Log.e("dir ", "Directory not created");
+                        }
+                    }
+                    mProgressDialog.setProgress(75);
+                    outputStream = new FileOutputStream(new File(fileNew.getPath() + File.separator +category.getName()+".json"));
+                    outputStream.write(stringCat.getBytes());
+                    outputStream.close();
+                    outputStream = new FileOutputStream(new File(fileNew.getPath() + File.separator +category.getName()+"_cards.json"));
+                    outputStream.write(stringCards.getBytes());
+                    outputStream.close();/*
+                    outputStream = context.openFileOutput(filenameCards, Context.MODE_PRIVATE);
+                    outputStream.write(stringCards.getBytes());
+                    outputStream.close();*/
+                    mProgressDialog.setProgress(100);
+                    mProgressDialog.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-            outputStream = new FileOutputStream(new File(fileNew.getPath() + File.separator +"category.json"));
-            outputStream.write(stringCat.getBytes());
-            outputStream.close();
-            outputStream = new FileOutputStream(new File(fileNew.getPath() + File.separator +"cards.json"));
-            outputStream.write(stringCards.getBytes());
-            outputStream.close();
-            outputStream = openFileOutput(filenameCards, Context.MODE_PRIVATE);
-            outputStream.write(stringCards.getBytes());
-            outputStream.close();
-
-            Toast.makeText(context,"Exported to " + fileNew.getPath() + File.separator,Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(context,"Something went wrong at export",Toast.LENGTH_LONG).show();
-        }
+        };
+        mThread.start();
     }
 
     private void importCategory() {
@@ -564,7 +605,7 @@ public class CatalogueActivity extends ListActivity {
         });
 
         AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.setIcon(categoryIconScaled);
+        alertDialog.setIcon(R.drawable.categoryicon);
         alertDialog.setTitle("Enter category name:");
         alertDialog.show();
     }
