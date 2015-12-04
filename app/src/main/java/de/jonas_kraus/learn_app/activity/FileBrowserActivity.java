@@ -17,13 +17,28 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.jonas_kraus.learn_app.Backgroud.AsyncExportOnline;
 import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.Data.Category;
 import de.jonas_kraus.learn_app.R;
@@ -44,6 +59,7 @@ public class FileBrowserActivity extends ListActivity {
     private Button buttonAdd;
     private View promptView;
     private TextView textViewDir;
+    private String pathToExportedFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +73,9 @@ public class FileBrowserActivity extends ListActivity {
 
         if (getIntent().hasExtra("path")) {
             pathLocal = getIntent().getStringExtra("path");
+        }
+        if (getIntent().hasExtra("pathToExportedFile")) {
+            pathToExportedFile = getIntent().getStringExtra("pathToExportedFile");
         }
         if (pathLocal.equals(Environment.getExternalStorageDirectory().getPath())) {
             pathBack = null;
@@ -178,36 +197,49 @@ public class FileBrowserActivity extends ListActivity {
                 goToCatalogueActivity();
                 break;
             case R.id.buttonExportBack:
-                String[] pathNewBack = {""};
-                if (pathBack != null && pathBack.length >0) {
-                    pathNewBack = new String[pathBack.length - 1];
-                } else {
-                    goToCatalogueActivity();
-                }
-                if (isLocal) {
-                    pathLocal = "";
-                    for (int i = 0; i < pathBack.length-1; i++) {
-                        pathLocal += pathBack[i]+"/";
-                        pathNewBack[i] = pathBack[i];
-                    }
-                    Log.d("path local back befor",""+pathLocal);
-                    makeLocalListView(pathLocal);
-                    pathLocal = cutSlashes(pathLocal);
-                    textViewDir.setText(pathLocal.replace("/", " » "));
-                } else {
-                    pathOnline = "";
-                    for (int i = 0; i < pathBack.length-1; i++) {
-                        pathOnline += pathBack[i]+"/";
-                        pathNewBack[i] = pathBack[i];
-                    }
-                    SoapClientBrowser soapClientBrowser = new SoapClientBrowser(FileBrowserActivity.this, FileBrowserActivity.this);
-                    soapClientBrowser.scanForJson(pathOnline);
-                    pathOnline = cutSlashes(pathOnline);
-                    textViewDir.setText(pathOnline.replace("/"," » "));
-                }
-                pathBack = pathNewBack;
+                goBackInDir();
                 break;
+            case R.id.buttonExportHere:
+                exportFile();
         }
+    }
+
+    private void exportFile() {
+
+        AsyncExportOnline asyncExportOnline = new AsyncExportOnline();
+        asyncExportOnline.doExport(pathToExportedFile, pathOnline, this);
+
+    }
+
+    private void goBackInDir() {
+        String[] pathNewBack = {""};
+        if (pathBack != null && pathBack.length >0) {
+            pathNewBack = new String[pathBack.length - 1];
+        } else {
+            goToCatalogueActivity();
+        }
+        if (isLocal) {
+            pathLocal = "";
+            for (int i = 0; i < pathBack.length-1; i++) {
+                pathLocal += pathBack[i]+"/";
+                pathNewBack[i] = pathBack[i];
+            }
+            Log.d("path local back befor",""+pathLocal);
+            makeLocalListView(pathLocal);
+            pathLocal = cutSlashes(pathLocal);
+            textViewDir.setText(pathLocal.replace("/", " » "));
+        } else {
+            pathOnline = "";
+            for (int i = 0; i < pathBack.length-1; i++) {
+                pathOnline += pathBack[i]+"/";
+                pathNewBack[i] = pathBack[i];
+            }
+            SoapClientBrowser soapClientBrowser = new SoapClientBrowser(FileBrowserActivity.this, FileBrowserActivity.this);
+            soapClientBrowser.scanForJson(pathOnline);
+            pathOnline = cutSlashes(pathOnline);
+            textViewDir.setText(pathOnline.replace("/"," » "));
+        }
+        pathBack = pathNewBack;
     }
 
     private void goToCatalogueActivity() {
@@ -247,7 +279,6 @@ public class FileBrowserActivity extends ListActivity {
 
     private String cutSlashes(String path) {
         while (path.length() > 0 && path.charAt(path.length()-1)=='/') {
-            Log.d("string ends with", "du verschart mich");
             path = path.substring(0, path.length()-1);
         }
         return path;

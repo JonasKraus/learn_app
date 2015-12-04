@@ -3,10 +3,10 @@ package de.jonas_kraus.learn_app.activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -17,12 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -36,8 +33,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.jonas_kraus.learn_app.Backgroud.AsyncExport;
-import de.jonas_kraus.learn_app.Data.Answer;
 import de.jonas_kraus.learn_app.Data.Card;
 import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.Data.Category;
@@ -60,6 +55,8 @@ public class CatalogueActivity extends ListActivity {
     private CustomList customListAdapter;
     private ArrayList<Catalogue>checkedList;
     private static int CARDS_THRESHOLD = Catalogue.CARDS_THRASHOLD;;
+
+    private File exportedFile;
 
     private List<Card> importedCards;
 
@@ -182,7 +179,7 @@ public class CatalogueActivity extends ListActivity {
                                     .setPositiveButton("local", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                             try {
-                                                exportCategory(curCatalogue);
+                                                exportCategoryLocal(true, curCatalogue);
                                             } catch (IOException e) {
                                                 e.printStackTrace();
                                             } catch (JSONException e) {
@@ -192,9 +189,16 @@ public class CatalogueActivity extends ListActivity {
                                     })
                                     .setNegativeButton("online", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
+                                            String pathToExportedFile = "";
+                                            try {
+                                                pathToExportedFile = exportCategoryLocal(false, curCatalogue);
+                                            } catch (IOException | JSONException e) {
+                                                e.printStackTrace();
+                                            }
                                             Intent myIntentFiles = new Intent(CatalogueActivity.this, FileBrowserActivity.class);
                                             myIntentFiles.putExtra("currentCategoryParent", currentCategoryParent);
                                             myIntentFiles.putExtra("isLocal", false);
+                                            myIntentFiles.putExtra("pathToExportedFile", pathToExportedFile);
                                             startActivity(myIntentFiles);
                                         }
                                     })
@@ -257,14 +261,16 @@ public class CatalogueActivity extends ListActivity {
         });
     }
 
-    private void exportCategory(Catalogue curCatalogue) throws IOException, JSONException {
-        /*@TODO export to json */
+    private String exportCategoryLocal(boolean isLocal, Catalogue curCatalogue) throws IOException, JSONException {
+
         final Catalogue catalogue = curCatalogue;
-        curCatalogue.unsetIcon();
-        Category category = curCatalogue.getCategory();
-        List<Card> cards =  db.getCards(category);
-        Gson gson = new Gson();
-        //Log.d("gson", gson.toJson(curCatalogue)+" category_ "+ gson.toJson(category) + " cards_ " +  gson.toJson(cards)+ " dir "+ context.getFilesDir()+"");
+        final File fileNew;
+        if (isLocal) {
+            fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/flashcards");
+        } else {
+            fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/flashcards/.upload/.cache");
+        }
+        final String exportedFilePath = fileNew.getPath() + File.separator +catalogue.getCategory().getName()+"-cards.json";
 
         final ProgressDialog mProgressDialog = new ProgressDialog(context);
         mProgressDialog.setMessage("Exporting Cards");
@@ -273,7 +279,6 @@ public class CatalogueActivity extends ListActivity {
         mProgressDialog.setMax(100);
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
-
 
         Thread mThread = new Thread() {
             @Override
@@ -284,17 +289,12 @@ public class CatalogueActivity extends ListActivity {
                 List<Card> cards =  db.getCards(category);
                 mProgressDialog.setProgress(25);
                 Gson gson = new Gson();
-                //Log.d("gson", gson.toJson(curCatalogue)+" category_ "+ gson.toJson(category) + " cards_ " +  gson.toJson(cards)+ " dir "+ context.getFilesDir()+"");
 
-                String filenameCat = "category.json";
-                String filenameCards = "cards.json";
                 String stringCards = gson.toJson(cards);
                 String stringCat = gson.toJson(category);
                 FileOutputStream outputStream;
                 mProgressDialog.setProgress(50);
                 try {
-
-                    File fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) , "/flashcards");
                     if (! fileNew.exists()){
                         Log.d("dir ", "file dosent exist");
                         if (! fileNew.mkdirs()){
@@ -302,23 +302,27 @@ public class CatalogueActivity extends ListActivity {
                         }
                     }
                     mProgressDialog.setProgress(75);
-                    outputStream = new FileOutputStream(new File(fileNew.getPath() + File.separator +category.getName()+".json"));
+                    /*
+                    outputStream = new FileOutputStream(new File(fileNew.getPath() + File.separator +category.getName()+"_category.json"));
                     outputStream.write(stringCat.getBytes());
                     outputStream.close();
-                    outputStream = new FileOutputStream(new File(fileNew.getPath() + File.separator +category.getName()+"_cards.json"));
+                    */
+                    exportedFile = new File(exportedFilePath);
+                    outputStream = new FileOutputStream(exportedFile);
                     outputStream.write(stringCards.getBytes());
                     outputStream.close();/*
                     outputStream = context.openFileOutput(filenameCards, Context.MODE_PRIVATE);
                     outputStream.write(stringCards.getBytes());
                     outputStream.close();*/
                     mProgressDialog.setProgress(100);
-                    mProgressDialog.dismiss();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
         mThread.start();
+        mProgressDialog.dismiss();
+        return exportedFilePath;
     }
 
     private void importCategory() {
@@ -624,9 +628,15 @@ public class CatalogueActivity extends ListActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        db.close();
+        //db.close();// must be in onDestroy course of possibly running export thread
         listViewCatalogue.setOnItemClickListener(null);
         listViewCatalogue.setOnItemLongClickListener(null);
         System.gc();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
     }
 }
