@@ -18,19 +18,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -201,14 +212,21 @@ public class FileBrowserActivity extends ListActivity {
                 break;
             case R.id.buttonExportHere:
                 exportFile();
+                goToCatalogueActivity();
         }
     }
 
     private void exportFile() {
 
         AsyncExportOnline asyncExportOnline = new AsyncExportOnline();
-        asyncExportOnline.doExport(pathToExportedFile, pathOnline, this);
-
+        Boolean success = asyncExportOnline.doExport(pathToExportedFile, pathOnline, this);
+        String result;
+        if (success) {
+            result = "Successfully uploaded :)";
+        } else {
+            result = "Upload wasn't successful :(";
+        }
+        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
     }
 
     private void goBackInDir() {
@@ -282,6 +300,87 @@ public class FileBrowserActivity extends ListActivity {
             path = path.substring(0, path.length()-1);
         }
         return path;
+    }
+
+    public static String postJSON(String url, File file) {
+        InputStream inputStream = null;
+        String result = "";
+        try {
+
+            // 1. create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+
+            // 2. make POST request to the given URL
+            HttpPost httpPost = new HttpPost("http://www.jonas-kraus.de/flashcards/service/receiveJSON.php?url="+url.replace(" ","_")+"&name="+file.getName());
+
+            String json = "";
+
+            // 3. build jsonObject
+            JSONObject jsonObject = new JSONObject();
+
+            // 4. convert JSONObject to JSON to String
+            json = parseJSONFile(file.getPath());
+
+            // ** Alternative way to convert Person object to JSON string usin Jackson Lib
+            // ObjectMapper mapper = new ObjectMapper();
+            // json = mapper.writeValueAsString(person);
+
+            // 5. set json to StringEntity
+            StringEntity se = new StringEntity(json);
+            /*
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("url", url));
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8));
+            httpPost.getParams().setParameter("url",nameValuePairs);
+            */
+
+            // 6. set httpPost Entity
+            httpPost.setEntity(se);
+
+            // 7. Set some headers to inform server about the type of the content
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+
+            // 8. Execute POST request to the given URL
+            HttpResponse httpResponse = httpclient.execute(httpPost);
+
+            // 9. receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // 10. convert inputstream to string
+            if(inputStream != null)
+                result = "Successfully uploaded :)";
+            else
+                result = "Upload did not work :(";
+
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+
+        // 11. return result
+        return result;
+    }
+
+    private static String parseJSONFile(String path) {
+        try {
+            InputStream inputStreamCards = new FileInputStream(path);
+
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCards);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String receiveStringCards = "";
+            StringBuilder stringBuilder = new StringBuilder();
+            while ((receiveStringCards = bufferedReader.readLine()) != null) {
+                stringBuilder.append(receiveStringCards);
+            }
+            inputStreamCards.close();
+            return stringBuilder.toString();
+
+        } catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+        return null;
     }
 
 }

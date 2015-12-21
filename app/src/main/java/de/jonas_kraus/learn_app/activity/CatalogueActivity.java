@@ -261,7 +261,7 @@ public class CatalogueActivity extends ListActivity {
         });
     }
 
-    private String exportCategoryLocal(boolean isLocal, Catalogue curCatalogue) throws IOException, JSONException {
+    private String exportCategoryLocal(final boolean isLocal, Catalogue curCatalogue) throws IOException, JSONException {
 
         final Catalogue catalogue = curCatalogue;
         final File fileNew;
@@ -270,7 +270,7 @@ public class CatalogueActivity extends ListActivity {
         } else {
             fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/flashcards/.upload/.cache");
         }
-        final String exportedFilePath = fileNew.getPath() + File.separator +catalogue.getCategory().getName()+"-cards.json";
+        final String exportedFilePath = fileNew.getPath() + File.separator +catalogue.getCategory().getName().replace(" ","_")+".json";
 
         final ProgressDialog mProgressDialog = new ProgressDialog(context);
         mProgressDialog.setMessage("Exporting Cards");

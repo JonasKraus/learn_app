@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -29,6 +30,7 @@ import de.jonas_kraus.learn_app.Data.Card;
 import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.Data.Category;
 import de.jonas_kraus.learn_app.Database.DbManager;
+import de.jonas_kraus.learn_app.activity.FileBrowserActivity;
 
 /**
  * Created by Jonas on 02.11.2015.
@@ -58,54 +60,11 @@ public class AsyncExportOnline extends AsyncTask<String, Integer, Void> {
         return null;
     }
 
-    private void exportCategory() throws IOException, JSONException {
+    private String exportCategory() throws IOException, JSONException {
         /*@TODO export to json */
-        /*
-        final ProgressDialog mProgressDialog = new ProgressDialog(context);
-        mProgressDialog.setMessage("Exporting Cards");
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialog.setMax(100);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
-        */
-
-
-        Thread mThread = new Thread() {
-            @Override
-            public void run() {
-                String url = pathOnline;
-                File file = new File(pathToExportedFile);
-                Log.d("Export Online", "hier "+file.getPath()+" existiert: "+file.exists());
-
-                HttpClient httpclient = new DefaultHttpClient();
-
-                try {
-
-                    HttpPost httppost = new HttpPost("http://www.jonas-kraus.de/flashcards/database/json"+ URLEncoder.encode(url, "UTF-8"));
-                    Log.d("export http post",httppost.getURI().toString()+"\n"+httppost.getAllHeaders().toString());
-
-                    MultipartEntity entity = new MultipartEntity();
-
-                    entity.addPart("type", new StringBody("application/json"));
-                    entity.addPart("data", new FileBody(file));
-                    httppost.setEntity(entity);
-                    HttpResponse response = httpclient.execute(httppost);
-
-                    Log.d("server response export", response.getStatusLine().toString());
-                } catch (ClientProtocolException e) {
-                    Log.d("export error", e.getMessage());
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                file.delete();
-                Log.d("export","cache deleted");
-            }
-        };
-        mThread.start();
-        //mProgressDialog.dismiss();
+        String url = pathOnline;
+        File file = new File(pathToExportedFile);
+        return FileBrowserActivity.postJSON(url, file);
     }
 
 }
