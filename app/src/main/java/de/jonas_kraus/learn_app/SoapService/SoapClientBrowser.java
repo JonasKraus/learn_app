@@ -1,38 +1,24 @@
 package de.jonas_kraus.learn_app.SoapService;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.ListAdapter;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
 
-import de.jonas_kraus.learn_app.Data.Card;
-import de.jonas_kraus.learn_app.R;
 import de.jonas_kraus.learn_app.Util.CustomListFileBrowser;
-import de.jonas_kraus.learn_app.activity.FileBrowserActivity;
-import de.jonas_kraus.learn_app.activity.ImportActivity;
 
 /**
  * Created by Jonas on 15.10.2015.
@@ -78,7 +64,6 @@ public class SoapClientBrowser extends AsyncTask<String,  List<String>, List<Str
             path += strings[1];
         }
 
-        Log.d("soap path on add", path);
         soapObject.addProperty("subdir", path);
         soapEnv.setOutputSoapObject(soapObject);
 

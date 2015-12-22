@@ -31,9 +31,7 @@ public class AsyncDbManager extends AsyncTask<String, Integer, Integer> {
 
     @Override
     protected Integer doInBackground(String... strings) {
-        Log.d("is database open", "" + database.isOpen());
         int questionId =  (int)database.insert(strings[0], null, values);
-        Log.d("is database open", "" + database.isOpen());
         if (answers != null) {
             ContentValues values = new ContentValues();
             values.put(MySQLiteHelper.COLUMN_ANSWER_QUESTION_ID, questionId);
@@ -44,7 +42,6 @@ public class AsyncDbManager extends AsyncTask<String, Integer, Integer> {
                 MySQLiteHelper mySQLiteHelper = new MySQLiteHelper(context);
                 database = mySQLiteHelper.getWritableDatabase();
                 //database.open();
-                Log.d("is database open", "" + database.isOpen());
                 database.insert(MySQLiteHelper.TABLE_ANSWERS, null, values);
             }
         }

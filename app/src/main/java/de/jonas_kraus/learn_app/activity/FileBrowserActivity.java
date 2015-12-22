@@ -5,8 +5,8 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Environment;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,22 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,16 +31,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import de.jonas_kraus.learn_app.Backgroud.AsyncExportOnline;
-import de.jonas_kraus.learn_app.Data.Catalogue;
-import de.jonas_kraus.learn_app.Data.Category;
 import de.jonas_kraus.learn_app.R;
 import de.jonas_kraus.learn_app.SoapService.SoapClientBrowser;
 import de.jonas_kraus.learn_app.SoapService.SoapClientBrowserAddCategoryFolder;
@@ -71,6 +55,7 @@ public class FileBrowserActivity extends ListActivity {
     private View promptView;
     private TextView textViewDir;
     private String pathToExportedFile;
+    private Boolean isImport;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +66,17 @@ public class FileBrowserActivity extends ListActivity {
 
         // Use the current directory as title
         pathLocal = Environment.getExternalStorageDirectory().getPath();
-
+        TextView pathText = (TextView)findViewById(R.id.textViewPath);
         if (getIntent().hasExtra("path")) {
             pathLocal = getIntent().getStringExtra("path");
         }
         if (getIntent().hasExtra("pathToExportedFile")) {
             pathToExportedFile = getIntent().getStringExtra("pathToExportedFile");
+            isImport = false;
+        } else {
+            isImport = true;
+            findViewById(R.id.buttonExportHere).setVisibility(View.GONE);
+            findViewById(R.id.buttonFolderNew).setVisibility(View.GONE);
         }
         if (pathLocal.equals(Environment.getExternalStorageDirectory().getPath())) {
             pathBack = null;
@@ -98,6 +88,11 @@ public class FileBrowserActivity extends ListActivity {
             isLocal = getIntent().getExtras().getBoolean("isLocal");
             linearLayoutButtonAdd = (LinearLayout)findViewById(R.id.linearLayoutAdd);
             //buttonAdd = (Button)findViewById(R.id.buttonFolderNew);
+        }
+        if (isLocal) {
+            pathText.setText("Path:");
+        } else {
+            pathText.setText("Category:");
         }
         //setTitle(pathLocal);
         pathLocal = cutSlashes(pathLocal);

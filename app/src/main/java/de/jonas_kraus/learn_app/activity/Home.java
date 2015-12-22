@@ -32,6 +32,7 @@ public class Home extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //this.deleteDatabase("learning_cards_db.db");
         setContentView(R.layout.activity_home);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
