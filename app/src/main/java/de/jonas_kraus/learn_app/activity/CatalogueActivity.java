@@ -561,6 +561,7 @@ public class CatalogueActivity extends ListActivity {
     public void onClick(View view) {
 
         switch(view.getId()) {
+            case R.id.llNewCat:
             case R.id.buttonCategoryNew:
                 makeCategory();
                 toggleButtonRoundAddMenu();
@@ -578,6 +579,7 @@ public class CatalogueActivity extends ListActivity {
                     startActivity(myIntent);
                 }
                 break;
+            case R.id.llNewCard:
             case R.id.buttonCardNew:
                 if (currentCategoryParent == -1) {
                     Toast.makeText(this, "Please create and/or select a Category at First!", Toast.LENGTH_LONG).show();
@@ -610,6 +612,7 @@ public class CatalogueActivity extends ListActivity {
                 myIntentStats.putExtra("currentCategoryParent",currentCategoryParent);
                 startActivity(myIntentStats);
                 break;
+            case R.id.llImport:
             case R.id.buttonImportImport:
                 if (currentCategoryParent == -1) {
                     Toast.makeText(this, "Please create and/or select a Category at First!", Toast.LENGTH_LONG).show();
