@@ -15,8 +15,65 @@
         android:longClickable="true"
         android:clickable="true"
         android:animateLayoutChanges="false"
+        android:divider="@color/blue_0"
+
+        android:dividerHeight="1px"
         android:layout_weight="1">
     </ListView>
+
+    <LinearLayout
+        android:id="@+id/llButtonsBottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignBottom="@android:id/list"
+        android:background="#00FFFFFF"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/circle_button"
+            android:text="✚"
+            android:textColor="@color/white"
+            android:id="@+id/buttonRoundAddMenu"
+            android:layout_centerHorizontal="true"
+            android:onClick="onClick"/>
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/statistics"
+            android:text="ᖼ"
+            android:onClick="onClick"
+            android:background="@drawable/circle_button"
+            android:textColor="@color/light_grey"
+            android:layout_marginRight="10dp"/>
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:text="➤"
+            android:id="@+id/startCards"
+            android:onClick="onClick"
+            android:background="@drawable/circle_button"
+            android:textColor="@color/light_grey"
+            android:layout_marginRight="10dp"/>
+
+        <Button
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="◀ back"
+            android:id="@+id/buttonCategoryBack"
+            android:onClick="onClick"
+            android:background="@drawable/flat_selector_blue"
+            android:textColor="@color/light_grey"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:lines="1"
+            android:layout_weight="1"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -98,58 +155,6 @@
                 android:layout_marginTop="10dp"
                 android:textColor="@color/blue_1"/>
         </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/llButtonsBottom"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignBottom="@android:id/list"
-        android:layout_marginTop="10dp">
-
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/circle_button"
-            android:text="✚"
-            android:textColor="@color/white"
-            android:id="@+id/buttonRoundAddMenu"
-            android:layout_centerHorizontal="true"
-            android:onClick="onClick"/>
-
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/statistics"
-            android:text="ᖼ"
-            android:onClick="onClick"
-            android:background="@drawable/circle_button"
-            android:textColor="@color/light_grey"
-            android:layout_marginRight="10dp"/>
-
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="➤"
-            android:id="@+id/startCards"
-            android:onClick="onClick"
-            android:background="@drawable/circle_button"
-            android:textColor="@color/light_grey"
-            android:layout_marginRight="10dp"/>
-
-        <Button
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:text="◀ back"
-            android:id="@+id/buttonCategoryBack"
-            android:onClick="onClick"
-            android:background="@drawable/flat_selector_blue"
-            android:textColor="@color/light_grey"
-            android:scrollHorizontally="true"
-            android:ellipsize="end"
-            android:lines="1"
-            android:layout_weight="1"/>
     </LinearLayout>
 
 </LinearLayout>

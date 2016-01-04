@@ -50,7 +50,7 @@ public class CatalogueActivity extends ListActivity {
     private View promptView;
     private Button buttonAddCategory, buttonAddCard, buttonAddImport;
     private Button buttonCategoryBack, buttonStats, buttonPlay, buttonRoundAddMenu;
-    private LinearLayout linearLayoutAdd;
+    private LinearLayout linearLayoutAdd, llCard, llCat, llImport;;
     private LinearLayout llButtonsBottom;
     private int currentCategoryParent = -1;
     private Category curCategory;
@@ -93,6 +93,9 @@ public class CatalogueActivity extends ListActivity {
         buttonRoundAddMenu = (Button) findViewById(R.id.buttonRoundAddMenu);
         linearLayoutAdd = (LinearLayout) findViewById(R.id.linearLayoutAdd);
         llButtonsBottom = (LinearLayout) findViewById(R.id.llButtonsBottom);
+        llCat = (LinearLayout)findViewById(R.id.llNewCat);
+        llCard = (LinearLayout)findViewById(R.id.llNewCard);
+        llImport = (LinearLayout)findViewById(R.id.llImport);
         Bundle extras;
         if (savedInstanceState == null) {
             extras = getIntent().getExtras();
@@ -638,6 +641,17 @@ public class CatalogueActivity extends ListActivity {
             buttonCategoryBack.setEnabled(false);
             buttonStats.setEnabled(false);
             buttonPlay.setEnabled(false);
+            TranslateAnimation translateAnimation1 = new TranslateAnimation(-100,Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
+            TranslateAnimation translateAnimation2 = new TranslateAnimation(-1000,Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
+            TranslateAnimation translateAnimation3 = new TranslateAnimation(-4000,Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
+            translateAnimation1.setDuration(600);
+            translateAnimation2.setDuration(600);
+            translateAnimation3.setDuration(600);
+            llCat.startAnimation(translateAnimation1);
+            llCard.startAnimation(translateAnimation2);
+            llImport.startAnimation(translateAnimation3);
+
+
         } else {
             linearLayoutAdd.setVisibility(View.GONE);
             llButtonsBottom.setEnabled(true);
@@ -648,6 +662,15 @@ public class CatalogueActivity extends ListActivity {
             buttonCategoryBack.setEnabled(true);
             buttonStats.setEnabled(true);
             buttonPlay.setEnabled(true);
+            TranslateAnimation translateAnimation1 = new TranslateAnimation(Animation.RELATIVE_TO_SELF,-100, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
+            TranslateAnimation translateAnimation2 = new TranslateAnimation(Animation.RELATIVE_TO_SELF,-1000, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
+            TranslateAnimation translateAnimation3 = new TranslateAnimation(Animation.RELATIVE_TO_SELF,-4000, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
+            translateAnimation1.setDuration(600);
+            translateAnimation2.setDuration(600);
+            translateAnimation3.setDuration(600);
+            llCat.startAnimation(translateAnimation1);
+            llCard.startAnimation(translateAnimation2);
+            llImport.startAnimation(translateAnimation3);
         }
     }
 
