@@ -5,14 +5,10 @@ package de.jonas_kraus.learn_app.Util;
  */
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,7 +21,6 @@ import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.Data.Category;
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
-import de.jonas_kraus.learn_app.activity.CatalogueActivity;
 
 public class CustomList extends ArrayAdapter<Catalogue> {
     private final Activity context;
@@ -46,8 +41,8 @@ public class CustomList extends ArrayAdapter<Catalogue> {
         this.checkedList = new ArrayList<Catalogue>();
         //this.marksFromDb = db.getMarks();
         this.checkedListPos = new ArrayList<Integer>();
-        check = context.getResources().getDrawable( R.drawable.checkmark );
-        uncheck = context.getResources().getDrawable(R.drawable.checkmark_shadow);
+        check = context.getResources().getDrawable( R.drawable.checkbox_checked_high_def);
+        uncheck = context.getResources().getDrawable(R.drawable.checkbox_unchecked_high_def);
     }
 
     public CustomList(Activity context,List<Catalogue> catalogue) {
@@ -58,8 +53,8 @@ public class CustomList extends ArrayAdapter<Catalogue> {
         this.checkedList = new ArrayList<Catalogue>();
         //this.marksFromDb = db.getMarks();
         this.checkedListPos = new ArrayList<Integer>();
-        check = context.getResources().getDrawable( R.drawable.checkmark );
-        uncheck = context.getResources().getDrawable(R.drawable.checkmark_shadow);
+        check = context.getResources().getDrawable( R.drawable.checkbox_checked_high_def);
+        uncheck = context.getResources().getDrawable(R.drawable.checkbox_unchecked_high_def);
     }
 
     @Override

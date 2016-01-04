@@ -66,8 +66,6 @@ public class cardActivity extends ActionBarActivity implements TextWatcher {
         setContentView(R.layout.activity_card);
 
         Resources res = getResources();
-        uncheckmark = res.getDrawable(R.drawable.uncheckmark);
-        checkmark = res.getDrawable(R.drawable.checkmark);
 
         white = res.getColor(R.color.white);
 
@@ -199,7 +197,7 @@ public class cardActivity extends ActionBarActivity implements TextWatcher {
                             LLEnterText.addView(linearlayout(_intMyLineCount));
                             _intMyLineCount++;
                         }
-                    } else if (checkModeChanged || (editCard.getType() == Card.CardType.NOTECARD)) { /* @TODO Mode changed set right checkmark*/
+                    } else if (checkModeChanged || (editCard.getType() == Card.CardType.NOTECARD)) { /* @TODO Mode changed set right checkmarks*/
                         checkBoxList.removeAll(checkBoxList);
                         for (int i = 0; i < editCard.getAnswers().size(); i++) {
                             LLEnterText.addView(linearlayout(_intMyLineCount));
@@ -207,7 +205,6 @@ public class cardActivity extends ActionBarActivity implements TextWatcher {
                             checkBoxList.get(i).setButtonDrawable(R.drawable.checkbox_icon);
                             editTextList.get(i).setText(editCard.getAnswers().get(i).getAnswer());
                             checkBoxList.get(i).setChecked(editCard.getAnswers().get(i).isCorrect());
-
 
                             Log.d("check list", checkBoxList.get(i).isChecked() + "" + checkBoxList.get(i));
                             /*
@@ -224,7 +221,7 @@ public class cardActivity extends ActionBarActivity implements TextWatcher {
                             LLEnterText.addView(linearlayout(_intMyLineCount));
                             _intMyLineCount++;
                             checkBoxList.get(0).setChecked(true);
-                            //checkBoxList.get(0).setButtonDrawable(checkmark);
+                            //checkBoxList.get(0).setButtonDrawable(checkmarks);
                             checkBoxList.get(1).setChecked(false);
                             //checkBoxList.get(1).setButtonDrawable(uncheckmark);
                         }
@@ -375,16 +372,19 @@ public class cardActivity extends ActionBarActivity implements TextWatcher {
         LLMain.setId(_intID);
         final CheckBox checkBox = checkBox(_intID);
         checkBox.setButtonDrawable(R.drawable.checkbox_icon);
+        checkBox.setScaleY(.8f);
+        checkBox.setScaleX(.8f);
+        //checkBox.setAlpha(.8f);
         /*
         checkBox.setClickable(true);
         checkBox.setChecked(true);
-        checkBox.setButtonDrawable(checkmark);
+        checkBox.setButtonDrawable(checkmarks);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkBox.setChecked(!checkBox.isChecked());
                 if (checkBox.isChecked()) {
-                    checkBox.setButtonDrawable(checkmark);
+                    checkBox.setButtonDrawable(checkmarks);
                 } else {
                     checkBox.setButtonDrawable(uncheckmark);
                 }
@@ -392,7 +392,7 @@ public class cardActivity extends ActionBarActivity implements TextWatcher {
         });
         */
         TableLayout.LayoutParams params = new TableLayout.LayoutParams();
-        params.setMargins(0, 0, 0, 15);
+        params.setMargins(15, 15, 15, 15);
 
         LLMain.setLayoutParams(params);
         LLMain.addView(checkBox);

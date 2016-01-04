@@ -3,8 +3,12 @@ package de.jonas_kraus.learn_app.activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
@@ -280,9 +284,12 @@ public class PlayActivity extends ActionBarActivity {
                 Log.d("Color", box.getDrawingCacheBackgroundColor() +", " + WHITE + ", " +box.getBackground() );
                 */
                 CheckBox box = new CheckBox(context);
-                box.setButtonDrawable(getResources().getDrawable(R.drawable.checkbox_icon));
+                Drawable drawable = getResources().getDrawable(R.drawable.checkbox_icon);
+                box.setScaleX(.9f);
+                box.setScaleY(.9f);
+                box.setButtonDrawable(drawable);
                 box.setText(ans.getAnswer());
-                box.setTextSize(db.getTextSizeAnswers());
+                box.setTextSize(db.getTextSizeAnswers()*(1/0.9f));
                 box.setPadding(15, 15, 15, 15);
                 box.setTextColor(BLACK);
                 listCheckBox.add(box);

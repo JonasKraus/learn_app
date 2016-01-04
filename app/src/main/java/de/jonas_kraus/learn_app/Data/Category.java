@@ -42,12 +42,25 @@ public class Category implements Parcelable{
         this.marked = parcel.readByte() != 0;
     }
 
+    /**
+     *
+     * @param id
+     * @param parentId
+     * @param name
+     * @param marked
+     */
     public Category(int id, int parentId, String name, boolean marked) {
         this.id = id;
         this.parentId = parentId;
         this.name = name;
         this.marked = marked;
     }
+
+    /**
+     *
+     * @param parent_id
+     * @param name
+     */
     public Category(int parent_id, String name) {
         this.parentId = parent_id;
         this.name = name;

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector android:constantSize="true"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:dither="true">
 
     <item android:state_checked="true"
-        android:drawable="@drawable/checkbox_checked" /> <!-- checked -->
+        android:drawable="@drawable/checkbox_checked"/> <!-- checked -->
     <item android:drawable="@drawable/checkbox_unchecked" /> <!-- default -->
 </selector>

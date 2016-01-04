@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.jonas_kraus.learn_app" >
+    package="de.jonas_kraus.learn_app">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".activity.Home"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,52 +26,45 @@
         </activity>
         <activity
             android:name=".activity.CatalogueActivity"
-            android:label="@string/title_activity_catalogue_home" >
-        </activity>
+            android:label="@string/title_activity_catalogue_home"></activity>
         <activity
             android:name=".activity.cardActivity"
-            android:label="@string/title_activity_card" >
-        </activity>
+            android:label="@string/title_activity_card"></activity>
         <activity
             android:name=".activity.PlayActivity"
-            android:label="@string/title_activity_play" >
-        </activity>
+            android:label="@string/title_activity_play"></activity>
         <activity
             android:name=".activity.StatisticsActivity"
-            android:label="@string/title_activity_statistics" >
-        </activity>
+            android:label="@string/title_activity_statistics"></activity>
         <activity
             android:name=".activity.SettingsActivity"
-            android:label="@string/title_activity_settings" >
-        </activity>
+            android:label="@string/title_activity_settings"></activity>
         <activity
             android:name=".activity.TodosActivity"
-            android:label="@string/title_activity_todos" >
-        </activity>
+            android:label="@string/title_activity_todos"></activity>
         <activity
             android:name=".activity.GraphActivity"
-            android:label="@string/title_activity_graph" >
-        </activity>
+            android:label="@string/title_activity_graph"></activity>
         <activity
             android:name=".activity.ImportActivity"
-            android:label="@string/title_activity_import" >
-        </activity>
+            android:label="@string/title_activity_import"></activity>
         <activity
             android:name=".activity.FileBrowserActivity"
-            android:label="@string/title_activity_list_file" >
-        </activity>
+            android:label="@string/title_activity_list_file"></activity>
 
         <service
             android:name=".Service.DailyNotifyService"
             android:enabled="true"
-            android:exported="true" >
-        </service>
+            android:exported="true"></service>
 
         <receiver
             android:name=".Broadcast.DailyNotificationReceiver"
             android:enabled="true"
-            android:exported="true" >
-        </receiver>
+            android:exported="true"></receiver>
+
+        <activity
+            android:name=".activity.MainActivity"
+            android:label="@string/title_activity_main"></activity>
     </application>
 
 </manifest>

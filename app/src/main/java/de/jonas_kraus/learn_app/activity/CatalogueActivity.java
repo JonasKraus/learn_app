@@ -10,14 +10,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -43,8 +48,10 @@ public class CatalogueActivity extends ListActivity {
     private DbManager db;
     private ListView listViewCatalogue;
     private View promptView;
-    private Button buttonAddCategory;
-    private Button buttonCategoryBack;
+    private Button buttonAddCategory, buttonAddCard, buttonAddImport;
+    private Button buttonCategoryBack, buttonStats, buttonPlay, buttonRoundAddMenu;
+    private LinearLayout linearLayoutAdd;
+    private LinearLayout llButtonsBottom;
     private int currentCategoryParent = -1;
     private Category curCategory;
     private Context context;
@@ -75,7 +82,17 @@ public class CatalogueActivity extends ListActivity {
         openDb();
         //listViewCatalogue = getListView();
         buttonAddCategory = (Button) findViewById(R.id.buttonCategoryNew);
+        buttonAddCard = (Button) findViewById(R.id.buttonCardNew);
+        buttonAddImport = (Button) findViewById(R.id.buttonImportImport);
+        addScaledIconToButton(buttonAddCategory,R.drawable.categoryicon);
+        addScaledIconToButton(buttonAddCard,R.drawable.cardicon);
+        addScaledIconToButton(buttonAddImport, R.drawable.android_download);
         buttonCategoryBack = (Button) findViewById(R.id.buttonCategoryBack);
+        buttonStats = (Button) findViewById(R.id.statistics);
+        buttonPlay = (Button) findViewById(R.id.startCards);
+        buttonRoundAddMenu = (Button) findViewById(R.id.buttonRoundAddMenu);
+        linearLayoutAdd = (LinearLayout) findViewById(R.id.linearLayoutAdd);
+        llButtonsBottom = (LinearLayout) findViewById(R.id.llButtonsBottom);
         Bundle extras;
         if (savedInstanceState == null) {
             extras = getIntent().getExtras();
@@ -87,6 +104,14 @@ public class CatalogueActivity extends ListActivity {
         }
         //setListViewWithCatalogueByLevel(currentCategoryParent);
         checkedList = new ArrayList<>();
+    }
+
+    private void addScaledIconToButton(Button button, int img_src) {
+        Drawable drawable = getResources().getDrawable(img_src);
+        drawable.setBounds(20, 0, (int) (drawable.getIntrinsicWidth() * 0.05 + 20),
+                (int) (drawable.getIntrinsicHeight() * 0.05));
+        ScaleDrawable sd = new ScaleDrawable(drawable, 0, 1f, 1f);
+        button.setCompoundDrawables(sd.getDrawable(), null, null, null);
     }
 
     @Override
@@ -526,7 +551,6 @@ public class CatalogueActivity extends ListActivity {
             curCategory = db.getParentCategory(cards.get(0).getCategoryId());
         }
         currentCategoryParent = level;
-
         customListAdapter = new CustomList(CatalogueActivity.this, catalogue, db);
         setListAdapter(customListAdapter);
         listViewCatalogue=getListView();
@@ -539,6 +563,7 @@ public class CatalogueActivity extends ListActivity {
         switch(view.getId()) {
             case R.id.buttonCategoryNew:
                 makeCategory();
+                toggleButtonRoundAddMenu();
                 break;
             case R.id.buttonCategoryBack:
                 if (curCategory != null) {
@@ -554,10 +579,15 @@ public class CatalogueActivity extends ListActivity {
                 }
                 break;
             case R.id.buttonCardNew:
-                Intent myIntent = new Intent(CatalogueActivity.this, cardActivity.class);
-                myIntent.putExtra("currentCategoryParent",currentCategoryParent);
-                myIntent.putExtra("addNewCard",true);
-                startActivity(myIntent);
+                if (currentCategoryParent == -1) {
+                    Toast.makeText(this, "Please create and/or select a Category at First!", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent myIntent = new Intent(CatalogueActivity.this, cardActivity.class);
+                    myIntent.putExtra("currentCategoryParent",currentCategoryParent);
+                    myIntent.putExtra("addNewCard",true);
+                    startActivity(myIntent);
+                    toggleButtonRoundAddMenu();
+                }
                 //makePromptAddCard();
                 break;
             case R.id.startCards:
@@ -580,9 +610,41 @@ public class CatalogueActivity extends ListActivity {
                 myIntentStats.putExtra("currentCategoryParent",currentCategoryParent);
                 startActivity(myIntentStats);
                 break;
-            case R.id.buttonImportImport: {
-                importCategory();
-            }
+            case R.id.buttonImportImport:
+                if (currentCategoryParent == -1) {
+                    Toast.makeText(this, "Please create and/or select a Category at First!", Toast.LENGTH_LONG).show();
+                } else {
+                    importCategory();
+                    toggleButtonRoundAddMenu();
+                }
+                break;
+            case R.id.buttonRoundAddMenu:
+                toggleButtonRoundAddMenu();
+                break;
+        }
+    }
+
+    private void toggleButtonRoundAddMenu() {
+        if (linearLayoutAdd.getVisibility() == View.GONE) {
+            linearLayoutAdd.setVisibility(View.VISIBLE);
+            //linearLayoutAdd.bringToFront();
+            llButtonsBottom.setEnabled(false);
+            listViewCatalogue.setEnabled(false);
+            listViewCatalogue.setAlpha(.3f);
+            buttonRoundAddMenu.setBackgroundResource(R.drawable.pressed_circle_button);
+            buttonCategoryBack.setEnabled(false);
+            buttonStats.setEnabled(false);
+            buttonPlay.setEnabled(false);
+        } else {
+            linearLayoutAdd.setVisibility(View.GONE);
+            llButtonsBottom.setEnabled(true);
+            listViewCatalogue.setEnabled(true);
+            //listViewCatalogue.setAlpha(.8f);
+            listViewCatalogue.setAlpha(1f);
+            buttonRoundAddMenu.setBackgroundResource(R.drawable.idle_circle_button);
+            buttonCategoryBack.setEnabled(true);
+            buttonStats.setEnabled(true);
+            buttonPlay.setEnabled(true);
         }
     }
 
