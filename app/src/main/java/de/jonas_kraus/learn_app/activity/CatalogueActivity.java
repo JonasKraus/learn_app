@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -111,8 +112,8 @@ public class CatalogueActivity extends ListActivity {
 
     private void addScaledIconToButton(Button button, int img_src) {
         Drawable drawable = getResources().getDrawable(img_src);
-        drawable.setBounds(20, 0, (int) (drawable.getIntrinsicWidth() * 0.05 + 20),
-                (int) (drawable.getIntrinsicHeight() * 0.05));
+        drawable.setBounds(20, 0, (int) (drawable.getIntrinsicWidth() * 0.27 + 20),
+                (int) (drawable.getIntrinsicHeight() * 0.27));
         ScaleDrawable sd = new ScaleDrawable(drawable, 0, 1f, 1f);
         button.setCompoundDrawables(sd.getDrawable(), null, null, null);
     }
@@ -641,6 +642,9 @@ public class CatalogueActivity extends ListActivity {
             buttonCategoryBack.setEnabled(false);
             buttonStats.setEnabled(false);
             buttonPlay.setEnabled(false);
+            RotateAnimation rotateAnimation = new RotateAnimation(0f,360f,Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF, 0.5f);
+            rotateAnimation.setDuration(500);
+            buttonRoundAddMenu.startAnimation(rotateAnimation);
             TranslateAnimation translateAnimation1 = new TranslateAnimation(-100,Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
             TranslateAnimation translateAnimation2 = new TranslateAnimation(-1000,Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
             TranslateAnimation translateAnimation3 = new TranslateAnimation(-4000,Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
@@ -662,6 +666,9 @@ public class CatalogueActivity extends ListActivity {
             buttonCategoryBack.setEnabled(true);
             buttonStats.setEnabled(true);
             buttonPlay.setEnabled(true);
+            RotateAnimation rotateAnimation = new RotateAnimation(0f,-360f,Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF, 0.5f);
+            rotateAnimation.setDuration(500);
+            buttonRoundAddMenu.startAnimation(rotateAnimation);
             TranslateAnimation translateAnimation1 = new TranslateAnimation(Animation.RELATIVE_TO_SELF,-100, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
             TranslateAnimation translateAnimation2 = new TranslateAnimation(Animation.RELATIVE_TO_SELF,-1000, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);
             TranslateAnimation translateAnimation3 = new TranslateAnimation(Animation.RELATIVE_TO_SELF,-4000, Animation.RELATIVE_TO_SELF, Animation.RELATIVE_TO_SELF);

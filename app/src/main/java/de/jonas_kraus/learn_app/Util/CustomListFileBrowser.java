@@ -35,13 +35,13 @@ public class CustomListFileBrowser extends ArrayAdapter<List> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         ImageView box = (ImageView) rowView.findViewById(R.id.checkBox);
-        txtTitle.setText(values.get(position).toString());
+        txtTitle.setText(values.get(position).toString().split(".json")[0]);
         // change the icon for Windows and iPhone
         String s = values.get(position).toString();
         if (s.endsWith(".json")) {
-            imageView.setImageResource(R.drawable.android_download);
+            imageView.setImageResource(R.drawable.cardsicon);
         } else {
-            imageView.setImageResource(R.drawable.android_folder);
+            imageView.setImageResource(R.drawable.categoryicon);
         }
         return rowView;
     }

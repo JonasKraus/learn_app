@@ -55,6 +55,10 @@
         </LinearLayout>
 
         <ListView
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:divider="@color/blue_3"
+            android:dividerHeight="1px"
             android:id="@android:id/list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
