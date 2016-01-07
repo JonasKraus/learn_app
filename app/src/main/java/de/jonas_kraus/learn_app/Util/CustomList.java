@@ -6,11 +6,15 @@ package de.jonas_kraus.learn_app.Util;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -32,6 +36,7 @@ public class CustomList extends ArrayAdapter<Catalogue> {
     private ArrayList<Catalogue>checkedList;
     private List<Integer>checkedListPos;
     private DbManager db;
+    private View rowView;
 
     public CustomList(Activity context,List<Catalogue> catalogue, DbManager db) {
         super(context, R.layout.list_single, catalogue);
@@ -60,7 +65,7 @@ public class CustomList extends ArrayAdapter<Catalogue> {
     @Override
     public View getView(final int position, View view, final ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.list_single, null, true);
+        rowView = inflater.inflate(R.layout.list_single, null, true);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         ImageView box = (ImageView) rowView.findViewById(R.id.checkBox);
@@ -76,6 +81,7 @@ public class CustomList extends ArrayAdapter<Catalogue> {
         if (category != null) {
             txtTitle.setText(category.getName());
             imageView.setImageResource(imgCat);
+            rowView.setOnDragListener(new RowViewDragListener(context));
             if(category.isMarked()) {
                 box.setBackgroundDrawable(check);
             } else {
@@ -90,8 +96,6 @@ public class CustomList extends ArrayAdapter<Catalogue> {
                 box.setBackgroundDrawable(uncheck);
             }
         }
-
-        //Log.d("box list","checked "+checkedListPos.toString());
 
         box.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,16 +120,16 @@ public class CustomList extends ArrayAdapter<Catalogue> {
                 } else {
                     box.setBackgroundDrawable(uncheck);
                     checkedList.remove(catalogue.get(position));
-                    checkedListPos.remove((Integer)position);
+                    checkedListPos.remove((Integer) position);
                     //db.deleteMark(catalogue.get(position));
                     if (db != null) {
                         db.unmarkCardOrCategory(catalogue.get(position));
                     }
                     catalogue.get(position).setMark(false);
                 }
-                //Log.d("Click",card +" "+ category + " equals? " + (drawable +" ," + check+" ," + uncheck));
             }
         });
+        imageView.setOnTouchListener(new RowViewTouchListener());
 
         return rowView;
     }
@@ -141,4 +145,5 @@ public class CustomList extends ArrayAdapter<Catalogue> {
     public void setCatalogue(List<Catalogue> catalogue) {
         this.catalogue = catalogue;
     }
+
 }

@@ -22,6 +22,50 @@
     </ListView>
 
     <LinearLayout
+        android:id="@+id/llButtonsDrag"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignBottom="@android:id/list"
+        android:background="#00FFFFFF"
+        android:layout_marginTop="10dp"
+        android:visibility="gone">
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/circle_button"
+            android:text="Exp"
+            android:textColor="@color/white"
+            android:id="@+id/buttonDragExport"
+            android:layout_centerHorizontal="true"
+
+            android:onClick="onClick"/>
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/buttonDragEdit"
+            android:text="Edit"
+            android:onClick="onClick"
+            android:background="@drawable/circle_button"
+            android:textColor="@color/light_grey"
+            android:layout_marginRight="10dp"/>
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:text="X"
+            android:id="@+id/buttonDragDelete"
+            android:onClick="onClick"
+            android:background="@drawable/circle_button"
+            android:textColor="@color/light_grey"
+            android:layout_marginRight="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/llButtonsBottom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

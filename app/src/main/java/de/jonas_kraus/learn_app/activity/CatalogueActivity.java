@@ -44,12 +44,13 @@ import de.jonas_kraus.learn_app.Data.Category;
 import de.jonas_kraus.learn_app.Database.DbManager;
 import de.jonas_kraus.learn_app.R;
 import de.jonas_kraus.learn_app.Util.CustomList;
+import de.jonas_kraus.learn_app.Util.RowViewDragListener;
 
-public class CatalogueActivity extends ListActivity {
+public class CatalogueActivity extends ListActivity  {
     private DbManager db;
     private ListView listViewCatalogue;
     private View promptView;
-    private Button buttonAddCategory, buttonAddCard, buttonAddImport;
+    private Button buttonAddCategory, buttonAddCard, buttonAddImport, dropZoneDelete, dropZoneExport, dropZoneEdit;
     private Button buttonCategoryBack, buttonStats, buttonPlay, buttonRoundAddMenu;
     private LinearLayout linearLayoutAdd, llCard, llCat, llImport;;
     private LinearLayout llButtonsBottom;
@@ -97,6 +98,11 @@ public class CatalogueActivity extends ListActivity {
         llCat = (LinearLayout)findViewById(R.id.llNewCat);
         llCard = (LinearLayout)findViewById(R.id.llNewCard);
         llImport = (LinearLayout)findViewById(R.id.llImport);
+        dropZoneDelete = (Button)findViewById(R.id.buttonDragDelete);
+        dropZoneEdit = (Button)findViewById(R.id.buttonDragEdit);
+        dropZoneExport = (Button)findViewById(R.id.buttonDragExport);
+
+
         Bundle extras;
         if (savedInstanceState == null) {
             extras = getIntent().getExtras();
@@ -125,24 +131,32 @@ public class CatalogueActivity extends ListActivity {
         context = this;
         setListViewWithCatalogueByLevel(currentCategoryParent);
         addClickListenersToListView();
+        addDropZones();
+    }
+
+    private void addDropZones() {
+        RowViewDragListener rowViewDragListener = new RowViewDragListener(this);
+        dropZoneDelete.setOnDragListener(rowViewDragListener);
+        dropZoneEdit.setOnDragListener(rowViewDragListener);
+        dropZoneExport.setOnDragListener(rowViewDragListener);
+    }
+
+    private void unsetDropZones() {
+        dropZoneDelete.setOnDragListener(null);
+        dropZoneEdit.setOnDragListener(null);
+        dropZoneExport.setOnDragListener(null);
     }
 
     private void addClickListenersToListView() {
         listViewCatalogue.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(getApplicationContext(), "On item click", Toast.LENGTH_SHORT).show();
-                //Log.d("Adapter", getListAdapter()+"");
                 Catalogue curCatalogue = (Catalogue) getListAdapter().getItem(position);
-                //Log.d("View Item",curCat+"");
-
-                //Card curCard;
 
                 if (curCatalogue.getCategory() != null) { // Jump to subcategory
                     curCategory = curCatalogue.getCategory();
                     currentCategoryParent = curCategory.getId();
-                    //Log.d("click on cat", "cat: " + curCatalogue.getCategory() + " ---- ");
-                    //if (curCategory)
+
                     buttonCategoryBack.setText("◀ " + curCategory.getName());
                     /**
                      * Alternative to start next view
@@ -152,19 +166,15 @@ public class CatalogueActivity extends ListActivity {
                      */
                     setListViewWithCatalogueByLevel(currentCategoryParent);
 
-
-                } else if (curCatalogue.getCard() != null) { /* @TODO Preview of Card */
-                    //curCard = curCatalogue.getCard();
-                    //Toast.makeText(context,"This is a card: "+curCard.getQuestion(), Toast.LENGTH_SHORT).show();
+                } else if (curCatalogue.getCard() != null) {
                     Intent myIntent = new Intent(CatalogueActivity.this, cardActivity.class);
                     myIntent.putExtra("currentCategoryParent", currentCategoryParent);
                     myIntent.putExtra("cardId", curCatalogue.getCard().getId());
-                    //myIntent.putExtra("card", curCatalogue.getCard());
                     startActivity(myIntent);
                 }
-
             }
         });
+
         listViewCatalogue.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -287,6 +297,7 @@ public class CatalogueActivity extends ListActivity {
                 return true;
             }
         });
+
     }
 
     private String exportCategoryLocal(final boolean isLocal, Catalogue curCatalogue) throws IOException, JSONException {
@@ -383,159 +394,8 @@ public class CatalogueActivity extends ListActivity {
                 .show();
 
 
-        /*
-         * is now in own activity
-        Gson gson = new Gson();
 
-        String filenameCat = "category.json";
-        String filenameCards = "cards.json";
-        File fileCat = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards" + File.separator + filenameCat);
-        File fileCards = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards" + File.separator + filenameCards);
-        String retCat = "";
-        String retCards = "";
-
-        File sdCardRoot = Environment.getExternalStorageDirectory();
-        File yourDir = new File(sdCardRoot, Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards");
-        for (File f : yourDir.listFiles()) {
-            if (f.isFile()) {
-                String name = f.getName();
-                Log.d("file name: ", name);
-            }
-        }
-
-        if(!fileCards.exists()) {
-            Toast.makeText(context,"No Cards file to import!", Toast.LENGTH_LONG).show();
-            return;
-
-        } else  {
-
-            try {
-                InputStream inputStreamCards = new FileInputStream(fileCards.getPath());
-
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCards);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveStringCards = "";
-                StringBuilder stringBuilder = new StringBuilder();
-                while ((receiveStringCards = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(receiveStringCards);
-                }
-                inputStreamCards.close();
-                retCards = stringBuilder.toString();
-
-            } catch (FileNotFoundException e) {
-                Log.e("login activity", "File not found: " + e.toString());
-            } catch (IOException e) {
-                Log.e("login activity", "Can not read file: " + e.toString());
-            }
-            Type listType = new TypeToken<ArrayList<Card>>() {
-            }.getType();
-            importedCards = new Gson().fromJson(retCards, listType);
-
-        }
-        if(!fileCat.exists() && fileCards.exists()) {
-
-            //Toast.makeText(context, "Category file dosen't exists", Toast.LENGTH_LONG).show();
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setCancelable(true).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    db.createCards(importedCards, currentCategoryParent);
-                    setListViewWithCatalogueByLevel(currentCategoryParent);
-                }
-            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.cancel();
-                }
-            });
-
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.setIcon(categoryIconScaled);
-            alertDialog.setTitle("Can't find Category!");
-            if (curCategory != null) {
-                alertDialog.setMessage("Proceed and import cards to current Category '"+curCategory.getName()+"'?");
-            } else {
-                alertDialog.setMessage("Proceed and import cards to current Category?");
-            }
-
-            alertDialog.show();
-
-        } else if (fileCards.exists() && fileCat.exists()) {
-
-            try {
-                InputStream inputStreamCat = new FileInputStream(fileCat.getPath());
-
-                if (inputStreamCat != null) {
-                    InputStreamReader inputStreamReader = new InputStreamReader(inputStreamCat);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                    String receiveStringCat = "";
-                    StringBuilder stringBuilder = new StringBuilder();
-
-                    while ((receiveStringCat = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(receiveStringCat);
-                    }
-
-                    inputStreamCat.close();
-                    retCat = stringBuilder.toString();
-
-                }
-            } catch (FileNotFoundException e) {
-                Log.e("login activity", "File not found: " + e.toString());
-                Toast.makeText(context, "copie cards.json and category.json to " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + "flashcards").toURI(), Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                Log.e("login activity", "Can not read file: " + e.toString());
-            }
-            Category importedCat = gson.fromJson(retCat, Category.class);
-            if (importedCards != null) {
-                importedCat.setName(importedCat.getName());
-                importedCat.setParentId(currentCategoryParent); //make sure to bee in root @TODO make choosable
-                db.createCards(importedCards, db.createCategory(importedCat).getId()); // Creates category and cards
-                setListViewWithCatalogueByLevel(currentCategoryParent);
-            }
-        }
-         */
     }
-
-    /*
-    @Deprecated
-    private void makePromptAddCard() {
-
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        promptView = layoutInflater.inflate(R.layout.prompt_add_card, null);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setView(promptView);
-
-        final ArrayAdapter<Catalogue> adapter = (ArrayAdapter<Catalogue>) getListAdapter();
-
-        alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                final EditText inputQuestion = (EditText) promptView.findViewById(R.id.promptEditTextQuestion);
-                final EditText inputAnswer = (EditText) promptView.findViewById(R.id.promptEditTextAnswer);
-                final EditText inputHint = (EditText) promptView.findViewById(R.id.promptEditTextHint);
-                final RadioGroup group = (RadioGroup) findViewById(R.id.promptRadioGroup);
-                final RadioButton multiple = (RadioButton) findViewById(R.id.promptRadioButtonMultipleChoice);
-                final RadioButton text = (RadioButton) findViewById(R.id.promptRadioButtonText);
-                Card.CardType cardType = Card.CardType.MULTIPLECHOICE;
-                List<Answer> answers = new ArrayList<Answer>();
-                if (text == null || text.isChecked()) {
-                    cardType = Card.CardType.NOTECARD;
-                    answers.add(new Answer(inputAnswer.getText().toString()));
-                } else {
-
-                }
-
-                Card card = db.createCard(new Card(cardType, inputQuestion.getText().toString(), answers, false, 0, inputHint.getText().toString(), currentCategoryParent));
-                adapter.add(new Catalogue(card, categoryIcon));
-            }
-        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-    */
 
     private void setListViewWithCatalogueByLevel(int level) {
         List<Category> categories = db.getCategoriesByLevel(level);
@@ -654,8 +514,6 @@ public class CatalogueActivity extends ListActivity {
             llCat.startAnimation(translateAnimation1);
             llCard.startAnimation(translateAnimation2);
             llImport.startAnimation(translateAnimation3);
-
-
         } else {
             linearLayoutAdd.setVisibility(View.GONE);
             llButtonsBottom.setEnabled(true);
@@ -725,6 +583,7 @@ public class CatalogueActivity extends ListActivity {
         //db.close();// must be in onDestroy course of possibly running export thread
         listViewCatalogue.setOnItemClickListener(null);
         listViewCatalogue.setOnItemLongClickListener(null);
+        unsetDropZones();
         System.gc();
     }
 

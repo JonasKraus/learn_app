@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:layout_marginRight="15dp">
     <TableRow
+        android:id="@+id/single_list_row"
         android:animateLayoutChanges="true">
         <ImageView
             android:background="@drawable/circle_button"
