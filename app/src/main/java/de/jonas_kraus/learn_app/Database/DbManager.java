@@ -558,9 +558,11 @@ public class DbManager {
             do {
                 int id = cursor.getInt(0);
                 String question = cursor.getString(2);
+                /*
                 if (question.length()>70) {
                     question = question.substring(0,70)+" . . .";
                 }
+                */
                 boolean marked = cursor.getInt(8)>0;
                 cards.add(new Card(id, question, marked, level));
             } while (cursor.moveToNext());
@@ -576,9 +578,11 @@ public class DbManager {
             do {
                 int id = cursor.getInt(0);
                 String question = cursor.getString(2);
+                /*
                 if (question.length()>70) {
                     question = question.substring(0,70)+" . . .";
                 }
+                */
                 boolean marked = cursor.getInt(8)>0;
                 cards.add(new Card(id, question, marked, -1));
             } while (cursor.moveToNext());
