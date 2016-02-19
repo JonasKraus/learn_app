@@ -328,9 +328,9 @@ public class CatalogueActivity extends ListActivity  {
                 List<Card> cards =  db.getCards(category);
                 mProgressDialog.setProgress(25);
                 Gson gson = new Gson();
-
+                Card.unsetCardsData(cards);
                 String stringCards = gson.toJson(cards);
-                String stringCat = gson.toJson(category);
+                //String stringCat = gson.toJson(category);
                 FileOutputStream outputStream;
                 mProgressDialog.setProgress(50);
                 try {
@@ -400,6 +400,7 @@ public class CatalogueActivity extends ListActivity  {
     private void setListViewWithCatalogueByLevel(int level) {
         List<Category> categories = db.getCategoriesByLevel(level);
         List<Card> cards = db.getCardsByLevelForListView(level);
+        //List<Card> cards = db.getCardsForListView(); recover of lost cards
         List<Catalogue> catalogue = new ArrayList<Catalogue>();
 
         for (Category cat : categories) {
@@ -419,7 +420,81 @@ public class CatalogueActivity extends ListActivity  {
         setListAdapter(customListAdapter);
         listViewCatalogue=getListView();
         listViewCatalogue.setAdapter(customListAdapter);
+        /* recover of lost cards
+        try {
+            exportCardsLocal(true);
+            exportCardsLocal(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        */
+    }
 
+    private String exportCardsLocal(final boolean isLocal) throws IOException, JSONException {
+
+        //final Catalogue catalogue = curCatalogue;
+        final File fileNew;
+        if (isLocal) {
+            fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/flashcards");
+        } else {
+            fileNew = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/flashcards/.upload/.cache");
+        }
+        final String exportedFilePath = fileNew.getPath() + File.separator +"Cards.json";
+
+        final ProgressDialog mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setMessage("Exporting Cards");
+        mProgressDialog.setIndeterminate(false);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setMax(100);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+
+        Thread mThread = new Thread() {
+            @Override
+            public void run() {
+
+                //catalogue.unsetIcon();
+                //Category category = catalogue.getCategory();
+                List<Card> cards =  db.getMarkedCards();
+                //Log.d("exp", " "+ cards.size());
+                mProgressDialog.setProgress(25);
+                Gson gson = new Gson();
+                Card.unsetCardsData(cards);
+                String stringCards = gson.toJson(cards);
+                //String stringCat = gson.toJson(category);
+                FileOutputStream outputStream;
+                mProgressDialog.setProgress(50);
+                try {
+                    if (! fileNew.exists()){
+                        Log.d("dir ", "file dosent exist");
+                        if (! fileNew.mkdirs()){
+                            Log.e("dir ", "Directory not created");
+                        }
+                    }
+                    mProgressDialog.setProgress(75);
+                    /*
+                    outputStream = new FileOutputStream(new File(fileNew.getPath() + File.separator +category.getName()+"_category.json"));
+                    outputStream.write(stringCat.getBytes());
+                    outputStream.close();
+                    */
+                    exportedFile = new File(exportedFilePath);
+                    outputStream = new FileOutputStream(exportedFile);
+                    outputStream.write(stringCards.getBytes());
+                    outputStream.close();/*
+                    outputStream = context.openFileOutput(filenameCards, Context.MODE_PRIVATE);
+                    outputStream.write(stringCards.getBytes());
+                    outputStream.close();*/
+                    mProgressDialog.setProgress(100);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        mThread.start();
+        mProgressDialog.dismiss();
+        return exportedFilePath;
     }
 
     public void onClick(View view) {

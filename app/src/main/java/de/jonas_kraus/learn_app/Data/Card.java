@@ -243,4 +243,40 @@ public class Card implements Parcelable{
                 ", date=" + date +
                 '}';
     }
+
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
+    public Date getDateCur() {
+        return dateCur;
+    }
+
+    public void setDateCur(Date dateCur) {
+        this.dateCur = dateCur;
+    }
+
+    public static Card unsetCardData(Card card) {
+        card.setCategoryId(0);
+        card.setDrawer(0);
+        card.setId(0);
+        card.setKnown(false);
+        card.setMarked(false);
+        card.setRating(0);
+        card.setViewed(null);
+        card.setDate(null);
+        card.setDateCur(null);
+        return card;
+    }
+
+    public static List<Card> unsetCardsData(List<Card> cards) {
+        for (Card card: cards) {
+            unsetCardData(card);
+        }
+        return cards;
+    }
 }

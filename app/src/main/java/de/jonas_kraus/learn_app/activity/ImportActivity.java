@@ -100,6 +100,7 @@ public class ImportActivity extends ListActivity {
         listViewCatalogue = getListView();
         addClickListenersToListView();
         textViewNumCat.setText(numCats + "");
+
         textViewNumCards.setText(numCards + "");
     }
 

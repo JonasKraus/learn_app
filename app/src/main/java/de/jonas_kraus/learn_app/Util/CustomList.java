@@ -129,6 +129,7 @@ public class CustomList extends ArrayAdapter<Catalogue> {
                 }
             }
         });
+
         imageView.setOnTouchListener(new RowViewTouchListener());
 
         return rowView;

@@ -500,7 +500,7 @@ public class PlayActivity extends ActionBarActivity {
         countNotViewed = uniqueCardIds.size();
         countViewed = countNotKnown+countKnown;
 
-        textViewQuestionCounter.setText((cardsPosition+1)+"/"+cards.size()+"\t\t\t"+Math.round((100 / cards.size() * (cardsPosition + 1)))+"%");
+        textViewQuestionCounter.setText((cardsPosition+1)+"/"+cards.size()+"\t\t\t"+Math.round((100f / cards.size()) * (cardsPosition + 1))+"%");
         linearLayOutDynamic.removeAllViews();
         if (cardsPosition == cards.size()) {
             Toast.makeText(context, "Learned all Cards", Toast.LENGTH_SHORT).show();
@@ -605,7 +605,7 @@ public class PlayActivity extends ActionBarActivity {
             overallRating += card.getRating();
         }
         overallRating /= cards.size();
-        textViewOverallRating.setText(overallRating+"%");
+        textViewOverallRating.setText(Math.round(overallRating)+"%");
 
         if (orderType > 0) {
             linearLayoutDrawers.setVisibility(View.GONE);
@@ -614,8 +614,8 @@ public class PlayActivity extends ActionBarActivity {
             linearLayoutOverallKnowledge.setVisibility(View.GONE);
         }
 
-        textViewKnown.setText(countKnown+"\tknown");
-        textViewNotKnown.setText(countNotKnown+"\tnot known");
+        textViewKnown.setText(countKnown+"\tcorrect");
+        textViewNotKnown.setText(countNotKnown+"\tincorrect");
         textViewViewed.setText((countViewed+1)+"\tviewed");
         textViewNotViewed.setText((countNotViewed)+"\tnot viewed");
 

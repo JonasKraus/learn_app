@@ -106,7 +106,7 @@ public class DbManager {
 
     public void close() {
         dbHelper.close();
-        Log.d("import db" , "closed");
+        Log.d("import db", "closed");
     }
 
     Date date = new java.util.Date();
@@ -506,6 +506,21 @@ public class DbManager {
         return categories;
     }
 
+    public List<Category> getCategories() {
+        List<Category> categories = new ArrayList<Category>();
+
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_CATEGORIES, allCategoryColumns, null, null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Category category = new Category(cursor.getInt(0),cursor.getInt(2),cursor.getString(1), cursor.getInt(3)>0); /* @TODO change values */
+            categories.add(category);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return categories;
+    }
+
     public List<Card> getCardsByLevel(int level) {
         List<Card> cards = new ArrayList<Card>();
         Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS, allQuestionColumns, MySQLiteHelper.COLUMN_QUESTION_CATEGORY_ID + " = " + level, null, null, null, null);
@@ -534,6 +549,8 @@ public class DbManager {
         return cards;
     }
 
+
+
     public List<Card> getCardsByLevelForListView(int level) {
         List<Card> cards = new ArrayList<Card>();
         Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS, allQuestionColumns, MySQLiteHelper.COLUMN_QUESTION_CATEGORY_ID + " = " + level, null, null, null, null);
@@ -546,6 +563,24 @@ public class DbManager {
                 }
                 boolean marked = cursor.getInt(8)>0;
                 cards.add(new Card(id, question, marked, level));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return cards;
+    }
+
+    public List<Card> getCardsForListView() {
+        List<Card> cards = new ArrayList<Card>();
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONS, allQuestionColumns, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                String question = cursor.getString(2);
+                if (question.length()>70) {
+                    question = question.substring(0,70)+" . . .";
+                }
+                boolean marked = cursor.getInt(8)>0;
+                cards.add(new Card(id, question, marked, -1));
             } while (cursor.moveToNext());
         }
         cursor.close();

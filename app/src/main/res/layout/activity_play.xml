@@ -174,7 +174,7 @@
             android:layout_weight="1"
             android:background="@drawable/flat_selector_red"
             android:onClick="onClick"
-            android:text="Not known"
+            android:text="incorrect"
             android:textColor="@color/light_grey" />
 
         <Button
@@ -185,7 +185,7 @@
             android:layout_weight="1"
             android:background="@drawable/flat_selector_blue"
             android:onClick="onClick"
-            android:text="Next"
+            android:text="next"
             android:textColor="@color/light_grey" />
 
         <Button
@@ -195,7 +195,7 @@
             android:layout_weight="1"
             android:background="@drawable/flat_selector_green"
             android:onClick="onClick"
-            android:text="Known"
+            android:text="correct"
             android:textColor="@color/light_grey" />
     </LinearLayout>
 </RelativeLayout>
