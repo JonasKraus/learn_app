@@ -24,15 +24,14 @@
                 android:id="@+id/checkBoxTodosNewestCards"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="View the newest Cards"/>
+                android:text="View the newest Cards"
+                android:layout_weight="1" />
 
             <Button
                 android:id="@+id/buttonTodosNewestMinus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxWidth="40dp"
-                android:layout_weight="1"
-                android:background="@drawable/flat_selector_blue"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/circle_button"
                 android:text="-"
                 android:layout_marginLeft="5dp"
                 android:textColor="@color/white"
@@ -45,18 +44,15 @@
                 android:inputType="number"
                 android:ems="3"
                 android:id="@+id/editTextTodosNewestNumberCards"
-                android:layout_weight="1"
                 android:text="20"
                 android:textColor="@color/blue_0"
                 android:textStyle="bold"/>
 
             <Button
-                android:maxWidth="40dp"
                 android:id="@+id/buttonTodosNewestPlus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/flat_selector_blue"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/circle_button"
                 android:textColor="@color/white"
                 android:text="+"
                 android:onClick="onPlus"
@@ -72,15 +68,14 @@
                 android:id="@+id/checkBoxTodosOldestCards"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="View the newest Cards"/>
+                android:text="View the newest Cards"
+                android:layout_weight="1" />
 
             <Button
-                android:maxWidth="40dp"
                 android:id="@+id/buttonTodosOldestMinus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/flat_selector_blue"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/circle_button"
                 android:text="-"
                 android:layout_marginLeft="5dp"
                 android:textColor="@color/white"
@@ -93,18 +88,15 @@
                 android:inputType="number"
                 android:ems="3"
                 android:id="@+id/editTextTodosOldestNumberCards"
-                android:layout_weight="1"
                 android:text="20"
                 android:textColor="@color/blue_0"
                 android:textStyle="bold"/>
 
             <Button
-                android:maxWidth="40dp"
                 android:id="@+id/buttonTodosOldestPlus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/flat_selector_blue"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/circle_button"
                 android:textColor="@color/white"
                 android:onClick="onPlus"
                 android:text="+"

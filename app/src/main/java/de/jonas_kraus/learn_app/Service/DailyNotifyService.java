@@ -32,7 +32,7 @@ public class DailyNotifyService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d("daily service", "on handle");
         NotificationManager mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.flash_icon, "Notify Alarm strart", System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.flash_icon, "Notify Alarm start", System.currentTimeMillis());
         DbManager dbManager = new DbManager(this);
         try {
             dbManager.open();
