@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.R;
 
 /**
@@ -17,15 +18,14 @@ public class RowViewTouchListener implements View.OnTouchListener{
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         //Log.d("view ccsds", view.toString() + "-----" + view.getParent().getParent().getParent().toString());
-        ListView listView = (ListView)view.getParent().getParent().getParent();
-        LinearLayout linearLayout = (LinearLayout)listView.getParent();
+
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             ClipData data = ClipData.newPlainText("", "");
             View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
             view.startDrag(data, shadowBuilder, view, 0);
-            view.setVisibility(View.INVISIBLE);
-            linearLayout.findViewById(R.id.llButtonsBottom).setVisibility(View.GONE);
-            linearLayout.findViewById(R.id.llButtonsDrag).setVisibility(View.VISIBLE);
+            //view.setVisibility(View.INVISIBLE);
+            Catalogue catalogue = (Catalogue)view.getTag();
+            Log.d("Touched catalogue", catalogue.toString());
             /*
             Button buttonDragDelete = (Button)linearLayout.findViewById(R.id.buttonDragDelete);
             Button buttonDragEdit = (Button)linearLayout.findViewById(R.id.buttonDragEdit);
@@ -37,9 +37,12 @@ public class RowViewTouchListener implements View.OnTouchListener{
             buttonDragExport.setOnDragListener(rowViewDragListener);
             */
             return true;
-        } else {
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_CANCEL){
+            ((LinearLayout)view.getParent().getParent()).findViewById(R.id.llButtonsDrag).setVisibility(View.GONE);
+            ((LinearLayout)view.getParent().getParent()).findViewById(R.id.llButtonsBottom).setVisibility(View.VISIBLE);
             return false;
         }
+        return false;
     }
 
 }

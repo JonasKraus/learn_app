@@ -3,6 +3,7 @@ package de.jonas_kraus.learn_app.Util;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
@@ -17,6 +18,7 @@ import org.apache.http.util.LangUtils;
 
 import java.util.List;
 
+import de.jonas_kraus.learn_app.Data.Catalogue;
 import de.jonas_kraus.learn_app.R;
 
 /**
@@ -25,19 +27,20 @@ import de.jonas_kraus.learn_app.R;
 public class RowViewDragListener implements View.OnDragListener {
 
     private Context context;
+    private Vibrator vibrator;
+    private LinearLayout linearLayout;
     public RowViewDragListener(Context context) {
         this.context = context;
+        this.vibrator = (Vibrator)this.context.getSystemService(Context.VIBRATOR_SERVICE);
     }
     private void switchDragButtonsOff(View v) {
-        LinearLayout linearLayout;
-        Log.d("view butt", v.toString()+" "+v.getParent());
+        Log.d("diese view", v.toString());
         if (!(v instanceof Button)) {
-            ListView listView = (ListView)v.getParent();
-            linearLayout = (LinearLayout)listView.getParent();
-            Log.d("dropped on", "kein butt"+linearLayout.toString());
+            Log.d("dropped on", "kein butt");
+        } else if (v instanceof TableLayout) {
+            Log.d("dropped on", "list of cards");
         } else {
-            linearLayout = (LinearLayout)v.getParent().getParent();
-            Log.d("dropped on", "ein butt"+linearLayout.toString());
+            Log.d("dropped on", "ein butt");
         }
 
         /*
@@ -53,6 +56,13 @@ public class RowViewDragListener implements View.OnDragListener {
         linearLayout.findViewById(R.id.llButtonsDrag).setVisibility(View.GONE);
     }
 
+    private void switchDragButtonsOn(View view) {
+        Log.d("switch on voew", view.toString()+ "-----"+ view.getParent().getParent().toString());
+        linearLayout = (LinearLayout)view.getParent().getParent();
+        linearLayout.findViewById(R.id.llButtonsBottom).setVisibility(View.GONE);
+        linearLayout.findViewById(R.id.llButtonsDrag).setVisibility(View.VISIBLE);
+    }
+
     @Override
     public boolean onDrag(View v, DragEvent event) {
         int action = event.getAction();
@@ -63,17 +73,14 @@ public class RowViewDragListener implements View.OnDragListener {
         }
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
-                // do nothing
-                Log.d("Drag", "Hier start");
+                switchDragButtonsOn(v);
                 break;
             case DragEvent.ACTION_DRAG_ENTERED:
                 //v.setBackgroundDrawable(enterShape);
-
+                vibrator.vibrate(40);
                 if (tableRow != null) {
                     tableRow.setBackgroundColor(context.getResources().getColor(R.color.blue_1));
                 }
-                v.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.circle_button_droptarget));
-
                 Log.d("Drag", "Hier entered");
                 break;
             case DragEvent.ACTION_DRAG_EXITED:
@@ -81,20 +88,18 @@ public class RowViewDragListener implements View.OnDragListener {
                 if (tableRow != null) {
                     tableRow.setBackgroundColor(context.getResources().getColor(R.color.light_grey));
                 }
-                v.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.circle_button));
-
                 Log.d("Drag", "Hier exited");
                 break;
             case DragEvent.ACTION_DROP:
                 if (tableRow != null) {
                     tableRow.setBackgroundColor(context.getResources().getColor(R.color.light_grey));
                 }
-                switchDragButtonsOff(v);
                 Log.d("Drag", "Hier drop");
+                switchDragButtonsOff(v);
                 break;
             case DragEvent.ACTION_DRAG_ENDED:
                 Log.d("Drag", "Hier ended");
-
+                //v.invalidate();
             default:
                 break;
         }
